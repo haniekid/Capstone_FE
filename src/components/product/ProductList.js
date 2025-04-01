@@ -1,79 +1,129 @@
-import React, { useState, useEffect } from 'react';
-import ProductCard from './ProductItem';
-import { useProduct } from '../../utils/hooks/useProduct';
-import { useSelector } from 'react-redux';
-import { icons } from '../../assets/icons/icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import useToggle  from "../../utils/hooks/useUtil"
+import React, { useState, useEffect } from "react";
+import ProductCard from "./ProductItem";
+import { useProduct } from "../../utils/hooks/useProduct";
+import { useSelector, useDispatch } from "react-redux";
+import { icons } from "../../assets/icons/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useToggle from "../../utils/hooks/useUtil";
+import { filterProducts } from "../../store/reducers/productSlice";
 
 function ProductList() {
+  const dispatch = useDispatch();
   const { toggle, isToggled } = useToggle();
   const { products, fetchProducts } = useProduct();
-  const { minPrice: filterMinPrice, maxPrice: filterMaxPrice } = useSelector((state) => state.product.filter);
+  const {
+    minPrice: filterMinPrice,
+    maxPrice: filterMaxPrice,
+    types: filterTypes,
+  } = useSelector((state) => state.product.filter);
+  const originalProducts = useSelector(
+    (state) => state.product.originalProducts
+  );
 
-  const [minPrice, setMinPrice] = useState(filterMinPrice || '');
-  const [maxPrice, setMaxPrice] = useState(filterMaxPrice || '');
-  const [sortOrder, setSortOrder] = useState('asc');
-  const [size, setSize] = useState('');
+  const [minPrice, setMinPrice] = useState(filterMinPrice || "");
+  const [maxPrice, setMaxPrice] = useState(filterMaxPrice || "");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [selectedType, setSelectedType] = useState("");
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const filteredProducts = products.filter((product) => {
-    const minPriceFilter = minPrice === '' || product.defaultPrice >= parseFloat(minPrice);
-    const maxPriceFilter = maxPrice === '' || product.defaultPrice <= parseFloat(maxPrice);
-    const sizeFilter = size === '' || product.sizes.map(ps => ps.size).includes(parseInt(size));  
-    return minPriceFilter && maxPriceFilter && sizeFilter;
-  }).sort((a, b) => {
-    if (sortOrder === 'lowToHigh') {
+  useEffect(() => {
+    dispatch(
+      filterProducts({
+        minPrice: minPrice ? parseFloat(minPrice) : null,
+        maxPrice: maxPrice ? parseFloat(maxPrice) : null,
+        types: selectedType === "" ? [] : [selectedType],
+      })
+    );
+  }, [minPrice, maxPrice, selectedType, dispatch]);
+
+  // Create a new sorted array instead of mutating the original
+  const filteredProducts = [...products].sort((a, b) => {
+    if (sortOrder === "lowToHigh") {
       return a.defaultPrice - b.defaultPrice;
-    } else if (sortOrder === 'highToLow') {
+    } else if (sortOrder === "highToLow") {
       return b.defaultPrice - a.defaultPrice;
     } else {
       return 0;
     }
   });
 
+  // Get unique types from original products in Redux store
+  const uniqueTypes = [
+    ...new Set(originalProducts.map((product) => product.type)),
+  ];
+
   return (
-    <div className='shop'>
-      <div className='filter-control'>
-        <div className='filter-div toggle'>
-          <a onClick={() => toggle()}><FontAwesomeIcon icon={icons.filter}/></a>
-        </div>  
-        { isToggled() && 
-        <div className='filter-option'>
-          <div className="filter-div">
-            <label htmlFor="size">Size:</label>
-              <select id="size" name="size" value={size} onChange={(event) => setSize(event.target.value)}>
-              <option value="">All</option>
-              {Array.from({ length: 16 }, (_, i) => i + 35).map(size => (
-                <option key={size} value={size}>{size}</option>
-              ))}
+    <div className="shop">
+      <div className="filter-control">
+        <div className="filter-div toggle">
+          <a onClick={() => toggle()}>
+            <FontAwesomeIcon icon={icons.filter} />
+          </a>
+        </div>
+        {isToggled() && (
+          <div className="filter-option">
+            <div className="filter-div">
+              <label htmlFor="type">Type:</label>
+              <select
+                id="type"
+                name="type"
+                value={selectedType}
+                onChange={(event) => setSelectedType(event.target.value)}
+              >
+                <option value="">All</option>
+                {uniqueTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
               </select>
-        </div>
-        <div className="filter-div filter-spec">
-          <label htmlFor="size">Pris:</label>
-              <input type="number" id="minPrice" placeholder="min. kr" name="minPrice" value={minPrice} onChange={(event) => setMinPrice(event.target.value)} />
+            </div>
+            <div className="filter-div filter-spec">
+              <label htmlFor="price">Price:</label>
+              <input
+                type="number"
+                id="minPrice"
+                placeholder="min. kr"
+                name="minPrice"
+                value={minPrice}
+                onChange={(event) => setMinPrice(event.target.value)}
+              />
               <p>-</p>
-              <input type="number" id="maxPrice" placeholder="max. kr" name="maxPrice" value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)} />
-        </div>
-        <div className="filter-div">
-          <label>Sort by:</label>
-            <select id="sort" name="sort" value={sortOrder} onChange={(event) => setSortOrder(event.target.value)}>
-              <option value="">Newest</option>
-              <option value="lowToHigh">Lowest to Highest</option>
-              <option value="highToLow">Highest to Lowest</option>
-            </select>
-        </div>
-      </div>
-        }
+              <input
+                type="number"
+                id="maxPrice"
+                placeholder="max. kr"
+                name="maxPrice"
+                value={maxPrice}
+                onChange={(event) => setMaxPrice(event.target.value)}
+              />
+            </div>
+            <div className="filter-div">
+              <label>Sort by:</label>
+              <select
+                id="sort"
+                name="sort"
+                value={sortOrder}
+                onChange={(event) => setSortOrder(event.target.value)}
+              >
+                <option value="">Newest</option>
+                <option value="lowToHigh">Lowest to Highest</option>
+                <option value="highToLow">Highest to Lowest</option>
+              </select>
+            </div>
+          </div>
+        )}
       </div>
       <div className="product-grid">
-        {filteredProducts.reverse().map((product, index) => <ProductCard product={product} key={index} />)}
+        {filteredProducts.map((product, index) => (
+          <ProductCard product={product} key={index} />
+        ))}
       </div>
     </div>
   );
 }
 
-export default ProductList 
+export default ProductList;

@@ -3,13 +3,14 @@ import { fetchProducts } from '../actions/productActions';
 
 const initialState = {
     products: [],
+    originalProducts: [],
     loading: false,
     error: null,
     status: 'idle',
     filter: {
         minPrice: null,
         maxPrice: null,
-        sizes: [],
+        types: [],
     },
 };
 
@@ -19,11 +20,11 @@ const productSlice = createSlice({
     initialState,
     reducers: {
         filterProducts: (state, action) => {
-            const { minPrice, maxPrice, sizes } = action.payload;
-            state.products = state.products.filter(product => {
+            const { minPrice, maxPrice, types } = action.payload;
+            state.products = state.originalProducts.filter(product => {
                 const isInPriceRange = (minPrice === null || product.defaultPrice >= minPrice) && (maxPrice === null || product.defaultPrice <= maxPrice);
-                const hasSize = sizes.length === 0 || product.sizes.some(size => sizes.includes(size));
-                return isInPriceRange && hasSize;
+                const hasType = types.length === 0 || types.includes(product.type);
+                return isInPriceRange && hasType;
             });
         },
         searchProducts: (state, action) => {
@@ -36,19 +37,22 @@ const productSlice = createSlice({
                 );
             });
             state.products = filteredProducts;
-            state.originalProducts = originalProducts;
             if (query.length === 0) {
-                state.products = originalProducts;
-                state.originalProducts = null;
+                state.products = state.originalProducts;
             }
         },
-    },
-    setLoad: (state, action) => {
-        state.loading = action.payload;
-    },
-    setError: (state, action) => {
-        state.error = action.payload;
-        state.loading = false;
+        setLoad: (state, action) => {
+            state.loading = action.payload;
+        },
+        setError: (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+        },
+        deleteProduct: (state, action) => {
+            const productId = action.payload;
+            state.products = state.products.filter(product => product.productID !== productId);
+            state.originalProducts = state.originalProducts.filter(product => product.productID !== productId);
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -58,6 +62,7 @@ const productSlice = createSlice({
             .addCase(fetchProducts.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.products = action.payload;
+                state.originalProducts = action.payload;
             })
             .addCase(fetchProducts.rejected, (state, action) => {
                 state.status = 'failed';
@@ -75,6 +80,7 @@ export const {
     removeSelectedProduct,
     selectedProduct,
     setProduct,
+    deleteProduct,
 } = productSlice.actions;
 
 export default productSlice.reducer;
