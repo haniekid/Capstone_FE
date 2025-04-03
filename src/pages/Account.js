@@ -39,12 +39,20 @@ function MyAccount() {
 
             {/* Show My Orders for Users, My Products for Admin */}
             {currentUser.roleName === "Admin" ? (
-              <li
-                className={activeTab === 1 ? "active" : ""}
-                onClick={() => navigate("/admin/products")}
-              >
-                Manage Products
-              </li>
+              <>
+                <li
+                  className={activeTab === 1 ? "active" : ""}
+                  onClick={() => navigate("/admin/products")}
+                >
+                  Manage Products
+                </li>
+                <li
+                  className={activeTab === 2 ? "active" : ""}
+                  onClick={() => navigate("/admin/discounts")}
+                >
+                  Manage Discounts
+                </li>
+              </>
             ) : (
               <li
                 className={activeTab === 1 ? "active" : ""}

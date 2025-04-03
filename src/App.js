@@ -13,6 +13,9 @@ import Account from "./pages/Account";
 import Authentication from "./pages/Authentication";
 import Wishlist from "./pages/Wishlist";
 import AdminManageProduct from "./pages/AdminManageProduct";
+import ManageDiscount from "./pages/ManageDiscount";
+import AddDiscount from "./pages/AddDiscount";
+import DiscountDetail from "./pages/DiscountDetail";
 
 import { Routes, Route, useLocation } from "react-router-dom";
 
@@ -34,6 +37,12 @@ function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/admin/products" element={<AdminManageProduct />} />
+        <Route path="/admin/discounts" element={<ManageDiscount />} />
+        <Route path="/admin/discounts/add" element={<AddDiscount />} />
+        <Route
+          path="/admin/discounts/detail/:id"
+          element={<DiscountDetail />}
+        />
       </Routes>
       {showHeaderFooter && <Footer />}
     </>
