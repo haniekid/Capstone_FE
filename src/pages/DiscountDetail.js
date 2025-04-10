@@ -11,13 +11,29 @@ const DiscountDetail = () => {
   const [discount, setDiscount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({});
 
   useEffect(() => {
     const fetchDiscountDetail = async () => {
       try {
         setLoading(true);
         const response = await axios.get(`${API_URL}/discount/${id}`);
-        setDiscount(response.data);
+        const discountData = response.data;
+
+        // Format startDate and endDate to YYYY-MM-DD
+        const formattedData = {
+          ...discountData,
+          startDate: discountData.startDate
+            ? new Date(discountData.startDate).toISOString().split("T")[0]
+            : "",
+          endDate: discountData.endDate
+            ? new Date(discountData.endDate).toISOString().split("T")[0]
+            : "",
+        };
+
+        setDiscount(discountData);
+        setFormData(formattedData);
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -28,6 +44,25 @@ const DiscountDetail = () => {
 
     fetchDiscountDetail();
   }, [id]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      setLoading(true);
+      await axios.put(`${API_URL}/${id}`, formData);
+      setDiscount(formData);
+      setIsEditing(false);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return "No End Date";
@@ -75,76 +110,133 @@ const DiscountDetail = () => {
           </button>{" "}
           <h1 className="discount-title"> Discount Details </h1>{" "}
         </div>{" "}
-      </div>
+      </div>{" "}
       <div className="form-section">
         <div className="detail-row">
           <div className="detail-group">
             <label> Code </label>{" "}
-            <div className="detail-value"> {discount.code} </div>{" "}
+            {isEditing ? (
+              <input
+                type="text"
+                name="code"
+                value={formData.code || ""}
+                onChange={handleInputChange}
+              />
+            ) : (
+              <div className="detail-value"> {discount.code} </div>
+            )}{" "}
           </div>{" "}
           <div className="detail-group">
             <label> Status </label>{" "}
-            <div className="detail-value">
-              <span
-                className={`status ${
-                  discount.isActive ? "active" : "inactive"
-                }`}
+            {isEditing ? (
+              <select
+                name="isActive"
+                value={formData.isActive ? "true" : "false"}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    isActive: e.target.value === "true",
+                  }))
+                }
               >
-                {" "}
-                {discount.isActive ? "Active" : "Inactive"}{" "}
-              </span>{" "}
-            </div>{" "}
+                <option value="true"> Active </option>{" "}
+                <option value="false"> Inactive </option>{" "}
+              </select>
+            ) : (
+              <div className="detail-value">
+                <span
+                  className={`status ${
+                    discount.isActive ? "active" : "inactive"
+                  }`}
+                >
+                  {discount.isActive ? "Active" : "Inactive"}{" "}
+                </span>{" "}
+              </div>
+            )}{" "}
           </div>{" "}
-        </div>
+        </div>{" "}
         <div className="detail-group">
           <label> Description </label>{" "}
-          <div className="detail-value"> {discount.description} </div>{" "}
-        </div>
+          {isEditing ? (
+            <textarea
+              name="description"
+              value={formData.description || ""}
+              onChange={handleInputChange}
+            />
+          ) : (
+            <div className="detail-value"> {discount.description} </div>
+          )}{" "}
+        </div>{" "}
         <div className="detail-row">
           <div className="detail-group">
             <label> Type </label>{" "}
-            <div className="detail-value"> {discount.discountType} </div>{" "}
+            {isEditing ? (
+              <select
+                name="discountType"
+                value={formData.discountType || ""}
+                onChange={handleInputChange}
+              >
+                <option value="Percentage"> Percentage </option>{" "}
+                <option value="FixedAmount"> Fixed Amount </option>{" "}
+              </select>
+            ) : (
+              <div className="detail-value"> {discount.discountType} </div>
+            )}{" "}
           </div>{" "}
           <div className="detail-group">
             <label> Value </label>{" "}
-            <div className="detail-value">
-              {" "}
-              {discount.discountType === "Percentage"
-                ? `${discount.discountValue}%`
-                : `$${discount.discountValue}`}{" "}
-            </div>{" "}
+            {isEditing ? (
+              <input
+                type="number"
+                name="discountValue"
+                value={formData.discountValue || ""}
+                onChange={handleInputChange}
+              />
+            ) : (
+              <div className="detail-value">
+                {" "}
+                {discount.discountType === "Percentage"
+                  ? `${discount.discountValue}%`
+                  : `$${discount.discountValue}`}{" "}
+              </div>
+            )}{" "}
           </div>{" "}
-        </div>
+        </div>{" "}
         <div className="detail-row">
           <div className="detail-group">
             <label> Start Date </label>{" "}
-            <div className="detail-value">
-              {" "}
-              {formatDate(discount.startDate)}{" "}
-            </div>{" "}
+            {isEditing ? (
+              <input
+                type="date"
+                name="startDate"
+                value={formData.startDate || ""}
+                onChange={handleInputChange}
+              />
+            ) : (
+              <div className="detail-value">
+                {" "}
+                {formatDate(discount.startDate)}{" "}
+              </div>
+            )}{" "}
           </div>{" "}
           <div className="detail-group">
             <label> End Date </label>{" "}
-            <div className="detail-value"> {formatDate(discount.endDate)} </div>{" "}
-          </div>{" "}
-        </div>
-        <div className="detail-row">
-          <div className="detail-group">
-            <label> Usage </label>{" "}
-            <div className="detail-value">
-              {" "}
-              {discount.usedCount || 0}/ {discount.usageLimit || "∞"}{" "}
-            </div>{" "}
-          </div>{" "}
-          <div className="detail-group">
-            <label> Created At </label>{" "}
-            <div className="detail-value">
-              {" "}
-              {formatDate(discount.createdAt)}{" "}
-            </div>{" "}
+            {isEditing ? (
+              <input
+                type="date"
+                name="endDate"
+                value={formData.endDate || ""}
+                onChange={handleInputChange}
+              />
+            ) : (
+              <div className="detail-value">
+                {" "}
+                {formatDate(discount.endDate)}{" "}
+              </div>
+            )}{" "}
           </div>{" "}
         </div>{" "}
-      </div>
+      </div>{" "}
       <div className="form-actions">
         <button
           type="button"
@@ -153,13 +245,23 @@ const DiscountDetail = () => {
         >
           Back{" "}
         </button>{" "}
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => navigate(`/admin/discounts/edit/${id}`)}
-        >
-          Edit Discount{" "}
-        </button>{" "}
+        {isEditing ? (
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleSaveChanges}
+          >
+            Save Changes{" "}
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => setIsEditing(true)}
+          >
+            Edit Discount{" "}
+          </button>
+        )}{" "}
       </div>{" "}
     </div>
   );

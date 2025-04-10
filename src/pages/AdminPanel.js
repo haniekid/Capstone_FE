@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import Users from '../components/admin/UsersTable';
-import Orders from '../components/admin/OrdersTable';
-import Products from '../components/admin/ProductsTable';
+import React, { useState } from "react";
+import Users from "../components/admin/UsersTable";
+import Orders from "../components/admin/OrdersTable";
+import Products from "../components/admin/ProductsTable";
 
-const tabs = ['Products', 'Orders', 'Users',];
+const tabs = ["Products", "Orders", "Users"];
 
 function AdminPanel() {
   const [activeTab, setActiveTab] = useState(0);
@@ -15,23 +15,21 @@ function AdminPanel() {
   return (
     <div className="admin container">
       <ul>
+        {" "}
         {tabs.map((tab, index) => (
           <li
             key={index}
-            className={index === activeTab ? 'active' : ''}
+            className={index === activeTab ? "active" : ""}
             onClick={() => handleTabClick(index)}
           >
-            {tab}
+            {tab}{" "}
           </li>
-        ))}
-      </ul>
-      {activeTab === 0 && <Products />}
-      {activeTab === 1 && <Orders />}
-      {activeTab === 2 && <Users />}
+        ))}{" "}
+      </ul>{" "}
+      {activeTab === 0 && <Products />} {activeTab === 1 && <Orders />}{" "}
+      {activeTab === 2 && <Users />}{" "}
     </div>
   );
 }
 
-
-
-export default AdminPanel
+export default AdminPanel;

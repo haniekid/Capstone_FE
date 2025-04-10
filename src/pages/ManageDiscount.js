@@ -191,21 +191,20 @@ const ManageDiscount = () => {
     setCurrentPage(pageNumber);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div> Loading... </div>;
+  if (error) return <div> Error: {error} </div>;
 
   return (
     <div className="admin-discounts">
       <div className="discount-header">
-        <h1 className="discount-title">Manage Discounts</h1>
+        <h1 className="discount-title"> Manage Discounts </h1>{" "}
         <button
           className="add-discount-btn"
           onClick={() => navigate("/admin/discounts/add")}
         >
-          + Add New Discount
-        </button>
+          +Add New Discount{" "}
+        </button>{" "}
       </div>
-
       <div className="search-box">
         <input
           type="text"
@@ -215,7 +214,6 @@ const ManageDiscount = () => {
           className="search-input"
         />
       </div>
-
       <div className="discounts-table">
         <table>
           <thead>
@@ -223,56 +221,62 @@ const ManageDiscount = () => {
               <th onClick={() => handleSort("code")} className="sortable">
                 Code{" "}
                 {sortConfig.key === "code" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}
-              </th>
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+              </th>{" "}
               <th onClick={() => handleSort("value")} className="sortable">
                 Value{" "}
                 {sortConfig.key === "value" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}
-              </th>
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+              </th>{" "}
               <th onClick={() => handleSort("period")} className="sortable">
                 Period{" "}
                 {sortConfig.key === "period" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}
-              </th>
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+              </th>{" "}
               <th onClick={() => handleSort("usage")} className="sortable">
                 Usage{" "}
                 {sortConfig.key === "usage" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}
-              </th>
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+              </th>{" "}
               <th onClick={() => handleSort("status")} className="sortable">
                 Status{" "}
                 {sortConfig.key === "status" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}
-              </th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+              </th>{" "}
+              <th> Actions </th>{" "}
+            </tr>{" "}
+          </thead>{" "}
           <tbody>
+            {" "}
             {currentDiscounts.map((discount) => (
               <tr key={discount.discountId}>
-                <td>{discount.code}</td>
+                <td> {discount.code} </td>{" "}
                 <td>
+                  {" "}
                   {discount.discountType === "Percentage"
                     ? `${discount.discountValue}%`
-                    : `$${discount.discountValue}`}
-                </td>
+                    : `$${discount.discountValue}`}{" "}
+                </td>{" "}
                 <td>
-                  {formatDate(discount.startDate)}
-                  {discount.endDate ? ` - ${formatDate(discount.endDate)}` : ""}
-                </td>
-                <td>{`${discount.usedCount || 0} / ${
-                  discount.usageLimit || "∞"
-                }`}</td>
+                  {" "}
+                  {formatDate(discount.startDate)}{" "}
+                  {discount.endDate ? ` - ${formatDate(discount.endDate)}` : ""}{" "}
+                </td>{" "}
+                <td>
+                  {" "}
+                  {`${discount.usedCount || 0} / ${
+                    discount.usageLimit || "∞"
+                  }`}{" "}
+                </td>{" "}
                 <td>
                   <span
                     className={`status ${
                       discount.isActive ? "active" : "inactive"
                     }`}
                   >
-                    {discount.isActive ? "Active" : "Inactive"}
-                  </span>
-                </td>
+                    {discount.isActive ? "Active" : "Inactive"}{" "}
+                  </span>{" "}
+                </td>{" "}
                 <td>
                   <button
                     className="edit-btn"
@@ -280,20 +284,20 @@ const ManageDiscount = () => {
                       navigate(`/admin/discounts/detail/${discount.discountId}`)
                     }
                   >
-                    Detail
-                  </button>
+                    Detail{" "}
+                  </button>{" "}
                   <button
                     className="delete-btn"
                     onClick={() => handleDeleteDiscount(discount.discountId)}
                   >
-                    Delete
-                  </button>
-                </td>
+                    Delete{" "}
+                  </button>{" "}
+                </td>{" "}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            ))}{" "}
+          </tbody>{" "}
+        </table>{" "}
+      </div>{" "}
       {totalPages > 1 && (
         <div className="pagination">
           <button
@@ -301,23 +305,22 @@ const ManageDiscount = () => {
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
-            Previous
+            Previous{" "}
           </button>
-
-          {/* First page */}
+          {/* First page */}{" "}
           {currentPage > 2 && (
             <button
               className="pagination-btn"
               onClick={() => handlePageChange(1)}
             >
-              1
+              1{" "}
             </button>
           )}
-
-          {/* Ellipsis */}
-          {currentPage > 3 && <span className="pagination-ellipsis">...</span>}
-
-          {/* Current page and neighbors */}
+          {/* Ellipsis */}{" "}
+          {currentPage > 3 && (
+            <span className="pagination-ellipsis"> ... </span>
+          )}
+          {/* Current page and neighbors */}{" "}
           {Array.from({ length: totalPages }, (_, index) => {
             const pageNumber = index + 1;
             if (
@@ -333,37 +336,34 @@ const ManageDiscount = () => {
                   }`}
                   onClick={() => handlePageChange(pageNumber)}
                 >
-                  {pageNumber}
+                  {pageNumber}{" "}
                 </button>
               );
             }
             return null;
           })}
-
-          {/* Ellipsis */}
+          {/* Ellipsis */}{" "}
           {currentPage < totalPages - 2 && (
-            <span className="pagination-ellipsis">...</span>
+            <span className="pagination-ellipsis"> ... </span>
           )}
-
-          {/* Last page */}
+          {/* Last page */}{" "}
           {currentPage < totalPages - 1 && (
             <button
               className="pagination-btn"
               onClick={() => handlePageChange(totalPages)}
             >
-              {totalPages}
+              {totalPages}{" "}
             </button>
           )}
-
           <button
             className="pagination-btn nav-btn"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
-            Next
-          </button>
+            Next{" "}
+          </button>{" "}
         </div>
-      )}
+      )}{" "}
     </div>
   );
 };
