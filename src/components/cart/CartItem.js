@@ -25,7 +25,10 @@ function CartItem() {
               <a onClick={() => removeFromCart(item.product.id, item.size)}>Remove</a>
               </div>
               <div className='cart-item-right'>
-                <p>{formatPrice(item.price)}</p>
+                <p className="price">{formatPrice(item.price)}</p>
+                {item.salePrice && (
+                  <p className="sale-price">{formatPrice(item.salePrice)}</p>
+                )}
                 <div className='cart-item-quantity'>
                   <a onClick={() => updateQuantity(item.product.id, item.size, item.quantity - 1)}>-</a>
                   <input type="number" value={item.quantity} onChange={(e) => {

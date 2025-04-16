@@ -14,7 +14,7 @@ function CartPage() {
       <div className='cart-container flex-2'>
         <h1>Shopping Bag {quantity > 0 ? "(" + quantity + " " + (quantity === 1 ? "product" : "products") + ")" : ""}</h1>
           {items.length === 0 ? (
-            <p>There’s nothing in your bag yet.</p>
+            <p>There's nothing in your bag yet.</p>
           ) : (
             <div className='cart-items'>
               <CartItems />
@@ -28,7 +28,7 @@ function CartPage() {
             <h2>Summary</h2>
             <div className="space-between">
               <p>Subtotal</p>
-              <p>{subtotal ? subtotal : 0}</p>
+              <p>{formatPrice(subtotal)}</p>
             </div>
             {discount > 0 && (
               <div className="space-between">
@@ -43,7 +43,7 @@ function CartPage() {
             <div className='line'></div>
             <div className="space-between bold" >
               <p>Total</p>
-              <p>{total ? total : 0}</p>
+              <p>{formatPrice(total)}</p>
             </div>
             <Link to="/checkout"><button>CHECKOUT</button></Link>
               {defaultSubtotal < DELIVERY_THRESHOLD ? (

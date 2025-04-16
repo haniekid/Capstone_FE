@@ -1,1 +1,412 @@
- 
+/* Admin Container */
+.admin-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.admin-title {
+  color: #2c3e50;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.admin-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Title and Add Button */
+.header-section {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.header-section h1 {
+  color: #2c3e50;
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.add-new-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: inline-block;
+  width: auto;
+  text-transform: none;
+  box-shadow: none;
+  line-height: 1.4;
+}
+
+.add-new-btn:hover {
+  background-color: #2980b9;
+}
+
+/* Search Box */
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Table Styles */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: white;
+  border-radius: 4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 2px solid #eee;
+}
+
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  color: #2c3e50;
+}
+
+tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Action Buttons */
+.action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.action-btn.edit {
+  background-color: #3498db;
+  color: white;
+}
+
+.action-btn.edit:hover {
+  background-color: #2980b9;
+}
+
+.action-btn.delete {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.action-btn.delete:hover {
+  background-color: #c0392b;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.pagination-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #f8f9fa;
+}
+
+.pagination-btn.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-ellipsis {
+  color: #2c3e50;
+}
+
+/* Loading and Error States */
+.loading,
+.error {
+  text-align: center;
+  padding: 20px;
+  color: #2c3e50;
+}
+
+.error {
+  color: #e74c3c;
+}
+
+/* Product Detail Styles */
+.detail-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.back-btn,
+.edit-btn,
+.save-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.back-btn {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.back-btn:hover {
+  background-color: #7f8c8d;
+}
+
+.edit-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #2980b9;
+}
+
+.save-btn {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #27ae60;
+}
+
+.product-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.product-main-info,
+.product-sale-info,
+.product-images {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.product-images {
+  grid-column: 1 / -1;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #2c3e50;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-group span {
+  display: block;
+  padding: 8px 0;
+  color: #2c3e50;
+}
+
+.image-preview {
+  margin-top: 8px;
+}
+
+.image-preview img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.additional-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+h3 {
+  color: #2c3e50;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .search-input {
+    width: 100%;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .action-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  
+  .product-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .product-images {
+    grid-column: auto;
+  }
+  
+  .additional-images {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
+.form-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.form-select option {
+  padding: 8px;
+}
+
+.form-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.error-message {
+  color: #e74c3c;
+  background-color: #fdf0ed;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.product-form {
+  max-width: 100%;
+}
+
+.additional-images-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.additional-image-input {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.additional-image-input input {
+  flex: 1;
+  height: 35px;
+}
+
+.remove-image-btn {
+  padding: 0;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  min-width: 40px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-image-btn:hover {
+  background-color: #c0392b;
+}
+
+.add-image-btn {
+  padding: 8px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.add-image-btn:hover {
+  background-color: #27ae60;
+} 

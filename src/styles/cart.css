@@ -1,0 +1,23 @@
+.cart-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.cart-item-right .price {
+  font-weight: bold;
+  margin: 0;
+}
+
+.cart-item-right .sale-price {
+  color: #e74c3c;
+  margin: 0;
+  font-weight: bold;
+}
+
+.cart-item-right .price.on-sale {
+  text-decoration: line-through;
+  color: #7f8c8d;
+  font-weight: normal;
+} 
