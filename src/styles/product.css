@@ -1,0 +1,109 @@
+/* Product Detail Image Styles */
+
+.product-detail {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+
+/* Image Container Styles */
+
+.product-detail-img {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 50px;
+    position: relative;
+}
+
+
+/* Main Image Container */
+
+.main-image-container {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Image Style */
+
+.main-image {
+    width: 100px !important;
+    height: 100px !important;
+    object-fit: cover !important;
+}
+
+
+/* Image Slider */
+
+.image-slider {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Navigation Buttons */
+
+button.image-nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    border-radius: 4px;
+    padding: 0;
+    margin: 0;
+}
+
+button.image-nav-button:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+button.image-nav-button.prev-button {
+    left: -40px;
+}
+
+button.image-nav-button.next-button {
+    right: -40px;
+}
+
+
+/* Remove any conflicting styles */
+
+.main-image-container img {
+    max-width: none;
+    max-height: none;
+    min-width: 100px;
+    min-height: 100px;
+}
+
+
+/* Only essential styles that Bootstrap doesn't provide */
+
+.product-image {
+    width: 100px !important;
+    height: 100px !important;
+    object-fit: cover;
+}

@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import "../styles/admin.css";
 import { formatPrice } from "../utils/hooks/useUtil";
 
-const API_URL = "https://localhost:7089/api/Product/GetProductsForAdminDashboard";
-const DELETE_API_URL = "https://localhost:7089/api/Product/DeleteProductsForAdminDashboard";
+const API_URL =
+  "https://localhost:7089/api/Product/GetProductsForAdminDashboard";
+const DELETE_API_URL =
+  "https://localhost:7089/api/Product/DeleteProductsForAdminDashboard";
 
 const ManageProduct = () => {
   const navigate = useNavigate();
@@ -14,7 +16,10 @@ const ManageProduct = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: "isDeleted", direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({
+    key: "isDeleted",
+    direction: "asc",
+  });
   const itemsPerPage = 6;
 
   const fetchProducts = async () => {
@@ -60,8 +65,12 @@ const ManageProduct = () => {
         // Sort by isDeleted first (false comes before true)
         if (a.isDeleted !== b.isDeleted) {
           return sortConfig.direction === "asc"
-            ? (a.isDeleted ? 1 : -1)
-            : (a.isDeleted ? -1 : 1);
+            ? a.isDeleted
+              ? 1
+              : -1
+            : a.isDeleted
+            ? -1
+            : 1;
         }
         // If isDeleted status is the same, sort by name as secondary criteria
         return a.name.localeCompare(b.name);
@@ -127,21 +136,19 @@ const ManageProduct = () => {
     setCurrentPage(pageNumber);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div> Loading... </div>;
+  if (error) return <div> Error: {error} </div>;
 
   return (
     <div className="admin-container">
-      <h1 className="admin-title">Manage Products</h1>
-      
+      <h1 className="admin-title"> Manage Products </h1>
       <div className="admin-content">
         <button
           className="add-new-btn"
           onClick={() => navigate("/admin/products/add")}
         >
-          +Add New Product
+          +Add New Product{" "}
         </button>
-
         <div className="search-container">
           <input
             type="text"
@@ -151,78 +158,112 @@ const ManageProduct = () => {
             className="search-input"
           />
         </div>
-
         <div className="table-container">
           <table>
             <thead>
               <tr>
                 <th onClick={() => handleSort("name")} className="sortable">
-                  Name {sortConfig.key === "name" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                </th>
+                  Name{" "}
+                  {sortConfig.key === "name" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
                 <th onClick={() => handleSort("type")} className="sortable">
-                  Type {sortConfig.key === "type" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                </th>
+                  Type{" "}
+                  {sortConfig.key === "type" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
                 <th onClick={() => handleSort("price")} className="sortable">
-                  Price {sortConfig.key === "price" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                </th>
-                <th onClick={() => handleSort("salePrice")} className="sortable">
-                  Sale Price {sortConfig.key === "salePrice" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                </th>
+                  Price{" "}
+                  {sortConfig.key === "price" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
+                <th
+                  onClick={() => handleSort("salePrice")}
+                  className="sortable"
+                >
+                  Sale Price{" "}
+                  {sortConfig.key === "salePrice" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
                 <th onClick={() => handleSort("quantity")} className="sortable">
-                  Quantity {sortConfig.key === "quantity" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                </th>
-                <th>Image</th>
-                <th onClick={() => handleSort("isDeleted")} className="sortable">
-                  Status {sortConfig.key === "isDeleted" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                </th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+                  Quantity{" "}
+                  {sortConfig.key === "quantity" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
+                <th> Image </th>{" "}
+                <th
+                  onClick={() => handleSort("isDeleted")}
+                  className="sortable"
+                >
+                  Status{" "}
+                  {sortConfig.key === "isDeleted" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
+                <th> Actions </th>{" "}
+              </tr>{" "}
+            </thead>{" "}
             <tbody>
+              {" "}
               {currentProducts.map((product) => (
-                <tr key={product.productID} className={product.isDeleted ? "deleted-row" : ""}>
-                  <td>{product.name}</td>
-                  <td>{product.type}</td>
-                  <td>{formatPrice(product.price)}</td>
-                  <td>{product.salePrice ? formatPrice(product.salePrice) : '-'}</td>
-                  <td>{product.quantity}</td>
+                <tr
+                  key={product.productID}
+                  className={product.isDeleted ? "deleted-row" : ""}
+                >
+                  <td> {product.name} </td> <td> {product.type} </td>{" "}
+                  <td> {formatPrice(product.price)} </td>{" "}
+                  <td>
+                    {" "}
+                    {product.salePrice
+                      ? formatPrice(product.salePrice)
+                      : "-"}{" "}
+                  </td>{" "}
+                  <td> {product.quantity} </td>{" "}
                   <td>
                     <img
                       src={product.imageURL}
                       alt={product.name}
-                      style={{ width: 50, height: 50, objectFit: 'cover' }}
-                    />
-                  </td>
+                      style={{ width: 50, height: 50, objectFit: "cover" }}
+                    />{" "}
+                  </td>{" "}
                   <td>
-                    <span className={`status-badge ${product.isDeleted ? 'deleted' : 'active'}`}>
-                      {product.isDeleted ? 'Deleted' : 'Active'}
-                    </span>
-                  </td>
+                    <span
+                      className={`status-badge ${
+                        product.isDeleted ? "deleted" : "active"
+                      }`}
+                    >
+                      {product.isDeleted ? "Deleted" : "Active"}{" "}
+                    </span>{" "}
+                  </td>{" "}
                   <td>
                     <button
                       className="action-btn edit"
-                      onClick={() => navigate(`/admin/products/detail/${product.productID}`)}
+                      onClick={() =>
+                        navigate(`/admin/products/detail/${product.productID}`)
+                      }
                     >
-                      Detail
-                    </button>
+                      Detail{" "}
+                    </button>{" "}
                     <button
                       className="action-btn delete"
                       onClick={() => {
-                        if (window.confirm("Are you sure you want to delete this product?")) {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to delete this product?"
+                          )
+                        ) {
                           handleDelete(product.productID);
                         }
                       }}
                       disabled={product.isDeleted}
                     >
-                      Delete
-                    </button>
-                  </td>
+                      Delete{" "}
+                    </button>{" "}
+                  </td>{" "}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              ))}{" "}
+            </tbody>{" "}
+          </table>{" "}
         </div>
-
         {totalPages > 1 && (
           <div className="pagination">
             <button
@@ -230,17 +271,19 @@ const ManageProduct = () => {
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
             >
-              Previous
-            </button>
+              Previous{" "}
+            </button>{" "}
             {currentPage > 2 && (
               <button
                 className="pagination-btn"
                 onClick={() => handlePageChange(1)}
               >
-                1
+                1{" "}
               </button>
-            )}
-            {currentPage > 3 && <span className="pagination-ellipsis">...</span>}
+            )}{" "}
+            {currentPage > 3 && (
+              <span className="pagination-ellipsis"> ... </span>
+            )}{" "}
             {Array.from({ length: totalPages }, (_, index) => {
               const pageNumber = index + 1;
               if (
@@ -251,36 +294,40 @@ const ManageProduct = () => {
                 return (
                   <button
                     key={pageNumber}
-                    className={`pagination-btn ${currentPage === pageNumber ? "active" : ""}`}
+                    className={`pagination-btn ${
+                      currentPage === pageNumber ? "active" : ""
+                    }`}
                     onClick={() => handlePageChange(pageNumber)}
                   >
-                    {pageNumber}
+                    {pageNumber}{" "}
                   </button>
                 );
               }
               return null;
-            })}
-            {currentPage < totalPages - 2 && <span className="pagination-ellipsis">...</span>}
+            })}{" "}
+            {currentPage < totalPages - 2 && (
+              <span className="pagination-ellipsis"> ... </span>
+            )}{" "}
             {currentPage < totalPages - 1 && (
               <button
                 className="pagination-btn"
                 onClick={() => handlePageChange(totalPages)}
               >
-                {totalPages}
+                {totalPages}{" "}
               </button>
-            )}
+            )}{" "}
             <button
               className="pagination-btn"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
-              Next
-            </button>
+              Next{" "}
+            </button>{" "}
           </div>
-        )}
-      </div>
+        )}{" "}
+      </div>{" "}
     </div>
   );
 };
 
-export default ManageProduct; 
+export default ManageProduct;
