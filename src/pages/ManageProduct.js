@@ -5,6 +5,7 @@ import "../styles/admin.css";
 import { formatPrice } from "../utils/hooks/useUtil";
 
 const API_URL = "https://localhost:7089/api/Product/GetProductsForAdminDashboard";
+const DELETE_API_URL = "https://localhost:7089/api/Product/DeleteProductsForAdminDashboard";
 
 const ManageProduct = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const ManageProduct = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({ key: "isDeleted", direction: "asc" });
   const itemsPerPage = 6;
 
   const fetchProducts = async () => {
@@ -26,6 +27,16 @@ const ManageProduct = () => {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (productId) => {
+    try {
+      await axios.delete(`${DELETE_API_URL}/${productId}`);
+      // Refresh the products list after successful deletion
+      fetchProducts();
+    } catch (err) {
+      setError("Failed to delete product: " + err.message);
     }
   };
 
@@ -45,6 +56,17 @@ const ManageProduct = () => {
     if (!sortConfig.key) return data;
 
     return [...data].sort((a, b) => {
+      if (sortConfig.key === "isDeleted") {
+        // Sort by isDeleted first (false comes before true)
+        if (a.isDeleted !== b.isDeleted) {
+          return sortConfig.direction === "asc"
+            ? (a.isDeleted ? 1 : -1)
+            : (a.isDeleted ? -1 : 1);
+        }
+        // If isDeleted status is the same, sort by name as secondary criteria
+        return a.name.localeCompare(b.name);
+      }
+
       if (sortConfig.key === "price") {
         return sortConfig.direction === "asc"
           ? a.price - b.price
@@ -150,12 +172,15 @@ const ManageProduct = () => {
                   Quantity {sortConfig.key === "quantity" && (sortConfig.direction === "asc" ? "↑" : "↓")}
                 </th>
                 <th>Image</th>
+                <th onClick={() => handleSort("isDeleted")} className="sortable">
+                  Status {sortConfig.key === "isDeleted" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {currentProducts.map((product) => (
-                <tr key={product.productID}>
+                <tr key={product.productID} className={product.isDeleted ? "deleted-row" : ""}>
                   <td>{product.name}</td>
                   <td>{product.type}</td>
                   <td>{formatPrice(product.price)}</td>
@@ -169,6 +194,11 @@ const ManageProduct = () => {
                     />
                   </td>
                   <td>
+                    <span className={`status-badge ${product.isDeleted ? 'deleted' : 'active'}`}>
+                      {product.isDeleted ? 'Deleted' : 'Active'}
+                    </span>
+                  </td>
+                  <td>
                     <button
                       className="action-btn edit"
                       onClick={() => navigate(`/admin/products/detail/${product.productID}`)}
@@ -179,9 +209,10 @@ const ManageProduct = () => {
                       className="action-btn delete"
                       onClick={() => {
                         if (window.confirm("Are you sure you want to delete this product?")) {
-                          // Add delete functionality here
+                          handleDelete(product.productID);
                         }
                       }}
+                      disabled={product.isDeleted}
                     >
                       Delete
                     </button>
