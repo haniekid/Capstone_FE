@@ -17,8 +17,7 @@ function Details() {
             <div className="line-divider"></div>
             <p>{currentUser?.firstName} {currentUser?.lastName}</p>
             <p>{currentUser?.address}</p>
-            <p>{currentUser?.postalCode} {currentUser?.city}</p>
-            <p>Denmark</p>
+            <p>{currentUser?.city}</p>
             { isToggled() && <div>
                 <div className="line-divider"></div>
                 <div className="divider">
@@ -43,10 +42,6 @@ function Details() {
                     <label>
                         City
                         <input value={currentUser?.city} readOnly />
-                    </label>
-                    <label>
-                        Postal Code
-                        <input value={currentUser?.postalCode} readOnly />
                     </label>
                 </div>
                 <button>Save Changes</button>

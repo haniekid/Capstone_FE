@@ -32,23 +32,15 @@ const deleteUser = async (userId) => {
 const login = async (loginData) => {
   try {
     const response = await axios.post(`${API_URL}/login`, loginData);
-    if (response.data.token) {
-      localStorage.setItem("user", JSON.stringify(response.data));
-      const token = response.data.token;
-      const decodedToken = jwtDecode(token);
-
-      console.log("Decoded Token:", decodedToken); // Debugging
-
-      return decodedToken.nameid; // Return only userId
+    if (response.data && response.data.token) {
+      return response.data;
     }
-    return null;
+    throw new Error("Invalid login response");
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      alert(error.response.data);
-    } else {
-      alert("An error occurred");
+      throw new Error("Invalid email or password");
     }
-    return null;
+    throw error;
   }
 };
 

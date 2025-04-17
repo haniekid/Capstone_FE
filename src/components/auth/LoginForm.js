@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { icons } from '../../assets/icons/icons';
@@ -9,20 +9,27 @@ import { useUser } from '../../utils/hooks/useUser';
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [error, setError] = useState(null);
 
   const { login } = useUser();
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (loginData) => {
+    setError(null);
     const user = await login(loginData);
-    if (user && location.pathname === '/authentication') {
-      navigate('/account');
+    if (user) {
+      if (location.pathname === '/authentication') {
+        navigate('/account');
+      }
+    } else {
+      setError('Invalid email or password. Please try again.');
     }
   };
 
   return (
     <div className='login'>
       <h1>Login</h1>
+      {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <label className='input-label'>
           Email

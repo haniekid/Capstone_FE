@@ -23,7 +23,6 @@ function Confirmation({onPaymentComplete}) {
           <p>{currentUser?.firstName} {currentUser?.lastName}</p>
           <p>{currentUser?.address}</p>
           <p>{currentUser?.postalCode} {currentUser?.city}</p>
-          <p>Denmark</p>
           { !discount > 0 && 
             <div className="discount-code">
               <input placeholder="Discount Code" type="text" onChange={(e) => setDiscountCode(e.target.value)} />

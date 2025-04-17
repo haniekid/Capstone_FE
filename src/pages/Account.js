@@ -4,12 +4,14 @@ import Orders from "../components/account/MyOrders";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCurrentUser, setUser } from "../store/reducers/userSlice";
+import { useUser } from "../utils/hooks/useUser";
 
 function MyAccount() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
   const [activeTab, setActiveTab] = useState(0);
+  const { logout } = useUser();
 
   useEffect(() => {
     if (!currentUser) {
@@ -19,7 +21,7 @@ function MyAccount() {
 
   const handleTabClick = (index) => {
     if (index === 2) {
-      dispatch(setUser(null));
+      logout();
       navigate("/authentication");
     }
     setActiveTab(index);
