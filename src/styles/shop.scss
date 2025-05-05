@@ -1,0 +1,104 @@
+.shop-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fff7f0 0%, #ffe3e3 100%);
+}
+
+.shop-hero {
+  position: relative;
+  height: 320px;
+  background: url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200")
+    center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.shop-hero-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  padding: 40px 60px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+.shop-hero-overlay h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+  letter-spacing: 1px;
+}
+
+.shop-hero-overlay p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+.shop-content-container {
+  max-width: 1200px;
+  margin: -60px auto 0 auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 48px 32px 32px 32px;
+  min-height: 600px;
+  position: relative;
+  z-index: 2;
+}
+
+// Product card layering (to be used in ProductItem or ProductList)
+.product-card,
+.product-item {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  position: relative;
+}
+.product-card:hover,
+.product-item:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(255, 77, 77, 0.18);
+  z-index: 3;
+}
+
+// Optional: Add a featured badge
+.product-card .featured-badge,
+.product-item .featured-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  background: #ff4d4d;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(255, 77, 77, 0.18);
+  z-index: 4;
+}
+
+// Responsive
+@media (max-width: 900px) {
+  .shop-content-container {
+    padding: 24px 8px 16px 8px;
+  }
+  .shop-hero-overlay {
+    padding: 24px 10px;
+  }
+}
+@media (max-width: 600px) {
+  .shop-hero {
+    height: 180px;
+  }
+  .shop-hero-overlay h1 {
+    font-size: 1.5rem;
+  }
+  .shop-content-container {
+    margin-top: -30px;
+    padding: 10px 2px 8px 2px;
+  }
+}

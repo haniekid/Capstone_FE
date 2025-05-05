@@ -22,64 +22,38 @@ import ManageProductAdd from "./pages/ManageProductAdd";
 import { Routes, Route, useLocation } from "react-router-dom";
 
 function App() {
-    const location = useLocation();
-    const showHeaderFooter = location.pathname !== "/checkout";
+  const location = useLocation();
+  const showHeaderFooter = location.pathname !== "/checkout";
 
-    return ( <
-        >
-        { showHeaderFooter && < Header / > } { " " } <
-        Routes >
-        <
-        Route path = "/"
-        element = { < Home location = { location }
-            />} / >
-            <
-            Route path = "/:id"
-            element = { < ProductPage / > }
-            />{" "} <
-            Route path = "/authentication"
-            element = { < Authentication / > }
-            />{" "} <
-            Route path = "/cart"
-            element = { < CartPage / > }
-            />{" "} <
-            Route path = "/checkout"
-            element = { < CheckoutPage / > }
-            />{" "} <
-            Route path = "/admin"
-            element = { < Admin / > }
-            />{" "} <
-            Route path = "/account"
-            element = { < Account / > }
-            />{" "} <
-            Route path = "/shop"
-            element = { < Shop / > }
-            />{" "} <
-            Route path = "/wishlist"
-            element = { < Wishlist / > }
-            />{" "} <
-            Route path = "/admin/products"
-            element = { < ManageProduct / > }
-            />{" "} <
-            Route path = "/admin/products/add"
-            element = { < ManageProductAdd / > }
-            />{" "} <
-            Route path = "/admin/products/detail/:id"
-            element = { < ManageProductDetail / > }
-            />{" "} <
-            Route path = "/admin/discounts"
-            element = { < ManageDiscount / > }
-            />{" "} <
-            Route path = "/admin/discounts/add"
-            element = { < AddDiscount / > }
-            />{" "} <
-            Route
-            path = "/admin/discounts/detail/:id"
-            element = { < DiscountDetail / > }
-            />{" "} < /
-            Routes > { " " } { showHeaderFooter && < Footer / > } { " " } <
-            />
-        );
-    }
+  return (
+    <>
+      {showHeaderFooter && <Header />}{" "}
+      <Routes>
+        <Route path="/" element={<Home location={location} />} />
+        <Route path="/:id" element={<ProductPage />} />{" "}
+        <Route path="/authentication" element={<Authentication />} />{" "}
+        <Route path="/cart" element={<CartPage />} />{" "}
+        <Route path="/checkout" element={<CheckoutPage />} />{" "}
+        <Route path="/admin" element={<Admin />} />{" "}
+        <Route path="/account" element={<Account />} />{" "}
+        <Route path="/shop" element={<Shop />} />{" "}
+        <Route path="/wishlist" element={<Wishlist />} />{" "}
+        <Route path="/admin/products" element={<ManageProduct />} />{" "}
+        <Route path="/admin/products/add" element={<ManageProductAdd />} />{" "}
+        <Route
+          path="/admin/products/detail/:id"
+          element={<ManageProductDetail />}
+        />{" "}
+        <Route path="/admin/discounts" element={<ManageDiscount />} />{" "}
+        <Route path="/admin/discounts/add" element={<AddDiscount />} />{" "}
+        <Route
+          path="/admin/discounts/detail/:id"
+          element={<DiscountDetail />}
+        />{" "}
+      </Routes>{" "}
+      {showHeaderFooter && <Footer />}{" "}
+    </>
+  );
+}
 
-    export default App;
+export default App;

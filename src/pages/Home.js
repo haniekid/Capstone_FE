@@ -1,27 +1,130 @@
-import React from 'react';
-import hero from "../assets/icons/hero2.png"
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "../styles/home.scss";
 
 function Home() {
+  const [activeCategory, setActiveCategory] = useState("all");
+
+  const categories = [
+    { id: "all", name: "All" },
+    { id: "main", name: "Main Dishes" },
+    { id: "appetizers", name: "Appetizers" },
+    { id: "street", name: "Street Food" },
+    { id: "noodles", name: "Noodles" },
+    { id: "rice", name: "Rice Dishes" },
+  ];
+
+  const foodImages = [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800",
+      alt: "Pho",
+      category: "main",
+      featured: true,
+    },
+    {
+      id: 2,
+      image:
+        "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800",
+      alt: "Spring Rolls",
+      category: "appetizers",
+      featured: true,
+    },
+    {
+      id: 3,
+      image:
+        "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=800",
+      alt: "Banh Mi",
+      category: "street",
+      featured: true,
+    },
+    {
+      id: 4,
+      image:
+        "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800",
+      alt: "Vietnamese Noodles",
+      category: "noodles",
+      featured: false,
+    },
+    {
+      id: 5,
+      image:
+        "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800",
+      alt: "Vietnamese Rice Dishes",
+      category: "rice",
+      featured: false,
+    },
+    {
+      id: 6,
+      image:
+        "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800",
+      alt: "Vietnamese Street Food",
+      category: "street",
+      featured: false,
+    },
+  ];
+
+  const filteredImages =
+    activeCategory === "all"
+      ? foodImages
+      : foodImages.filter((item) => item.category === activeCategory);
+
+  const featuredItems = foodImages.filter((item) => item.featured);
+  const regularItems = filteredImages.filter((item) => !item.featured);
+
   return (
-    <>
-      <div className='hero'>
-        <div className='hero-circle'> </div>
-        <img className='hero-img' src={hero} alt="" />
-      </div>
-      <div className='hero-about'>
-        <div>
-          <p>LIMITED OFFER</p>
-          <h3> SAVE 10%</h3>
-          <p>USE DISCOUNT</p>
-        <button>10OFF</button>
+    <div className="home">
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <h1>Vietnamese Cuisine</h1>
+          <p>Discover the authentic taste of Vietnam</p>
+          <Link to="/menu" className="cta-button">
+            View Menu
+          </Link>
         </div>
-      </div>  
-      <div className='container'>
-        <h1>Just arrived...</h1>
-        <h1>Shop brand...</h1>
-        <h1>News letter...</h1>
-      </div>
-    </>
+      </section>
+
+      {/* Featured Section */}
+      <section className="featured-section">
+        <div className="featured-grid">
+          {featuredItems.map((item, index) => (
+            <div
+              key={item.id}
+              className={`featured-item featured-${index + 1}`}
+            >
+              <div className="image-container">
+                <img src={item.image} alt={item.alt} />
+                <div className="overlay">
+                  <span className="category">
+                    {categories.find((cat) => cat.id === item.category)?.name}
+                  </span>
+                  <Link to={`/menu/${item.id}`} className="view-button">
+                    View Details
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className="about-section">
+        <div className="about-content">
+          <h2>About Our Restaurant</h2>
+          <p>
+            Experience the rich flavors and traditions of Vietnamese cuisine in
+            a modern setting. Our chefs use only the freshest ingredients to
+            create authentic dishes that will transport you to the streets of
+            Vietnam.
+          </p>
+          <Link to="/about" className="about-button">
+            Learn More
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }
 
