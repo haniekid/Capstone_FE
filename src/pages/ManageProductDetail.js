@@ -7,6 +7,7 @@ const BASE_URL = "https://localhost:7089/api/Product";
 const TYPES_API_URL = `${BASE_URL}/GetProductTypesForAdminDashboard`;
 const GET_PRODUCT_URL = `${BASE_URL}/GetProductsForAdminDashboard`;
 const EDIT_PRODUCT_URL = `${BASE_URL}/EditProductsForAdminDashboard`;
+const ADD_ONS_API_URL = `${BASE_URL}/GetAddOnProductByProductId`;
 
 const ManageProductDetail = () => {
   const { id } = useParams();
@@ -28,10 +29,12 @@ const ManageProductDetail = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editedProduct, setEditedProduct] = useState({});
+  const [addOns, setAddOns] = useState([]);
 
   useEffect(() => {
     fetchProductDetails();
     fetchProductTypes();
+    fetchAddOns();
   }, [id]);
 
   const fetchProductTypes = async () => {
@@ -57,6 +60,15 @@ const ManageProductDetail = () => {
     }
   };
 
+  const fetchAddOns = async () => {
+    try {
+      const response = await axios.get(`${ADD_ONS_API_URL}/${id}`);
+      setAddOns(response.data);
+    } catch (err) {
+      console.error("Error fetching add-on products:", err);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedProduct((prev) => ({
@@ -68,23 +80,23 @@ const ManageProductDetail = () => {
   const handleAdditionalImageChange = (index, value) => {
     const updatedImages = [...editedProduct.listImageURL];
     updatedImages[index] = value;
-    setEditedProduct(prev => ({
+    setEditedProduct((prev) => ({
       ...prev,
-      listImageURL: updatedImages
+      listImageURL: updatedImages,
     }));
   };
 
   const addImageField = () => {
-    setEditedProduct(prev => ({
+    setEditedProduct((prev) => ({
       ...prev,
-      listImageURL: [...prev.listImageURL, ""]
+      listImageURL: [...prev.listImageURL, ""],
     }));
   };
 
   const removeImageField = (index) => {
-    setEditedProduct(prev => ({
+    setEditedProduct((prev) => ({
       ...prev,
-      listImageURL: prev.listImageURL.filter((_, i) => i !== index)
+      listImageURL: prev.listImageURL.filter((_, i) => i !== index),
     }));
   };
 
@@ -92,16 +104,24 @@ const ManageProductDetail = () => {
     try {
       setLoading(true);
       // Filter out empty image URLs
-      const filteredImages = editedProduct.listImageURL.filter(url => url.trim() !== "");
-      
+      const filteredImages = editedProduct.listImageURL.filter(
+        (url) => url.trim() !== ""
+      );
+
       const formattedProduct = {
         ...editedProduct,
         listImageURL: filteredImages,
-        saleStartDate: editedProduct.saleStartDate ? new Date(editedProduct.saleStartDate).toISOString() : null,
-        saleEndDate: editedProduct.saleEndDate ? new Date(editedProduct.saleEndDate).toISOString() : null,
+        saleStartDate: editedProduct.saleStartDate
+          ? new Date(editedProduct.saleStartDate).toISOString()
+          : null,
+        saleEndDate: editedProduct.saleEndDate
+          ? new Date(editedProduct.saleEndDate).toISOString()
+          : null,
         price: Number(editedProduct.price),
         quantity: Number(editedProduct.quantity),
-        salePrice: editedProduct.salePrice ? Number(editedProduct.salePrice) : null
+        salePrice: editedProduct.salePrice
+          ? Number(editedProduct.salePrice)
+          : null,
       };
 
       await axios.put(`${EDIT_PRODUCT_URL}/${id}`, formattedProduct);
@@ -109,7 +129,9 @@ const ManageProductDetail = () => {
       setIsEditing(false);
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Failed to update product");
+      setError(
+        err.response?.data?.message || err.message || "Failed to update product"
+      );
     } finally {
       setLoading(false);
     }
@@ -121,16 +143,16 @@ const ManageProductDetail = () => {
   return (
     <div className="admin-container">
       <h1 className="admin-title">Product Details</h1>
-      
+
       <div className="admin-content">
         <div className="detail-header">
-          <button className="back-btn" onClick={() => navigate("/admin/products")}>
+          <button
+            className="back-btn"
+            onClick={() => navigate("/admin/products")}
+          >
             Back to Products
           </button>
-          <button
-            className="edit-btn"
-            onClick={() => setIsEditing(!isEditing)}
-          >
+          <button className="edit-btn" onClick={() => setIsEditing(!isEditing)}>
             {isEditing ? "Cancel" : "Edit"}
           </button>
           {isEditing && (
@@ -231,7 +253,11 @@ const ManageProductDetail = () => {
                   onChange={handleInputChange}
                 />
               ) : (
-                <span>{product.salePrice ? `$${product.salePrice}` : "No sale price"}</span>
+                <span>
+                  {product.salePrice
+                    ? `$${product.salePrice}`
+                    : "No sale price"}
+                </span>
               )}
             </div>
 
@@ -241,11 +267,19 @@ const ManageProductDetail = () => {
                 <input
                   type="datetime-local"
                   name="saleStartDate"
-                  value={editedProduct.saleStartDate ? editedProduct.saleStartDate.slice(0, 16) : ""}
+                  value={
+                    editedProduct.saleStartDate
+                      ? editedProduct.saleStartDate.slice(0, 16)
+                      : ""
+                  }
                   onChange={handleInputChange}
                 />
               ) : (
-                <span>{product.saleStartDate ? new Date(product.saleStartDate).toLocaleString() : "Not set"}</span>
+                <span>
+                  {product.saleStartDate
+                    ? new Date(product.saleStartDate).toLocaleString()
+                    : "Not set"}
+                </span>
               )}
             </div>
 
@@ -255,11 +289,19 @@ const ManageProductDetail = () => {
                 <input
                   type="datetime-local"
                   name="saleEndDate"
-                  value={editedProduct.saleEndDate ? editedProduct.saleEndDate.slice(0, 16) : ""}
+                  value={
+                    editedProduct.saleEndDate
+                      ? editedProduct.saleEndDate.slice(0, 16)
+                      : ""
+                  }
                   onChange={handleInputChange}
                 />
               ) : (
-                <span>{product.saleEndDate ? new Date(product.saleEndDate).toLocaleString() : "Not set"}</span>
+                <span>
+                  {product.saleEndDate
+                    ? new Date(product.saleEndDate).toLocaleString()
+                    : "Not set"}
+                </span>
               )}
             </div>
           </div>
@@ -292,7 +334,9 @@ const ManageProductDetail = () => {
                       <input
                         type="text"
                         value={url}
-                        onChange={(e) => handleAdditionalImageChange(index, e.target.value)}
+                        onChange={(e) =>
+                          handleAdditionalImageChange(index, e.target.value)
+                        }
                         placeholder="Enter image URL"
                       />
                       <button
@@ -324,9 +368,36 @@ const ManageProductDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* Add-On Products Section */}
+        <div className="addon-section">
+          <h2>Add-On Products</h2>
+          {addOns.length === 0 ? (
+            <div>No add-on products found.</div>
+          ) : (
+            <table className="addon-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Price (VND)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {addOns.map((addOn, idx) => (
+                  <tr key={addOn.productID}>
+                    <td>{idx + 1}</td>
+                    <td>{addOn.name}</td>
+                    <td>{addOn.price.toLocaleString("vi-VN")} ₫</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-export default ManageProductDetail; 
+export default ManageProductDetail;
