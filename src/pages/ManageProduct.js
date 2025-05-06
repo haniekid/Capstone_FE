@@ -141,18 +141,18 @@ const ManageProduct = () => {
 
   return (
     <div className="admin-container">
-      <h1 className="admin-title"> Manage Products </h1>
+      <h1 className="admin-title">Quản Lý Sản Phẩm</h1>
       <div className="admin-content">
         <button
           className="add-new-btn"
           onClick={() => navigate("/admin/products/add")}
         >
-          +Add New Product{" "}
+          +Thêm Sản Phẩm Mới{" "}
         </button>
         <div className="search-container">
           <input
             type="text"
-            placeholder="Search by product name..."
+            placeholder="Tìm kiếm theo tên sản phẩm..."
             value={searchQuery}
             onChange={handleSearch}
             className="search-input"
@@ -163,17 +163,17 @@ const ManageProduct = () => {
             <thead>
               <tr>
                 <th onClick={() => handleSort("name")} className="sortable">
-                  Name{" "}
+                  Tên{" "}
                   {sortConfig.key === "name" &&
                     (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
                 </th>{" "}
                 <th onClick={() => handleSort("type")} className="sortable">
-                  Type{" "}
+                  Loại{" "}
                   {sortConfig.key === "type" &&
                     (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
                 </th>{" "}
                 <th onClick={() => handleSort("price")} className="sortable">
-                  Price{" "}
+                  Giá{" "}
                   {sortConfig.key === "price" &&
                     (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
                 </th>{" "}
@@ -181,25 +181,25 @@ const ManageProduct = () => {
                   onClick={() => handleSort("salePrice")}
                   className="sortable"
                 >
-                  Sale Price{" "}
+                  Giá Khuyến Mãi{" "}
                   {sortConfig.key === "salePrice" &&
                     (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
                 </th>{" "}
                 <th onClick={() => handleSort("quantity")} className="sortable">
-                  Quantity{" "}
+                  Số Lượng{" "}
                   {sortConfig.key === "quantity" &&
                     (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
                 </th>{" "}
-                <th> Image </th>{" "}
+                <th> Hình Ảnh </th>{" "}
                 <th
                   onClick={() => handleSort("isDeleted")}
                   className="sortable"
                 >
-                  Status{" "}
+                  Trạng Thái{" "}
                   {sortConfig.key === "isDeleted" &&
                     (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
                 </th>{" "}
-                <th> Actions </th>{" "}
+                <th> Thao Tác </th>{" "}
               </tr>{" "}
             </thead>{" "}
             <tbody>
@@ -231,7 +231,7 @@ const ManageProduct = () => {
                         product.isDeleted ? "deleted" : "active"
                       }`}
                     >
-                      {product.isDeleted ? "Deleted" : "Active"}{" "}
+                      {product.isDeleted ? "Đã Xóa" : "Đang Hoạt Động"}{" "}
                     </span>{" "}
                   </td>{" "}
                   <td>
@@ -241,14 +241,14 @@ const ManageProduct = () => {
                         navigate(`/admin/products/detail/${product.productID}`)
                       }
                     >
-                      Detail{" "}
+                      Chi Tiết{" "}
                     </button>{" "}
                     <button
                       className="action-btn delete"
                       onClick={() => {
                         if (
                           window.confirm(
-                            "Are you sure you want to delete this product?"
+                            "Bạn có chắc chắn muốn xóa sản phẩm này?"
                           )
                         ) {
                           handleDelete(product.productID);
@@ -256,7 +256,7 @@ const ManageProduct = () => {
                       }}
                       disabled={product.isDeleted}
                     >
-                      Delete{" "}
+                      Xóa{" "}
                     </button>{" "}
                   </td>{" "}
                 </tr>

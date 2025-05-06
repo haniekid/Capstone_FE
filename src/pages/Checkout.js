@@ -247,11 +247,11 @@ function Checkout() {
           )}{" "}
           {activeTab === 3 && (
             <div style={{ textAlign: "center", marginTop: "2rem" }}>
-              <h2> Thanks for your order </h2>{" "}
+              <h2> Cảm ơn bạn đã đặt hàng </h2>{" "}
               <Link to="/account">
                 <button style={{ marginTop: "1rem" }}>
                   {" "}
-                  Go to My Account{" "}
+                  Đến Trang Cá Nhân{" "}
                 </button>{" "}
               </Link>{" "}
             </div>
@@ -262,19 +262,19 @@ function Checkout() {
           {!isLastTab ? (
             activeTab === 0 ? (
               <Link to="/cart">
-                <button className="second-button"> Back </button>{" "}
+                <button className="second-button"> Quay Lại </button>{" "}
               </Link>
             ) : (
               <button
                 className="second-button"
                 onClick={() => setActiveTab(activeTab - 1)}
               >
-                Back{" "}
+                Quay Lại{" "}
               </button>
             )
           ) : null}{" "}
           {currentUser && activeTab < tabs.length - 1 && (
-            <button onClick={handleNext}> Next </button>
+            <button onClick={handleNext}> Tiếp Tục </button>
           )}{" "}
         </div>{" "}
       </div>{" "}

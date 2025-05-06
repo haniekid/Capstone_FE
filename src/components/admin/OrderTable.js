@@ -1,64 +1,77 @@
-import React from 'react'
+import React from "react";
 
-function OrderTable({user, selectedOrder}) {
-    
-      const handleStatusChange = (event) => {
-        const newStatus = parseInt(event.target.value);
-      };
+function OrderTable({ user, selectedOrder }) {
+  const handleStatusChange = (event) => {
+    const newStatus = parseInt(event.target.value);
+  };
 
   return (
     <>
-        <div className="divider">
-            <label>
-                First Name
-                <input value={user?.firstName || ""} readOnly/>
-            </label>
-            <label>
-                Last Name
-                <input value={user?.lastName || ""} readOnly/>
-            </label>
-        </div>
+      <div className="divider">
         <label>
-            Email
-            <input value={user?.email || ""} readOnly/>
+          Tên
+          <input value={user?.firstName || ""} readOnly />
         </label>
         <label>
-            Phone
-            <input value={user?.phone || ""} readOnly/>
+          Họ
+          <input value={user?.lastName || ""} readOnly />
         </label>
-        <div className="divider">
-            <label>
-                Postal Code
-                <input value={user?.postalCode || ""} readOnly/>
-            </label>
-            <label>
-                City
-                <input value={user?.city || ""} readOnly/>
-            </label>
-        </div>
+      </div>
+      <label>
+        Email
+        <input value={user?.email || ""} readOnly />
+      </label>
+      <label>
+        Số Điện Thoại
+        <input value={user?.phone || ""} readOnly />
+      </label>
+      <div className="divider">
         <label>
-            Addresss
-            <input value={user?.address || ""} readOnly/>
+          Mã Bưu Điện
+          <input value={user?.postalCode || ""} readOnly />
         </label>
-        <div className="divider">
         <label>
-             Update Status
-            <select name="status" value={selectedOrder?.status} onChange={(e) => handleStatusChange(e)}>
-                <option value={0} disabled={selectedOrder?.status === 0}>Pending</option>
-                <option value={1} disabled={selectedOrder?.status === 1}>Processing</option>
-                <option value={2} disabled={selectedOrder?.status === 2}>Shipped</option>
-                <option value={3} disabled={selectedOrder?.status === 3}>Delivered</option>
-                <option value={4} disabled={selectedOrder?.status === 4}>Cancelled</option>
-            </select>
-            </label>
+          Thành Phố
+          <input value={user?.city || ""} readOnly />
+        </label>
+      </div>
+      <label>
+        Địa Chỉ
+        <input value={user?.address || ""} readOnly />
+      </label>
+      <div className="divider">
+        <label>
+          Cập Nhật Trạng Thái
+          <select
+            name="status"
+            value={selectedOrder?.status}
+            onChange={(e) => handleStatusChange(e)}
+          >
+            <option value={0} disabled={selectedOrder?.status === 0}>
+              Chờ Xử Lý
+            </option>
+            <option value={1} disabled={selectedOrder?.status === 1}>
+              Đang Xử Lý
+            </option>
+            <option value={2} disabled={selectedOrder?.status === 2}>
+              Đang Giao Hàng
+            </option>
+            <option value={3} disabled={selectedOrder?.status === 3}>
+              Đã Giao Hàng
+            </option>
+            <option value={4} disabled={selectedOrder?.status === 4}>
+              Đã Hủy
+            </option>
+          </select>
+        </label>
 
-            <label>
-                Total Price
-                <input value={selectedOrder?.totalPrice || ""} readOnly/>
-            </label>
-        </div>
+        <label>
+          Tổng Tiền
+          <input value={selectedOrder?.totalPrice || ""} readOnly />
+        </label>
+      </div>
     </>
-  )
+  );
 }
 
-export default OrderTable
+export default OrderTable;

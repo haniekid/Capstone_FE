@@ -3,7 +3,7 @@ import Users from "../components/admin/UsersTable";
 import Orders from "../components/admin/OrdersTable";
 import Products from "../components/admin/ProductsTable";
 
-const tabs = ["Products", "Orders", "Users"];
+const tabs = ["Sản Phẩm", "Đơn Hàng", "Người Dùng"];
 
 function AdminPanel() {
   const [activeTab, setActiveTab] = useState(0);

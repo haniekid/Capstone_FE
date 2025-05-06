@@ -106,15 +106,15 @@ const DiscountDetail = () => {
             className="btn btn-secondary back-btn"
             onClick={() => navigate("/admin/discounts")}
           >
-            ←Back to Discounts{" "}
+            ←Quay Lại Danh Sách Khuyến Mãi{" "}
           </button>{" "}
-          <h1 className="discount-title"> Discount Details </h1>{" "}
+          <h1 className="discount-title"> Chi Tiết Khuyến Mãi </h1>{" "}
         </div>{" "}
       </div>{" "}
-      <div className="form-section">
+      <div className="discount-details">
         <div className="detail-row">
           <div className="detail-group">
-            <label> Code </label>{" "}
+            <label> Mã Khuyến Mãi </label>{" "}
             {isEditing ? (
               <input
                 type="text"
@@ -127,7 +127,7 @@ const DiscountDetail = () => {
             )}{" "}
           </div>{" "}
           <div className="detail-group">
-            <label> Status </label>{" "}
+            <label> Trạng Thái </label>{" "}
             {isEditing ? (
               <select
                 name="isActive"
@@ -139,8 +139,8 @@ const DiscountDetail = () => {
                   }))
                 }
               >
-                <option value="true"> Active </option>{" "}
-                <option value="false"> Inactive </option>{" "}
+                <option value="true"> Đang Hoạt Động </option>{" "}
+                <option value="false"> Không Hoạt Động </option>{" "}
               </select>
             ) : (
               <div className="detail-value">
@@ -149,14 +149,14 @@ const DiscountDetail = () => {
                     discount.isActive ? "active" : "inactive"
                   }`}
                 >
-                  {discount.isActive ? "Active" : "Inactive"}{" "}
+                  {discount.isActive ? "Đang Hoạt Động" : "Không Hoạt Động"}{" "}
                 </span>{" "}
               </div>
             )}{" "}
           </div>{" "}
         </div>{" "}
         <div className="detail-group">
-          <label> Description </label>{" "}
+          <label> Mô Tả </label>{" "}
           {isEditing ? (
             <textarea
               name="description"
@@ -169,22 +169,22 @@ const DiscountDetail = () => {
         </div>{" "}
         <div className="detail-row">
           <div className="detail-group">
-            <label> Type </label>{" "}
+            <label> Loại </label>{" "}
             {isEditing ? (
               <select
                 name="discountType"
                 value={formData.discountType || ""}
                 onChange={handleInputChange}
               >
-                <option value="Percentage"> Percentage </option>{" "}
-                <option value="FixedAmount"> Fixed Amount </option>{" "}
+                <option value="Percentage"> Phần Trăm </option>{" "}
+                <option value="FixedAmount"> Số Tiền Cố Định </option>{" "}
               </select>
             ) : (
               <div className="detail-value"> {discount.discountType} </div>
             )}{" "}
           </div>{" "}
           <div className="detail-group">
-            <label> Value </label>{" "}
+            <label> Giá Trị </label>{" "}
             {isEditing ? (
               <input
                 type="number"
@@ -204,7 +204,7 @@ const DiscountDetail = () => {
         </div>{" "}
         <div className="detail-row">
           <div className="detail-group">
-            <label> Start Date </label>{" "}
+            <label> Ngày Bắt Đầu </label>{" "}
             {isEditing ? (
               <input
                 type="date"
@@ -220,7 +220,7 @@ const DiscountDetail = () => {
             )}{" "}
           </div>{" "}
           <div className="detail-group">
-            <label> End Date </label>{" "}
+            <label> Ngày Kết Thúc </label>{" "}
             {isEditing ? (
               <input
                 type="date"
@@ -243,7 +243,7 @@ const DiscountDetail = () => {
           className="btn btn-secondary"
           onClick={() => navigate("/admin/discounts")}
         >
-          Back{" "}
+          Quay Lại{" "}
         </button>{" "}
         {isEditing ? (
           <button
@@ -251,7 +251,7 @@ const DiscountDetail = () => {
             className="btn btn-primary"
             onClick={handleSaveChanges}
           >
-            Save Changes{" "}
+            Lưu Thay Đổi{" "}
           </button>
         ) : (
           <button
@@ -259,7 +259,7 @@ const DiscountDetail = () => {
             className="btn btn-primary"
             onClick={() => setIsEditing(true)}
           >
-            Edit Discount{" "}
+            Chỉnh Sửa{" "}
           </button>
         )}{" "}
       </div>{" "}

@@ -77,10 +77,10 @@ function Home() {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <h1>Vietnamese Cuisine</h1>
-          <p>Discover the authentic taste of Vietnam</p>
+          <h1>Ẩm Thực Việt Nam</h1>
+          <p>Khám phá hương vị đặc trưng của Việt Nam</p>
           <Link to="/menu" className="cta-button">
-            View Menu
+            Xem Thực Đơn
           </Link>
         </div>
       </section>
@@ -100,7 +100,7 @@ function Home() {
                     {categories.find((cat) => cat.id === item.category)?.name}
                   </span>
                   <Link to={`/menu/${item.id}`} className="view-button">
-                    View Details
+                    Xem Chi Tiết
                   </Link>
                 </div>
               </div>
@@ -112,15 +112,15 @@ function Home() {
       {/* About Section */}
       <section className="about-section">
         <div className="about-content">
-          <h2>About Our Restaurant</h2>
+          <h2>Về Nhà Hàng Chúng Tôi</h2>
           <p>
-            Experience the rich flavors and traditions of Vietnamese cuisine in
-            a modern setting. Our chefs use only the freshest ingredients to
-            create authentic dishes that will transport you to the streets of
-            Vietnam.
+            Trải nghiệm hương vị phong phú và truyền thống của ẩm thực Việt Nam
+            trong một không gian hiện đại. Đầu bếp của chúng tôi chỉ sử dụng
+            những nguyên liệu tươi ngon nhất để tạo ra những món ăn đích thực sẽ
+            đưa bạn đến với những con phố của Việt Nam.
           </p>
           <Link to="/about" className="about-button">
-            Learn More
+            Tìm Hiểu Thêm
           </Link>
         </div>
       </section>

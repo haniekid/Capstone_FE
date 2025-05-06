@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/admin.css";
+import { formatPrice } from "../utils/hooks/useUtil";
 
 const BASE_URL = "https://localhost:7089/api/Product";
 const TYPES_API_URL = `${BASE_URL}/GetProductTypesForAdminDashboard`;
@@ -193,7 +194,7 @@ const ManageProductDetail = () => {
 
   return (
     <div className="admin-container">
-      <h1 className="admin-title">Product Details</h1>
+      <h1 className="admin-title">Chi Tiết Sản Phẩm</h1>
 
       <div className="admin-content">
         <div className="detail-header">
@@ -201,14 +202,14 @@ const ManageProductDetail = () => {
             className="back-btn"
             onClick={() => navigate("/admin/products")}
           >
-            Back to Products
+            Quay Lại Danh Sách Sản Phẩm
           </button>
           <button className="edit-btn" onClick={() => setIsEditing(!isEditing)}>
-            {isEditing ? "Cancel" : "Edit"}
+            {isEditing ? "Hủy" : "Chỉnh Sửa"}
           </button>
           {isEditing && (
             <button className="save-btn" onClick={handleSave}>
-              Save Changes
+              Lưu Thay Đổi
             </button>
           )}
         </div>
@@ -216,7 +217,7 @@ const ManageProductDetail = () => {
         <div className="product-detail-grid">
           <div className="product-main-info">
             <div className="form-group">
-              <label>Name:</label>
+              <label>Tên:</label>
               {isEditing ? (
                 <input
                   type="text"
@@ -230,7 +231,7 @@ const ManageProductDetail = () => {
             </div>
 
             <div className="form-group">
-              <label>Type:</label>
+              <label>Loại:</label>
               {isEditing ? (
                 <select
                   name="type"
@@ -238,7 +239,7 @@ const ManageProductDetail = () => {
                   onChange={handleInputChange}
                   className="form-select"
                 >
-                  <option value="">Select a type</option>
+                  <option value="">Chọn loại sản phẩm</option>
                   {productTypes.map((type, index) => (
                     <option key={index} value={type.type}>
                       {type.type}
@@ -251,7 +252,7 @@ const ManageProductDetail = () => {
             </div>
 
             <div className="form-group">
-              <label>Description:</label>
+              <label>Mô Tả:</label>
               {isEditing ? (
                 <textarea
                   name="description"
@@ -264,7 +265,7 @@ const ManageProductDetail = () => {
             </div>
 
             <div className="form-group">
-              <label>Price:</label>
+              <label>Giá:</label>
               {isEditing ? (
                 <input
                   type="number"
@@ -273,12 +274,12 @@ const ManageProductDetail = () => {
                   onChange={handleInputChange}
                 />
               ) : (
-                <span>${product.price}</span>
+                <span>{formatPrice(product.price)}</span>
               )}
             </div>
 
             <div className="form-group">
-              <label>Quantity:</label>
+              <label>Số Lượng:</label>
               {isEditing ? (
                 <input
                   type="number"
@@ -293,9 +294,9 @@ const ManageProductDetail = () => {
           </div>
 
           <div className="product-sale-info">
-            <h3>Sale Information</h3>
+            <h3>Thông Tin Khuyến Mãi</h3>
             <div className="form-group">
-              <label>Sale Price:</label>
+              <label>Giá Khuyến Mãi:</label>
               {isEditing ? (
                 <input
                   type="number"
@@ -306,14 +307,14 @@ const ManageProductDetail = () => {
               ) : (
                 <span>
                   {product.salePrice
-                    ? `$${product.salePrice}`
-                    : "No sale price"}
+                    ? formatPrice(product.salePrice)
+                    : "Không có khuyến mãi"}
                 </span>
               )}
             </div>
 
             <div className="form-group">
-              <label>Sale Start Date:</label>
+              <label>Ngày Bắt Đầu Khuyến Mãi:</label>
               {isEditing ? (
                 <input
                   type="datetime-local"
@@ -329,13 +330,13 @@ const ManageProductDetail = () => {
                 <span>
                   {product.saleStartDate
                     ? new Date(product.saleStartDate).toLocaleString()
-                    : "Not set"}
+                    : "Chưa thiết lập"}
                 </span>
               )}
             </div>
 
             <div className="form-group">
-              <label>Sale End Date:</label>
+              <label>Ngày Kết Thúc Khuyến Mãi:</label>
               {isEditing ? (
                 <input
                   type="datetime-local"
@@ -351,16 +352,16 @@ const ManageProductDetail = () => {
                 <span>
                   {product.saleEndDate
                     ? new Date(product.saleEndDate).toLocaleString()
-                    : "Not set"}
+                    : "Chưa thiết lập"}
                 </span>
               )}
             </div>
           </div>
 
           <div className="product-images">
-            <h3>Product Images</h3>
+            <h3>Hình Ảnh Sản Phẩm</h3>
             <div className="form-group">
-              <label>Main Image URL:</label>
+              <label>URL Hình Ảnh Chính:</label>
               {isEditing ? (
                 <input
                   type="text"
@@ -377,7 +378,7 @@ const ManageProductDetail = () => {
             </div>
 
             <div className="form-group">
-              <label>Additional Images:</label>
+              <label>Hình Ảnh Bổ Sung:</label>
               {isEditing ? (
                 <div className="additional-images-container">
                   {editedProduct.listImageURL.map((url, index) => (
@@ -388,7 +389,7 @@ const ManageProductDetail = () => {
                         onChange={(e) =>
                           handleAdditionalImageChange(index, e.target.value)
                         }
-                        placeholder="Enter image URL"
+                        placeholder="Nhập URL hình ảnh"
                       />
                       <button
                         type="button"
@@ -404,7 +405,7 @@ const ManageProductDetail = () => {
                     className="add-image-btn"
                     onClick={addImageField}
                   >
-                    + Add Image
+                    + Thêm Hình Ảnh
                   </button>
                 </div>
               ) : (
@@ -422,7 +423,7 @@ const ManageProductDetail = () => {
 
         {/* Add-On Products Section */}
         <div className="addon-section">
-          <h2>Add-On Products</h2>
+          <h2>Sản Phẩm Bổ Sung</h2>
           {/* Add Add-On Product */}
           <div className="add-addon-form">
             <select
@@ -430,7 +431,7 @@ const ManageProductDetail = () => {
               onChange={(e) => setSelectedAddOn(e.target.value)}
               disabled={addOnLoading}
             >
-              <option value="">Select a topping to add...</option>
+              <option value="">Chọn topping để thêm...</option>
               {toppingProducts
                 .filter(
                   (tp) =>
@@ -438,7 +439,7 @@ const ManageProductDetail = () => {
                 )
                 .map((tp) => (
                   <option key={tp.productID} value={tp.productID}>
-                    {tp.name} ({tp.price.toLocaleString("vi-VN")} ₫)
+                    {tp.name} ({formatPrice(tp.price)} ₫)
                   </option>
                 ))}
             </select>
@@ -446,20 +447,20 @@ const ManageProductDetail = () => {
               onClick={handleAddAddOn}
               disabled={!selectedAddOn || addOnLoading}
             >
-              {addOnLoading ? "Adding..." : "Add"}
+              {addOnLoading ? "Đang Thêm..." : "Thêm"}
             </button>
             {addOnError && <span className="error-msg">{addOnError}</span>}
           </div>
           {addOns.length === 0 ? (
-            <div>No add-on products found.</div>
+            <div>Không tìm thấy sản phẩm bổ sung.</div>
           ) : (
             <table className="addon-table">
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Name</th>
-                  <th>Price (VND)</th>
-                  <th>Action</th>
+                  <th>Tên</th>
+                  <th>Giá (VND)</th>
+                  <th>Thao Tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -467,14 +468,14 @@ const ManageProductDetail = () => {
                   <tr key={addOn.productID}>
                     <td>{idx + 1}</td>
                     <td>{addOn.name}</td>
-                    <td>{addOn.price.toLocaleString("vi-VN")} ₫</td>
+                    <td>{formatPrice(addOn.price)} ₫</td>
                     <td>
                       <button
                         className="delete-addon-btn"
                         onClick={() => handleDeleteAddOn(addOn.productID)}
                         disabled={addOnLoading}
                       >
-                        Delete
+                        Xóa
                       </button>
                     </td>
                   </tr>

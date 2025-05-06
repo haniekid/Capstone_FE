@@ -23,7 +23,7 @@ const ManageProductAdd = () => {
     listImageURL: [""],
     salePrice: 0,
     saleStartDate: "",
-    saleEndDate: ""
+    saleEndDate: "",
   });
 
   useEffect(() => {
@@ -42,32 +42,32 @@ const ManageProductAdd = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewProduct(prev => ({
+    setNewProduct((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleAdditionalImageChange = (index, value) => {
     const updatedImages = [...newProduct.listImageURL];
     updatedImages[index] = value;
-    setNewProduct(prev => ({
+    setNewProduct((prev) => ({
       ...prev,
-      listImageURL: updatedImages
+      listImageURL: updatedImages,
     }));
   };
 
   const addImageField = () => {
-    setNewProduct(prev => ({
+    setNewProduct((prev) => ({
       ...prev,
-      listImageURL: [...prev.listImageURL, ""]
+      listImageURL: [...prev.listImageURL, ""],
     }));
   };
 
   const removeImageField = (index) => {
-    setNewProduct(prev => ({
+    setNewProduct((prev) => ({
       ...prev,
-      listImageURL: prev.listImageURL.filter((_, i) => i !== index)
+      listImageURL: prev.listImageURL.filter((_, i) => i !== index),
     }));
   };
 
@@ -78,23 +78,31 @@ const ManageProductAdd = () => {
       setError(null);
 
       // Filter out empty image URLs
-      const filteredImages = newProduct.listImageURL.filter(url => url.trim() !== "");
+      const filteredImages = newProduct.listImageURL.filter(
+        (url) => url.trim() !== ""
+      );
 
       // Format dates if they exist
       const formattedProduct = {
         ...newProduct,
         listImageURL: filteredImages,
-        saleStartDate: newProduct.saleStartDate ? new Date(newProduct.saleStartDate).toISOString() : null,
-        saleEndDate: newProduct.saleEndDate ? new Date(newProduct.saleEndDate).toISOString() : null,
+        saleStartDate: newProduct.saleStartDate
+          ? new Date(newProduct.saleStartDate).toISOString()
+          : null,
+        saleEndDate: newProduct.saleEndDate
+          ? new Date(newProduct.saleEndDate).toISOString()
+          : null,
         price: Number(newProduct.price),
         quantity: Number(newProduct.quantity),
-        salePrice: newProduct.salePrice ? Number(newProduct.salePrice) : null
+        salePrice: newProduct.salePrice ? Number(newProduct.salePrice) : null,
       };
 
       await axios.post(ADD_PRODUCT_URL, formattedProduct);
       navigate("/admin/products");
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Failed to add product");
+      setError(
+        err.response?.data?.message || err.message || "Failed to add product"
+      );
     } finally {
       setLoading(false);
     }
@@ -104,12 +112,15 @@ const ManageProductAdd = () => {
 
   return (
     <div className="admin-container">
-      <h1 className="admin-title">Add New Product</h1>
-      
+      <h1 className="admin-title">Thêm Sản Phẩm Mới</h1>
+
       <div className="admin-content">
         <div className="detail-header">
-          <button className="back-btn" onClick={() => navigate("/admin/products")}>
-            Back to Products
+          <button
+            className="back-btn"
+            onClick={() => navigate("/admin/products")}
+          >
+            Quay Lại Danh Sách Sản Phẩm
           </button>
         </div>
 
@@ -119,7 +130,7 @@ const ManageProductAdd = () => {
           <div className="product-detail-grid">
             <div className="product-main-info">
               <div className="form-group">
-                <label>Name:</label>
+                <label>Tên:</label>
                 <input
                   type="text"
                   name="name"
@@ -130,7 +141,7 @@ const ManageProductAdd = () => {
               </div>
 
               <div className="form-group">
-                <label>Type:</label>
+                <label>Loại:</label>
                 <select
                   name="type"
                   value={newProduct.type}
@@ -138,7 +149,7 @@ const ManageProductAdd = () => {
                   className="form-select"
                   required
                 >
-                  <option value="">Select a type</option>
+                  <option value="">Chọn loại sản phẩm</option>
                   {productTypes.map((type, index) => (
                     <option key={index} value={type.type}>
                       {type.type}
@@ -148,7 +159,7 @@ const ManageProductAdd = () => {
               </div>
 
               <div className="form-group">
-                <label>Description:</label>
+                <label>Mô Tả:</label>
                 <textarea
                   name="description"
                   value={newProduct.description}
@@ -158,7 +169,7 @@ const ManageProductAdd = () => {
               </div>
 
               <div className="form-group">
-                <label>Price:</label>
+                <label>Giá:</label>
                 <input
                   type="number"
                   name="price"
@@ -171,7 +182,7 @@ const ManageProductAdd = () => {
               </div>
 
               <div className="form-group">
-                <label>Quantity:</label>
+                <label>Số Lượng:</label>
                 <input
                   type="number"
                   name="quantity"
@@ -184,9 +195,9 @@ const ManageProductAdd = () => {
             </div>
 
             <div className="product-sale-info">
-              <h3>Sale Information</h3>
+              <h3>Thông Tin Khuyến Mãi</h3>
               <div className="form-group">
-                <label>Sale Price:</label>
+                <label>Giá Khuyến Mãi:</label>
                 <input
                   type="number"
                   name="salePrice"
@@ -198,7 +209,7 @@ const ManageProductAdd = () => {
               </div>
 
               <div className="form-group">
-                <label>Sale Start Date:</label>
+                <label>Ngày Bắt Đầu Khuyến Mãi:</label>
                 <input
                   type="datetime-local"
                   name="saleStartDate"
@@ -208,7 +219,7 @@ const ManageProductAdd = () => {
               </div>
 
               <div className="form-group">
-                <label>Sale End Date:</label>
+                <label>Ngày Kết Thúc Khuyến Mãi:</label>
                 <input
                   type="datetime-local"
                   name="saleEndDate"
@@ -239,7 +250,9 @@ const ManageProductAdd = () => {
                       <input
                         type="text"
                         value={url}
-                        onChange={(e) => handleAdditionalImageChange(index, e.target.value)}
+                        onChange={(e) =>
+                          handleAdditionalImageChange(index, e.target.value)
+                        }
                         placeholder="Enter image URL"
                       />
                       <button
@@ -274,4 +287,4 @@ const ManageProductAdd = () => {
   );
 };
 
-export default ManageProductAdd; 
+export default ManageProductAdd;

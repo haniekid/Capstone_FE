@@ -3,11 +3,11 @@ import { useState } from "react";
 export const useStatusString = () => {
   return (status) => {
     const statusMap = {
-      0: { statusString: "Pending", className: "yellow" },
-      1: { statusString: "Processing", className: "green" },
-      2: { statusString: "Shipped", className: "green" },
-      3: { statusString: "Delivered", className: "green" },
-      4: { statusString: "Cancelled", className: "red" },
+      0: { statusString: "Chờ Xử Lý", className: "yellow" },
+      1: { statusString: "Đang Xử Lý", className: "green" },
+      2: { statusString: "Đang Giao Hàng", className: "green" },
+      3: { statusString: "Đã Giao Hàng", className: "green" },
+      4: { statusString: "Đã Hủy", className: "red" },
     };
     const statusObj = statusMap[status] ?? { statusString: "", className: "" };
     return (

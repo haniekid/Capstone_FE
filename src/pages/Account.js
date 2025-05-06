@@ -36,7 +36,7 @@ function MyAccount() {
               className={activeTab === 0 ? "active" : ""}
               onClick={() => handleTabClick(0)}
             >
-              Profile
+              Thông Tin Cá Nhân
             </li>
 
             {/* Show My Orders for Users, My Products for Admin */}
@@ -46,13 +46,13 @@ function MyAccount() {
                   className={activeTab === 1 ? "active" : ""}
                   onClick={() => navigate("/admin/products")}
                 >
-                  Manage Products
+                  Quản Lý Sản Phẩm
                 </li>
                 <li
                   className={activeTab === 2 ? "active" : ""}
                   onClick={() => navigate("/admin/discounts")}
                 >
-                  Manage Discounts
+                  Quản Lý Khuyến Mãi
                 </li>
               </>
             ) : (
@@ -60,11 +60,11 @@ function MyAccount() {
                 className={activeTab === 1 ? "active" : ""}
                 onClick={() => handleTabClick(1)}
               >
-                My Orders
+                Đơn Hàng Của Tôi
               </li>
             )}
 
-            <li onClick={() => handleTabClick(2)}>Log Out</li>
+            <li onClick={() => handleTabClick(2)}>Đăng Xuất</li>
           </ul>
 
           <div className="profile-container">

@@ -18,6 +18,8 @@ const AddDiscount = () => {
     endDate: "",
     usageLimit: "",
     isActive: true,
+    minOrderValue: "",
+    maxDiscountValue: "",
   });
 
   const handleChange = (e) => {
@@ -42,6 +44,12 @@ const AddDiscount = () => {
           : null,
         discountValue: Number(discount.discountValue),
         usageLimit: discount.usageLimit ? Number(discount.usageLimit) : null,
+        minOrderValue: discount.minOrderValue
+          ? Number(discount.minOrderValue)
+          : null,
+        maxDiscountValue: discount.maxDiscountValue
+          ? Number(discount.maxDiscountValue)
+          : null,
       };
 
       await axios.post(API_URL, formattedDiscount);
@@ -70,19 +78,19 @@ const AddDiscount = () => {
             className="btn btn-secondary back-btn"
             onClick={() => navigate("/admin/discounts")}
           >
-            ←Back to Discounts{" "}
+            ←Quay Lại Danh Sách Khuyến Mãi{" "}
           </button>{" "}
-          <h1 className="discount-title"> Add New Discount </h1>{" "}
+          <h1 className="discount-title"> Thêm Mã Khuyến Mãi Mới </h1>{" "}
         </div>{" "}
       </div>{" "}
       {error && <div className="error-message"> {error} </div>}{" "}
       <form onSubmit={handleSubmit} className="discount-form">
         <div className="form-section">
-          <h2 className="form-section-title"> Basic Information </h2>{" "}
+          <h2 className="form-section-title"> Thông Tin Cơ Bản </h2>{" "}
           <div className="form-row">
             <div className="form-group">
               <label className="required-field" htmlFor="code">
-                Discount Code{" "}
+                Mã Khuyến Mãi{" "}
               </label>{" "}
               <input
                 type="text"
@@ -91,12 +99,12 @@ const AddDiscount = () => {
                 value={discount.code}
                 onChange={handleChange}
                 required
-                placeholder="e.g., SUMMER2024"
+                placeholder="VD: SUMMER2024"
               />
             </div>{" "}
             <div className="form-group">
               <label className="required-field" htmlFor="discountType">
-                Discount Type{" "}
+                Loại Khuyến Mãi{" "}
               </label>{" "}
               <select
                 id="discountType"
@@ -105,14 +113,14 @@ const AddDiscount = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="Percentage"> Percentage </option>{" "}
-                <option value="FixedAmount"> Fixed Amount </option>{" "}
+                <option value="Percentage"> Phần Trăm </option>{" "}
+                <option value="FixedAmount"> Số Tiền Cố Định </option>{" "}
               </select>{" "}
             </div>{" "}
           </div>{" "}
           <div className="form-group">
             <label className="required-field" htmlFor="description">
-              Description{" "}
+              Mô Tả{" "}
             </label>{" "}
             <textarea
               id="description"
@@ -120,19 +128,19 @@ const AddDiscount = () => {
               value={discount.description}
               onChange={handleChange}
               required
-              placeholder="Enter a description for this discount"
+              placeholder="Nhập mô tả cho mã khuyến mãi này"
             />
           </div>{" "}
         </div>{" "}
         <div className="form-section">
-          <h2 className="form-section-title"> Discount Details </h2>{" "}
+          <h2 className="form-section-title"> Chi Tiết Khuyến Mãi </h2>{" "}
           <div className="form-row">
             <div className="form-group">
               <label className="required-field" htmlFor="discountValue">
                 {" "}
                 {discount.discountType === "Percentage"
-                  ? "Percentage Off"
-                  : "Amount Off"}{" "}
+                  ? "Phần Trăm Giảm"
+                  : "Số Tiền Giảm"}{" "}
               </label>{" "}
               <input
                 type="number"
@@ -150,7 +158,7 @@ const AddDiscount = () => {
               />{" "}
             </div>{" "}
             <div className="form-group">
-              <label htmlFor="usageLimit"> Usage Limit </label>{" "}
+              <label htmlFor="usageLimit"> Giới Hạn Sử Dụng </label>{" "}
               <input
                 type="number"
                 id="usageLimit"
@@ -158,17 +166,17 @@ const AddDiscount = () => {
                 value={discount.usageLimit}
                 onChange={handleChange}
                 min="1"
-                placeholder="Leave empty for unlimited"
+                placeholder="Để trống nếu không giới hạn"
               />
             </div>{" "}
           </div>{" "}
         </div>{" "}
         <div className="form-section">
-          <h2 className="form-section-title"> Validity Period </h2>{" "}
+          <h2 className="form-section-title"> Thời Gian Áp Dụng </h2>{" "}
           <div className="form-row">
             <div className="form-group">
               <label className="required-field" htmlFor="startDate">
-                Start Date{" "}
+                Ngày Bắt Đầu{" "}
               </label>{" "}
               <input
                 type="date"
@@ -180,7 +188,7 @@ const AddDiscount = () => {
               />
             </div>{" "}
             <div className="form-group">
-              <label htmlFor="endDate"> End Date </label>{" "}
+              <label htmlFor="endDate"> Ngày Kết Thúc </label>{" "}
               <input
                 type="date"
                 id="endDate"
@@ -202,16 +210,50 @@ const AddDiscount = () => {
             <label htmlFor="isActive"> Active </label>{" "}
           </div>{" "}
         </div>{" "}
+        <div className="form-section">
+          <h2 className="form-section-title"> Điều Kiện Áp Dụng </h2>{" "}
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="minOrderValue">
+                {" "}
+                Giá Trị Đơn Hàng Tối Thiểu{" "}
+              </label>{" "}
+              <input
+                type="number"
+                id="minOrderValue"
+                name="minOrderValue"
+                value={discount.minOrderValue}
+                onChange={handleChange}
+                min="0"
+                step="0.01"
+                placeholder="Để trống nếu không yêu cầu"
+              />
+            </div>{" "}
+            <div className="form-group">
+              <label htmlFor="maxDiscountValue"> Giá Trị Giảm Tối Đa </label>{" "}
+              <input
+                type="number"
+                id="maxDiscountValue"
+                name="maxDiscountValue"
+                value={discount.maxDiscountValue}
+                onChange={handleChange}
+                min="0"
+                step="0.01"
+                placeholder="Để trống nếu không giới hạn"
+              />
+            </div>{" "}
+          </div>{" "}
+        </div>{" "}
         <div className="form-actions">
+          <button type="submit" className="btn btn-primary">
+            Tạo Mã Khuyến Mãi{" "}
+          </button>{" "}
           <button
             type="button"
             className="btn btn-secondary"
             onClick={() => navigate("/admin/discounts")}
           >
-            Cancel{" "}
-          </button>{" "}
-          <button type="submit" className="btn btn-primary">
-            Create Discount{" "}
+            Hủy{" "}
           </button>{" "}
         </div>{" "}
       </form>{" "}
