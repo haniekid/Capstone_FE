@@ -19,6 +19,7 @@ export const useCart = () => {
   const discount = useSelector((state) => state.cart.discount);
   const total = useSelector((state) => state.cart.total);
   const quantity = items.reduce((acc, item) => acc + item.quantity, 0);
+  const discountAmount = useSelector((state) => state.cart.discountAmount);
 
   useEffect(() => {
     dispatch(calculateSubtotal());
@@ -26,7 +27,7 @@ export const useCart = () => {
 
   useEffect(() => {
     dispatch(getTotal());
-  }, [subtotal, delivery, dispatch, discount]);
+  }, [subtotal, delivery, dispatch, discountAmount]);
 
   const addToCartHandler = (item) => {
     dispatch(addToCart(item));
@@ -42,14 +43,14 @@ export const useCart = () => {
   };
 
   const updateQuantityHandler = (productId, size, newQuantity) => {
+    const item = items.find(
+      (item) => item.product.productID === productId && item.size === size
+    );
+    if (!item) return;
+    const maxQuantity = item.product.quantity;
     if (newQuantity === 0) {
-      const item = items.find(
-        (item) => item.product.productID === productId && item.size === size
-      );
-      if (item) {
-        dispatch(removeFromCart({ product: item.product, size }));
-      }
-    } else if (newQuantity <= 10) {
+      dispatch(removeFromCart({ product: item.product, size }));
+    } else if (newQuantity <= maxQuantity) {
       dispatch(updateQuantity({ productId, size, quantity: newQuantity }));
     }
   };
@@ -58,13 +59,8 @@ export const useCart = () => {
     dispatch(clearCart());
   };
 
-  const applyDiscountHandler = (discountCode) => {
-    const discount = 0.1;
-    if (discountCode.toLowerCase() === "10off") {
-      dispatch(applyDiscount({ discount }));
-    } else {
-      alert("Wrong discount");
-    }
+  const applyDiscountHandler = (discountCode, discountAmount) => {
+    dispatch(applyDiscount({ discountCode, discountAmount }));
   };
 
   return {
