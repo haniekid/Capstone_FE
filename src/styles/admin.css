@@ -18,7 +18,7 @@
   padding: 20px;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Title and Add Button */
@@ -299,24 +299,24 @@ h3 {
   .search-input {
     width: 100%;
   }
-  
+
   .table-container {
     overflow-x: auto;
   }
-  
+
   .action-btn {
     padding: 4px 8px;
     font-size: 12px;
   }
-  
+
   .product-detail-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .product-images {
     grid-column: auto;
   }
-  
+
   .additional-images {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
@@ -431,4 +431,59 @@ h3 {
 .deleted-row {
   background-color: #f5f5f5;
   opacity: 0.7;
-} 
+}
+
+.add-addon-form button {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-left: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.08);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  height: 38px;
+  letter-spacing: 0.01em;
+}
+.add-addon-form button:hover:not(:disabled) {
+  background-color: #218838;
+  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.15);
+  transform: translateY(-2px) scale(1.04);
+}
+.delete-addon-btn {
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255, 77, 77, 0.08);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  height: 38px;
+  letter-spacing: 0.01em;
+}
+.delete-addon-btn:hover:not(:disabled) {
+  background-color: #d10000;
+  box-shadow: 0 4px 16px rgba(255, 77, 77, 0.15);
+  transform: translateY(-2px) scale(1.04);
+}
+.add-addon-form select {
+  border-radius: 14px;
+  padding: 7px 16px;
+  font-size: 15px;
+  margin-right: 8px;
+  height: 38px;
+  border: 1.5px solid #eee;
+  background: #fff;
+  font-weight: 500;
+}
+.add-addon-form {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+}

@@ -8,6 +8,8 @@ const TYPES_API_URL = `${BASE_URL}/GetProductTypesForAdminDashboard`;
 const GET_PRODUCT_URL = `${BASE_URL}/GetProductsForAdminDashboard`;
 const EDIT_PRODUCT_URL = `${BASE_URL}/EditProductsForAdminDashboard`;
 const ADD_ONS_API_URL = `${BASE_URL}/GetAddOnProductByProductId`;
+const INSERT_ADDON_API_URL = `${BASE_URL}/InsertAddOnProductByProductId`;
+const DELETE_ADDON_API_URL = `${BASE_URL}/DeleteAddOnProductByProductId`;
 
 const ManageProductDetail = () => {
   const { id } = useParams();
@@ -30,11 +32,16 @@ const ManageProductDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedProduct, setEditedProduct] = useState({});
   const [addOns, setAddOns] = useState([]);
+  const [toppingProducts, setToppingProducts] = useState([]);
+  const [selectedAddOn, setSelectedAddOn] = useState("");
+  const [addOnLoading, setAddOnLoading] = useState(false);
+  const [addOnError, setAddOnError] = useState(null);
 
   useEffect(() => {
     fetchProductDetails();
     fetchProductTypes();
     fetchAddOns();
+    fetchToppingProducts();
   }, [id]);
 
   const fetchProductTypes = async () => {
@@ -66,6 +73,16 @@ const ManageProductDetail = () => {
       setAddOns(response.data);
     } catch (err) {
       console.error("Error fetching add-on products:", err);
+    }
+  };
+
+  const fetchToppingProducts = async () => {
+    try {
+      const response = await axios.get(`${GET_PRODUCT_URL}`);
+      const toppings = response.data.filter((p) => p.type === "Topping");
+      setToppingProducts(toppings);
+    } catch (err) {
+      console.error("Error fetching topping products:", err);
     }
   };
 
@@ -134,6 +151,40 @@ const ManageProductDetail = () => {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddAddOn = async () => {
+    if (!selectedAddOn) return;
+    setAddOnLoading(true);
+    setAddOnError(null);
+    try {
+      await axios.post(INSERT_ADDON_API_URL, {
+        productId: Number(id),
+        addOnProductId: Number(selectedAddOn),
+      });
+      setSelectedAddOn("");
+      fetchAddOns();
+    } catch (err) {
+      setAddOnError("Failed to add add-on product.");
+    } finally {
+      setAddOnLoading(false);
+    }
+  };
+
+  const handleDeleteAddOn = async (addOnProductId) => {
+    setAddOnLoading(true);
+    setAddOnError(null);
+    try {
+      await axios.post(DELETE_ADDON_API_URL, {
+        productId: Number(id),
+        addOnProductId: Number(addOnProductId),
+      });
+      fetchAddOns();
+    } catch (err) {
+      setAddOnError("Failed to delete add-on product.");
+    } finally {
+      setAddOnLoading(false);
     }
   };
 
@@ -372,6 +423,33 @@ const ManageProductDetail = () => {
         {/* Add-On Products Section */}
         <div className="addon-section">
           <h2>Add-On Products</h2>
+          {/* Add Add-On Product */}
+          <div className="add-addon-form">
+            <select
+              value={selectedAddOn}
+              onChange={(e) => setSelectedAddOn(e.target.value)}
+              disabled={addOnLoading}
+            >
+              <option value="">Select a topping to add...</option>
+              {toppingProducts
+                .filter(
+                  (tp) =>
+                    !addOns.some((addOn) => addOn.productID === tp.productID)
+                )
+                .map((tp) => (
+                  <option key={tp.productID} value={tp.productID}>
+                    {tp.name} ({tp.price.toLocaleString("vi-VN")} ₫)
+                  </option>
+                ))}
+            </select>
+            <button
+              onClick={handleAddAddOn}
+              disabled={!selectedAddOn || addOnLoading}
+            >
+              {addOnLoading ? "Adding..." : "Add"}
+            </button>
+            {addOnError && <span className="error-msg">{addOnError}</span>}
+          </div>
           {addOns.length === 0 ? (
             <div>No add-on products found.</div>
           ) : (
@@ -381,6 +459,7 @@ const ManageProductDetail = () => {
                   <th>#</th>
                   <th>Name</th>
                   <th>Price (VND)</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -389,6 +468,15 @@ const ManageProductDetail = () => {
                     <td>{idx + 1}</td>
                     <td>{addOn.name}</td>
                     <td>{addOn.price.toLocaleString("vi-VN")} ₫</td>
+                    <td>
+                      <button
+                        className="delete-addon-btn"
+                        onClick={() => handleDeleteAddOn(addOn.productID)}
+                        disabled={addOnLoading}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
