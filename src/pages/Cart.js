@@ -40,8 +40,20 @@ function CartPage() {
     note: "",
   });
 
+  const [shippingAddress, setShippingAddress] = useState({
+    districtId: "",
+    districtName: "",
+    wardCode: "",
+    wardName: "",
+    addressDetail: "",
+  });
+
   const handleFormChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleAddressChange = (address) => {
+    setShippingAddress(address);
   };
 
   const handleApplyDiscount = async () => {
@@ -145,6 +157,41 @@ function CartPage() {
     }
   }, [shippingMethod, deliveryFeeFromAPI]);
 
+  const handlePlaceOrder = () => {
+    const orderData = {
+      customer: { ...form },
+      shippingAddress: {
+        province: "Hà Nội",
+        ...shippingAddress,
+      },
+      shippingMethod,
+      shippingFee,
+      paymentMethod,
+      vnpayOption,
+      items: items.map((item) => ({
+        productId: item.product.productID,
+        productName: item.product.name,
+        quantity: item.quantity,
+        price: item.price,
+        totalPrice: item.price * item.quantity,
+      })),
+      discount: discountInfo
+        ? {
+            discountCode: discountInfo.code,
+            discountType: discountInfo.type,
+            discountValue: discountInfo.value,
+            discountAmount:
+              discountInfo.type === "Percentage"
+                ? (defaultSubtotal * discountInfo.value) / 100
+                : discountInfo.value,
+          }
+        : null,
+      subtotal: defaultSubtotal,
+      finalTotal,
+    };
+    console.log(orderData);
+  };
+
   return (
     <div className="cart-checkout-page">
       <div className="checkout-4col-container">
@@ -195,6 +242,7 @@ function CartPage() {
             hideTitle
             onShippingFeeChange={handleShippingFeeChange}
             shippingMethod={shippingMethod}
+            onAddressChange={handleAddressChange}
           />
         </div>
         {/* 3. Vận chuyển & Thanh toán */}
@@ -359,7 +407,9 @@ function CartPage() {
               <span>{formatPrice(finalTotal)}</span>
             </div>
           </div>
-          <button className="checkout-btn">ĐẶT HÀNG</button>
+          <button className="checkout-btn" onClick={handlePlaceOrder}>
+            ĐẶT HÀNG
+          </button>
           <Link to="/cart" className="back-to-cart">
             &lt; Quay về giỏ hàng
           </Link>

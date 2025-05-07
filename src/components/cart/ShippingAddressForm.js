@@ -13,6 +13,7 @@ function ShippingAddressForm({
   hideTitle,
   onShippingFeeChange,
   shippingMethod,
+  onAddressChange,
 }) {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -130,6 +131,23 @@ function ShippingAddressForm({
       if (onShippingFeeChange) onShippingFeeChange(shippingFee);
     }
   }, [shippingMethod]);
+
+  // Gửi địa chỉ lên cha khi district, ward, address thay đổi
+  useEffect(() => {
+    if (onAddressChange) {
+      const districtObj = districts.find(
+        (d) => d.DistrictID == selectedDistrict
+      );
+      const wardObj = wards.find((w) => w.WardCode == selectedWard);
+      onAddressChange({
+        districtId: selectedDistrict,
+        districtName: districtObj ? districtObj.DistrictName : "",
+        wardCode: selectedWard,
+        wardName: wardObj ? wardObj.WardName : "",
+        addressDetail: address,
+      });
+    }
+  }, [selectedDistrict, selectedWard, address, districts, wards]);
 
   const handleDistrictChange = (e) => {
     setSelectedDistrict(e.target.value);
