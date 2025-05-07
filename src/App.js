@@ -18,6 +18,8 @@ import AddDiscount from "./pages/AddDiscount";
 import DiscountDetail from "./pages/DiscountDetail";
 import ManageProductDetail from "./pages/ManageProductDetail";
 import ManageProductAdd from "./pages/ManageProductAdd";
+import ForgotPassword from "./components/auth/ForgotPassword";
+import ResetPassword from "./components/auth/ResetPassword";
 
 import { Routes, Route, useLocation } from "react-router-dom";
 
@@ -50,6 +52,8 @@ function App() {
           path="/admin/discounts/detail/:id"
           element={<DiscountDetail />}
         />{" "}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>{" "}
       {showHeaderFooter && <Footer />}{" "}
     </>

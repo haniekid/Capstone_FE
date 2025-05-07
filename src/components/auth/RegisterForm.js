@@ -10,11 +10,14 @@ function Register() {
     formState: { errors },
   } = useForm();
   const [apiError, setApiError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (registerData) => {
     try {
+      console.log("Form submitted with data:", registerData);
       setApiError(null);
+      setIsSubmitting(true);
 
       const userData = {
         userID: 0,
@@ -31,7 +34,7 @@ function Register() {
         activationToken: "string",
       };
 
-      console.log("Sending data:", userData);
+      console.log("Sending data to API:", userData);
 
       const response = await axios({
         method: "post",
@@ -42,57 +45,85 @@ function Register() {
         data: userData,
       });
 
-      console.log("Response:", response);
+      console.log("API Response:", response);
 
       if (response.status >= 200 && response.status < 300) {
         alert(
-          "Registration successful! Please confirm your activation in your email to activate your account!"
+          "Đăng ký thành công! Vui lòng kiểm tra email để kích hoạt tài khoản!"
         );
-        window.location.href = "/authentication";
+        navigate("/authentication");
       }
     } catch (error) {
-      console.error("Error details:", error);
+      console.error("API Error:", error);
       if (error.response?.data) {
-        console.log("Server error:", error.response.data);
-        setApiError(
-          error.response.data.message ||
-            "Registration failed. Please check your details."
-        );
+        console.log("Server error response:", error.response.data);
+        if (typeof error.response.data === "string") {
+          setApiError(error.response.data);
+        } else if (error.response.data.message) {
+          setApiError(error.response.data.message);
+        } else if (error.response.data.title) {
+          setApiError(error.response.data.title);
+        } else if (error.response.data.errors) {
+          const firstError = Object.values(error.response.data.errors)[0];
+          setApiError(Array.isArray(firstError) ? firstError[0] : firstError);
+        } else {
+          setApiError("Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.");
+        }
+      } else if (error.message) {
+        setApiError(error.message);
       } else {
-        setApiError("Registration failed. Please try again.");
+        setApiError("Đăng ký thất bại. Vui lòng thử lại.");
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="register">
-      <h1>Register</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <h1>Đăng Ký</h1>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         {apiError && <div className="error-message">{apiError}</div>}
         <div className="divider">
           <label className="input-label">
-            First Name <span>*</span>
+            Họ <span>*</span>
             <div className="input-wrapper">
               <input
                 type="text"
-                {...register("firstName", { required: true })}
+                placeholder="Nhập họ"
+                {...register("firstName", {
+                  required: "Vui lòng nhập họ",
+                  minLength: {
+                    value: 2,
+                    message: "Họ phải có ít nhất 2 ký tự",
+                  },
+                })}
+                className="styled-input"
               />
             </div>
           </label>
           {errors.firstName && (
-            <span className="error">This field is required</span>
+            <span className="error">{errors.firstName.message}</span>
           )}
           <label className="input-label">
-            Last Name <span>*</span>
+            Tên <span>*</span>
             <div className="input-wrapper">
               <input
                 type="text"
-                {...register("lastName", { required: true })}
+                placeholder="Nhập tên"
+                {...register("lastName", {
+                  required: "Vui lòng nhập tên",
+                  minLength: {
+                    value: 2,
+                    message: "Tên phải có ít nhất 2 ký tự",
+                  },
+                })}
+                className="styled-input"
               />
             </div>
           </label>
           {errors.lastName && (
-            <span className="error">This field is required</span>
+            <span className="error">{errors.lastName.message}</span>
           )}
         </div>
         <label className="input-label">
@@ -100,66 +131,71 @@ function Register() {
           <div className="input-wrapper">
             <input
               type="email"
+              placeholder="example@email.com"
               {...register("email", {
-                required: true,
+                required: "Vui lòng nhập email",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
+                  message: "Email không hợp lệ",
                 },
               })}
+              className="styled-input"
             />
           </div>
         </label>
-        {errors.email && (
-          <span className="error">
-            {errors.email.message || "This field is required"}
-          </span>
-        )}
+        {errors.email && <span className="error">{errors.email.message}</span>}
         <label className="input-label">
-          Phone <span>*</span>
+          Số Điện Thoại <span>*</span>
           <div className="input-wrapper">
             <input
               type="tel"
+              placeholder="0123456789"
               {...register("phone", {
-                required: true,
+                required: "Vui lòng nhập số điện thoại",
                 pattern: {
-                  value: /^[0-9]{10}$/,
-                  message: "Please enter a valid 10-digit phone number",
+                  value: /^(0[0-9]{9})$/,
+                  message:
+                    "Số điện thoại không hợp lệ (phải bắt đầu bằng số 0 và có 10 chữ số)",
                 },
               })}
+              className="styled-input"
             />
           </div>
         </label>
-        {errors.phone && (
-          <span className="error">
-            {errors.phone.message || "This field is required"}
-          </span>
-        )}
+        {errors.phone && <span className="error">{errors.phone.message}</span>}
         <label className="input-label">
-          Password <span>*</span>
+          Mật Khẩu <span>*</span>
           <div className="input-wrapper">
             <input
               type="password"
+              placeholder="Nhập mật khẩu"
               {...register("password", {
-                required: true,
+                required: "Vui lòng nhập mật khẩu",
                 minLength: {
                   value: 8,
-                  message: "Password must be at least 8 characters",
+                  message: "Mật khẩu phải có ít nhất 8 ký tự",
                 },
                 maxLength: {
                   value: 20,
-                  message: "Password must be at most 20 characters",
+                  message: "Mật khẩu không được quá 20 ký tự",
+                },
+                pattern: {
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  message:
+                    "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
                 },
               })}
+              className="styled-input"
             />
           </div>
         </label>
         {errors.password && (
-          <span className="error">
-            {errors.password.message || "This field is required"}
-          </span>
+          <span className="error">{errors.password.message}</span>
         )}
-        <button type="submit">REGISTER</button>
+        <button type="submit" className="styled-button" disabled={isSubmitting}>
+          {isSubmitting ? "ĐANG XỬ LÝ..." : "ĐĂNG KÝ"}
+        </button>
       </form>
     </div>
   );

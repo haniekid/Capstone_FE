@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Register from "../components/auth/RegisterForm";
 import Login from "../components/auth/LoginForm";
+import ForgotPassword from "../components/auth/ForgotPassword";
 import { useUser } from "../utils/hooks/useUser";
 
 function Authentication() {
@@ -36,8 +37,11 @@ function Authentication() {
       <div className="auth-container">
         {activeTab === "login" && <Login />}
         {activeTab === "signup" && <Register />}
+        {activeTab === "forgot" && (
+          <ForgotPassword onSwitchTab={setActiveTab} />
+        )}
       </div>
-      <div>
+      <div className="auth-tabs">
         <a
           className={`tab ${activeTab === "login" ? "active" : ""}`}
           onClick={() => setActiveTab("login")}
@@ -49,6 +53,12 @@ function Authentication() {
           onClick={() => setActiveTab("signup")}
         >
           Chưa có tài khoản?
+        </a>
+        <a
+          className={`tab ${activeTab === "forgot" ? "active" : ""}`}
+          onClick={() => setActiveTab("forgot")}
+        >
+          Quên mật khẩu?
         </a>
       </div>
     </div>
