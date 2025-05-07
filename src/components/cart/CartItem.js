@@ -25,7 +25,6 @@ function CartItem() {
                 <Link to={`/${item.product.productID}`}>
                   <p>{item.product.name}</p>
                 </Link>
-                <p>Kích cỡ: {item.size}</p>
                 <p>Số lượng: {item.quantity}</p>
                 <a
                   onClick={() =>
