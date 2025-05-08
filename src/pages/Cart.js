@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { formatPrice } from "../utils/hooks/useUtil";
 import { DELIVERY_THRESHOLD } from "../store/reducers/cartSlice";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getTotal } from "../store/reducers/cartSlice";
 import ShippingAddressForm from "../components/cart/ShippingAddressForm";
 
@@ -21,6 +21,9 @@ function CartPage() {
     total,
     quantity,
   } = useCart();
+  const auth = useSelector((state) => state.auth);
+  const currentUser =
+    (auth && auth.user) || JSON.parse(localStorage.getItem("user") || "null");
   const [discountCode, setDiscountCode] = useState("");
   const [discountError, setDiscountError] = useState(null);
   const [discountInfo, setDiscountInfo] = useState(null);
@@ -157,47 +160,140 @@ function CartPage() {
     }
   }, [shippingMethod, deliveryFeeFromAPI]);
 
-  const handlePlaceOrder = () => {
-    const orderData = {
-      customer: { ...form },
-      shippingAddress: {
-        province: "Hà Nội",
-        ...shippingAddress,
-      },
-      shippingMethod,
-      shippingFee,
-      paymentMethod,
-      vnpayOption,
-      items: items.map((item) => ({
-        productId: item.product.productID,
-        productName: item.product.name,
-        quantity: item.quantity,
-        price: item.price,
-        totalPrice: item.price * item.quantity,
-      })),
-      discount: discountInfo
-        ? {
-            discountCode: discountInfo.code,
-            discountType: discountInfo.type,
-            discountValue: discountInfo.value,
-            discountAmount:
-              discountInfo.type === "Percentage"
-                ? (defaultSubtotal * discountInfo.value) / 100
-                : discountInfo.value,
+  const handlePlaceOrder = async () => {
+    try {
+      const orderData = {
+        Order: {
+          OrderID: 0,
+          Status: 0,
+          UserID: currentUser ? Number(currentUser.userID) : 0,
+          DiscountCode: discountInfo ? discountInfo.code : "",
+          ShippingMethod: shippingMethod,
+          ShippingFee: shippingFee,
+          PaymentMethod: paymentMethod,
+          VnpayOption: vnpayOption,
+          Subtotal: defaultSubtotal,
+          FinalTotal: finalTotal,
+          DateTime: new Date().toISOString(),
+          Note: form.note || "",
+        },
+        ShippingAddress: {
+          Province: "Hà Nội",
+          DistrictId: shippingAddress.districtId,
+          DistrictName: shippingAddress.districtName,
+          WardCode: shippingAddress.wardCode,
+          WardName: shippingAddress.wardName,
+          AddressDetail: shippingAddress.addressDetail,
+        },
+        OrderItems: items.map((item) => {
+          console.log("Full item:", item);
+          console.log("Product:", item.product);
+          console.log("ProductPriceID:", item.product.productPriceID);
+
+          // Try to get productId from different possible locations
+          let productId = 0;
+          if (item.product.productPriceID) {
+            if (typeof item.product.productPriceID === "object") {
+              productId =
+                item.product.productPriceID.id ||
+                item.product.productPriceID.productId ||
+                item.product.productPriceID.productID ||
+                0;
+            } else {
+              productId = Number(item.product.productPriceID) || 0;
+            }
+          } else if (item.product.id) {
+            productId = Number(item.product.id) || 0;
           }
-        : null,
-      subtotal: defaultSubtotal,
-      finalTotal,
-    };
-    console.log(orderData);
+
+          console.log("Extracted productId:", productId);
+
+          return {
+            ProductId: productId,
+            ProductName: item.product.name,
+            Quantity: Number(item.quantity),
+            Price: Number(item.price),
+            TotalPrice: Number(item.price * item.quantity),
+          };
+        }),
+      };
+
+      // Log for debugging
+      console.log("Order Data:", JSON.stringify(orderData, null, 2));
+      console.log("Current User:", currentUser);
+      console.log("Discount Info:", discountInfo);
+      console.log("Shipping Method:", shippingMethod);
+      console.log("Payment Method:", paymentMethod);
+      console.log("Vnpay Option:", vnpayOption);
+
+      // Validate required fields
+      if (!form.email || !form.name || !form.phone) {
+        alert("Vui lòng điền đầy đủ thông tin người nhận hàng");
+        return;
+      }
+
+      if (
+        shippingMethod === "home" &&
+        (!shippingAddress.districtId || !shippingAddress.wardCode)
+      ) {
+        alert("Vui lòng chọn địa chỉ giao hàng");
+        return;
+      }
+
+      if (items.length === 0) {
+        alert("Giỏ hàng trống");
+        return;
+      }
+
+      // Call API to create payment URL
+      console.log(
+        "Sending request to:",
+        "https://localhost:7089/api/Pay/CreatePaymentUrl"
+      );
+      const response = await axios.post(
+        "https://localhost:7089/api/Pay/CreatePaymentUrl",
+        orderData
+      );
+
+      console.log("Response data:", response.data);
+
+      // Check if response.data is a string (URL) or an object with URL
+      let paymentUrl = null;
+      if (typeof response.data === "string") {
+        paymentUrl = response.data;
+      } else if (
+        response.data &&
+        (response.data.url || response.data.paymentUrl)
+      ) {
+        paymentUrl = response.data.url || response.data.paymentUrl;
+      }
+
+      if (paymentUrl) {
+        // Redirect to payment URL
+        window.location.href = paymentUrl;
+      } else {
+        console.error("Invalid response format:", response.data);
+        alert("Có lỗi xảy ra khi tạo URL thanh toán. Vui lòng thử lại sau.");
+      }
+    } catch (error) {
+      console.error("Error creating payment:", error);
+      console.error("Error details:", {
+        message: error.message,
+        response: error.response && error.response.data,
+        status: error.response && error.response.status,
+        headers: error.response && error.response.headers,
+      });
+      alert("Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.");
+    }
   };
 
   return (
     <div className="cart-checkout-page">
       <div className="checkout-4col-container">
-        {/* 1. Thông tin nhận hàng */}
+        {" "}
+        {/* 1. Thông tin nhận hàng */}{" "}
         <div className="checkout-col info-col">
-          <h2 className="checkout-section-title">Thông tin nhận hàng</h2>
+          <h2 className="checkout-section-title"> Thông tin nhận hàng </h2>{" "}
           <form className="checkout-form">
             <input
               type="email"
@@ -224,30 +320,30 @@ function CartPage() {
                 onChange={handleFormChange}
                 required
               />
-              <span className="vn-flag">🇻🇳</span>
-            </div>
+              <span className="vn-flag"> 🇻🇳 </span>{" "}
+            </div>{" "}
             <textarea
               name="note"
               placeholder="Ghi chú (tùy chọn)"
               value={form.note}
               onChange={handleFormChange}
               rows={2}
-            />
-          </form>
-        </div>
-        {/* 2. Địa chỉ giao hàng */}
+            />{" "}
+          </form>{" "}
+        </div>{" "}
+        {/* 2. Địa chỉ giao hàng */}{" "}
         <div className="checkout-col address-col">
-          <h2 className="checkout-section-title">Địa chỉ giao hàng</h2>
+          <h2 className="checkout-section-title"> Địa chỉ giao hàng </h2>{" "}
           <ShippingAddressForm
             hideTitle
             onShippingFeeChange={handleShippingFeeChange}
             shippingMethod={shippingMethod}
             onAddressChange={handleAddressChange}
-          />
-        </div>
-        {/* 3. Vận chuyển & Thanh toán */}
+          />{" "}
+        </div>{" "}
+        {/* 3. Vận chuyển & Thanh toán */}{" "}
         <div className="checkout-col method-col">
-          <h2 className="checkout-section-title">Vận chuyển</h2>
+          <h2 className="checkout-section-title"> Vận chuyển </h2>{" "}
           <div className="checkout-shipping-method">
             <div
               className={`shipping-option${
@@ -263,13 +359,14 @@ function CartPage() {
                 onChange={() => setShippingMethod("home")}
                 className="shipping-radio"
               />
-              <span className="shipping-label">Giao Hàng Tận Nơi</span>
+              <span className="shipping-label"> Giao Hàng Tận Nơi </span>{" "}
               <span className="shipping-fee">
+                {" "}
                 {deliveryFeeFromAPI === 0
                   ? "0đ"
-                  : `${formatPrice(deliveryFeeFromAPI)}`}
-              </span>
-            </div>
+                  : formatPrice(deliveryFeeFromAPI)}{" "}
+              </span>{" "}
+            </div>{" "}
             <div
               className={`shipping-option${
                 shippingMethod === "store" ? " selected" : ""
@@ -284,13 +381,13 @@ function CartPage() {
                 onChange={() => setShippingMethod("store")}
                 className="shipping-radio"
               />
-              <span className="shipping-label">Đến cửa hàng nhận đơn</span>
-              <span className="shipping-fee">0đ</span>
-            </div>
-          </div>
+              <span className="shipping-label"> Đến cửa hàng nhận đơn </span>{" "}
+              <span className="shipping-fee"> 0 đ </span>{" "}
+            </div>{" "}
+          </div>{" "}
           <h2 className="checkout-section-title" style={{ marginTop: 24 }}>
-            Thanh toán
-          </h2>
+            Thanh toán{" "}
+          </h2>{" "}
           <div className="checkout-payment-method">
             <div
               className={`payment-option${
@@ -306,8 +403,8 @@ function CartPage() {
                 onChange={() => setPaymentMethod("vnpay")}
                 className="payment-radio"
               />
-              <span className="payment-label">Thanh toán qua VNPay</span>
-            </div>
+              <span className="payment-label"> Thanh toán qua VNPay </span>{" "}
+            </div>{" "}
             {paymentMethod === "vnpay" && (
               <div className="vnpay-options">
                 <label>
@@ -318,8 +415,8 @@ function CartPage() {
                     checked={vnpayOption === "50"}
                     onChange={() => setVnpayOption("50")}
                   />
-                  Thanh toán trước 50%
-                </label>
+                  Thanh toán trước 50 %
+                </label>{" "}
                 <label>
                   <input
                     type="radio"
@@ -328,10 +425,10 @@ function CartPage() {
                     checked={vnpayOption === "100"}
                     onChange={() => setVnpayOption("100")}
                   />
-                  Thanh toán 100% (giảm 5% tổng giá trị đơn hàng)
-                </label>
+                  Thanh toán 100 % (giảm 5 % tổng giá trị đơn hàng){" "}
+                </label>{" "}
               </div>
-            )}
+            )}{" "}
             {totalAmount <= 300000 && (
               <div
                 className={`payment-option${
@@ -347,19 +444,23 @@ function CartPage() {
                   onChange={() => setPaymentMethod("cod")}
                   className="payment-radio"
                 />
-                <span className="payment-label">Thanh toán khi giao hàng</span>
+                <span className="payment-label">
+                  {" "}
+                  Thanh toán khi giao hàng{" "}
+                </span>{" "}
               </div>
-            )}
-          </div>
-        </div>
-        {/* 4. Đơn hàng & giá & đặt hàng */}
+            )}{" "}
+          </div>{" "}
+        </div>{" "}
+        {/* 4. Đơn hàng & giá & đặt hàng */}{" "}
         <div className="checkout-col order-col">
           <h2 className="checkout-section-title">
-            Đơn hàng ({items.length} sản phẩm)
-          </h2>
+            Đơn hàng({items.length}
+            sản phẩm){" "}
+          </h2>{" "}
           <div className="checkout-cart-items">
             <CartItems />
-          </div>
+          </div>{" "}
           <div className="checkout-discount">
             <input
               placeholder="Nhập mã giảm giá"
@@ -367,54 +468,55 @@ function CartPage() {
               value={discountCode}
               onChange={(e) => setDiscountCode(e.target.value)}
               disabled={isLoading}
-            />
+            />{" "}
             <button onClick={handleApplyDiscount} disabled={isLoading}>
-              Áp dụng
-            </button>
+              Áp dụng{" "}
+            </button>{" "}
             {discountError && (
-              <div className="error-message">{discountError}</div>
-            )}
-          </div>
+              <div className="error-message"> {discountError} </div>
+            )}{" "}
+          </div>{" "}
           <div className="checkout-summary">
             <div className="summary-row">
-              <span>Tạm tính</span>
-              <span>{formatPrice(Number(defaultSubtotal) || 0)}</span>
-            </div>
+              <span> Tạm tính </span>{" "}
+              <span> {formatPrice(Number(defaultSubtotal) || 0)} </span>{" "}
+            </div>{" "}
             {discountInfo && (
               <div className="summary-row">
-                <span>Giảm giá ({discountInfo.code})</span>
+                <span> Giảm giá({discountInfo.code}) </span>{" "}
                 <span>
+                  {" "}
                   {discountInfo.type === "Percentage"
                     ? `- ${discountInfo.value}%`
-                    : `- ${formatPrice(Number(discountInfo.value) || 0)}`}
-                </span>
+                    : `- ${formatPrice(Number(discountInfo.value) || 0)}`}{" "}
+                </span>{" "}
               </div>
-            )}
+            )}{" "}
             <div className="summary-row">
-              <span>Phí vận chuyển</span>
+              <span> Phí vận chuyển </span>{" "}
               <span>
-                {shippingFee === 0 ? "0đ" : `${formatPrice(shippingFee)}`}
-              </span>
-            </div>
+                {" "}
+                {shippingFee === 0 ? "0đ" : formatPrice(shippingFee)}{" "}
+              </span>{" "}
+            </div>{" "}
             {discount100 > 0 && (
               <div className="summary-row">
-                <span>Giảm 5% khi thanh toán 100% VNPay</span>
-                <span>-{formatPrice(discount100)}</span>
+                <span> Giảm 5 % khi thanh toán 100 % VNPay </span>{" "}
+                <span> -{formatPrice(discount100)} </span>{" "}
               </div>
-            )}
+            )}{" "}
             <div className="summary-row total">
-              <span>Tổng cộng</span>
-              <span>{formatPrice(finalTotal)}</span>
-            </div>
-          </div>
+              <span> Tổng cộng </span> <span> {formatPrice(finalTotal)} </span>{" "}
+            </div>{" "}
+          </div>{" "}
           <button className="checkout-btn" onClick={handlePlaceOrder}>
-            ĐẶT HÀNG
-          </button>
+            ĐẶT HÀNG{" "}
+          </button>{" "}
           <Link to="/cart" className="back-to-cart">
-            &lt; Quay về giỏ hàng
-          </Link>
-        </div>
-      </div>
+            & lt; Quay về giỏ hàng{" "}
+          </Link>{" "}
+        </div>{" "}
+      </div>{" "}
     </div>
   );
 }

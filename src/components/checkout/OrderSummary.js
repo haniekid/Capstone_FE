@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useCart } from "../../utils/hooks/useCart";
 
 function OrderSummary({ onPaymentComplete }) {
