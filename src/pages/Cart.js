@@ -269,11 +269,11 @@ function CartPage() {
       }
 
       if (paymentUrl) {
-        // Redirect to payment URL
+        // Nếu là thanh toán online, redirect sang paymentUrl
         window.location.href = paymentUrl;
       } else {
-        console.error("Invalid response format:", response.data);
-        alert("Có lỗi xảy ra khi tạo URL thanh toán. Vui lòng thử lại sau.");
+        // Nếu không có paymentUrl (COD hoặc đã thanh toán xong), chuyển sang trang thành công
+        window.location.href = "/order-success";
       }
     } catch (error) {
       console.error("Error creating payment:", error);

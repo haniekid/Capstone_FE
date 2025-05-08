@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Profile from "../components/account/EditProfile";
 import Orders from "../components/account/MyOrders";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCurrentUser, setUser } from "../store/reducers/userSlice";
 import { useUser } from "../utils/hooks/useUser";
@@ -9,6 +9,7 @@ import { useUser } from "../utils/hooks/useUser";
 function MyAccount() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const currentUser = useSelector(selectCurrentUser);
   const [activeTab, setActiveTab] = useState(0);
   const { logout } = useUser();
@@ -18,6 +19,13 @@ function MyAccount() {
       navigate("/authentication");
     }
   }, [currentUser, navigate]);
+
+  useEffect(() => {
+    // Nếu có state.tab === "orders" thì chuyển sang tab Đơn Hàng Của Tôi
+    if (location.state && location.state.tab === "orders") {
+      setActiveTab(1);
+    }
+  }, [location.state]);
 
   const handleTabClick = (index) => {
     if (index === 2) {

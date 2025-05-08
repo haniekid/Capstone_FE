@@ -20,6 +20,7 @@ import ManageProductDetail from "./pages/ManageProductDetail";
 import ManageProductAdd from "./pages/ManageProductAdd";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import ResetPassword from "./components/auth/ResetPassword";
+import OrderSuccess from "./pages/OrderSuccess";
 
 import { Routes, Route, useLocation } from "react-router-dom";
 
@@ -54,6 +55,7 @@ function App() {
         />{" "}
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
       </Routes>{" "}
       {showHeaderFooter && <Footer />}{" "}
     </>
