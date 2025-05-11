@@ -112,7 +112,7 @@ function ProductList() {
                 </button>
               ))}{" "}
             </div>{" "}
-          </div>
+          </div>{" "}
           <div className="filter-row search-filter">
             <label> Tìm kiếm: </label>{" "}
             <input
@@ -122,7 +122,7 @@ function ProductList() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="search-input"
             />
-          </div>
+          </div>{" "}
           <div className="filter-row other-filters">
             <div className="filter-div filter-spec">
               <label> Giá: </label>{" "}
@@ -164,9 +164,15 @@ function ProductList() {
       </div>{" "}
       <div className="product-grid">
         {" "}
-        {filteredProducts.map((product, index) => (
-          <ProductCard product={product} key={index} />
-        ))}{" "}
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product, index) => (
+            <ProductCard product={product} key={index} />
+          ))
+        ) : (
+          <div className="no-products-message">
+            Không tìm thấy sản phẩm nào{" "}
+          </div>
+        )}{" "}
       </div>{" "}
     </div>
   );
