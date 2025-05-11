@@ -10,72 +10,98 @@ import { useWishlist } from "../../utils/hooks/useWishlist";
 import { searchProducts } from "../../store/reducers/productSlice";
 
 function Header() {
-  const location = useLocation();
-  const { quantity } = useCart();
-  const { wishlistCount } = useWishlist();
-  const dispatch = useDispatch();
+    const location = useLocation();
+    const { quantity } = useCart();
+    const { wishlistCount } = useWishlist();
+    const dispatch = useDispatch();
 
-  const isHome = location.pathname === "/";
-  const isShop = location.pathname === "/shop";
+    const isHome = location.pathname === "/";
+    const isShop = location.pathname === "/shop";
 
-  return (
-    <nav>
-      <div className="header-second">
-        <div className="header-second-msg">
-          <p>
-            <span> CHẾ BIẾN </span> VỆ SINH, AN TOÀN, HỢP VỆ SINH{" "}
-          </p>{" "}
-          <p>
-            <span> MIỄN PHÍ </span> SHIPPING ĐỐI VỚI HÓA ĐƠN TRÊN 200.000Đ{" "}
-          </p>{" "}
-          <p>
-            <span> GIAO HÀNG </span> NHANH CHÓNG TRONG VÒNG 60 PHÚT{" "}
-          </p>{" "}
-        </div>{" "}
-      </div>{" "}
-      <div className="header-container">
-        <Link className="header-main header-section" to="/">
-          <h1> CỬA HÀNG </h1>{" "}
-        </Link>{" "}
-        <ul className="header-section">
-          <li>
-            <Link to="/shop"> CỬA HÀNG </Link>{" "}
-          </li>{" "}
-          <li>
-            <Link to="/"> LIÊN HỆ </Link>{" "}
-          </li>{" "}
-          <li>
-            <Link to="/"> VỀ CHÚNG TÔI </Link>{" "}
-          </li>{" "}
-        </ul>{" "}
-        <div className="header-tools header-section">
-          <Link to="/account">
-            <div className="svg-icon">
-              <FontAwesomeIcon icon={icons.user} />{" "}
-            </div>{" "}
-          </Link>{" "}
-          <Link to="/wishlist">
-            <div className="svg-icon">
-              <FontAwesomeIcon icon={icons.heart} />{" "}
-              {wishlistCount > 0 && (
-                <span> {wishlistCount > 9 ? "9+" : wishlistCount} </span>
-              )}{" "}
-            </div>{" "}
-          </Link>{" "}
-          <Link to="/cart">
-            <div className="svg-icon">
-              <FontAwesomeIcon icon={icons.cart} />{" "}
-              {quantity > 0 && <span> {quantity > 9 ? "9+" : quantity} </span>}{" "}
-            </div>{" "}
-          </Link>{" "}
-          <div className="burger">
-            <FontAwesomeIcon icon={icons.hamburger} />{" "}
-          </div>{" "}
-        </div>{" "}
-      </div>{" "}
-      <div className={`header-line ${isHome || isShop ? "active" : ""}`}> </div>{" "}
-    </nav>
-  );
-}
+    return ( <
+        nav >
+        <
+        div className = "header-second" >
+        <
+        div className = "header-second-msg" >
+        <
+        p >
+        <
+        span > CHẾ BIẾN < /span> VỆ SINH, AN TOÀN, HỢP VỆ SINH{" "} <
+        /p>{" "} <
+        p >
+        <
+        span > MIỄN PHÍ < /span> SHIPPING ĐỐI VỚI HÓA ĐƠN TRÊN 200.000Đ{" "} <
+        /p>{" "} <
+        p >
+        <
+        span > GIAO HÀNG < /span> NHANH CHÓNG TRONG VÒNG 60 PHÚT{" "} <
+        /p>{" "} <
+        /div>{" "} <
+        /div>{" "} <
+        div className = "header-container" >
+        <
+        Link className = "header-main header-section"
+        to = "/" >
+        <
+        h1 > CỬA HÀNG < /h1>{" "} <
+        /Link>{" "} <
+        ul className = "header-section" >
+        <
+        li >
+        <
+        Link to = "/shop" > CỬA HÀNG < /Link>{" "} <
+        /li>{" "} <
+        li >
+        <
+        Link to = "/" > LIÊN HỆ < /Link>{" "} <
+        /li>{" "} <
+        li >
+        <
+        Link to = "/" > VỀ CHÚNG TÔI < /Link>{" "} <
+        /li>{" "} <
+        /ul>{" "} <
+        div className = "header-tools header-section" >
+        <
+        Link to = "/account" >
+        <
+        div className = "svg-icon" >
+        <
+        FontAwesomeIcon icon = { icons.user }
+        />{" "} <
+        /div>{" "} <
+        /Link>{" "} <
+        Link to = "/wishlist" >
+        <
+        div className = "svg-icon" >
+        <
+        FontAwesomeIcon icon = { icons.heart }
+        />{" "} {
+            wishlistCount > 0 && ( <
+                span > { wishlistCount > 9 ? "9+" : wishlistCount } < /span>
+            )
+        } { " " } <
+        /div>{" "} <
+        /Link>{" "} <
+        Link to = "/cart" >
+        <
+        div className = "svg-icon" >
+        <
+        FontAwesomeIcon icon = { icons.cart }
+        />{" "} {
+            quantity > 0 && < span > { quantity > 9 ? "9+" : quantity } < /span>}{" "} <
+                /div>{" "} <
+                /Link>{" "} <
+                div className = "burger" >
+                <
+                FontAwesomeIcon icon = { icons.hamburger }
+            />{" "} <
+            /div>{" "} <
+            /div>{" "} <
+            /div>{" "} <
+            div className = { `header-line ${isHome || isShop ? "active" : ""}` } > < /div>{" "} <
+                /nav>
+        );
+    }
 
-export default Header;
+    export default Header;
