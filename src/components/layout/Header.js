@@ -18,78 +18,62 @@ function Header() {
   const isHome = location.pathname === "/";
   const isShop = location.pathname === "/shop";
 
-  const handleSearchChange = (e) => {
-    dispatch(searchProducts(e.target.value));
-  };
-
   return (
     <nav>
       <div className="header-second">
         <div className="header-second-msg">
           <p>
-            <span>CHẾ BIẾN</span> VỆ SINH, AN TOÀN, HỢP VỆ SINH
-          </p>
+            <span> CHẾ BIẾN </span> VỆ SINH, AN TOÀN, HỢP VỆ SINH{" "}
+          </p>{" "}
           <p>
-            <span>MIỄN PHÍ</span> SHIPPING ĐỐI VỚI HÓA ĐƠN TRÊN 200.000Đ
-          </p>
+            <span> MIỄN PHÍ </span> SHIPPING ĐỐI VỚI HÓA ĐƠN TRÊN 200.000Đ{" "}
+          </p>{" "}
           <p>
-            <span>GIAO HÀNG</span> NHANH CHÓNG TRONG VÒNG 60 PHÚT
-          </p>
-        </div>
-      </div>
+            <span> GIAO HÀNG </span> NHANH CHÓNG TRONG VÒNG 60 PHÚT{" "}
+          </p>{" "}
+        </div>{" "}
+      </div>{" "}
       <div className="header-container">
         <Link className="header-main header-section" to="/">
-          <h1>CỬA HÀNG</h1>
-        </Link>
+          <h1> CỬA HÀNG </h1>{" "}
+        </Link>{" "}
         <ul className="header-section">
           <li>
-            <Link to="/shop">CỬA HÀNG</Link>
-          </li>
+            <Link to="/shop"> CỬA HÀNG </Link>{" "}
+          </li>{" "}
           <li>
-            <Link to="/">LIÊN HỆ</Link>
-          </li>
+            <Link to="/"> LIÊN HỆ </Link>{" "}
+          </li>{" "}
           <li>
-            <Link to="/">VỀ CHÚNG TÔI</Link>
-          </li>
-        </ul>
+            <Link to="/"> VỀ CHÚNG TÔI </Link>{" "}
+          </li>{" "}
+        </ul>{" "}
         <div className="header-tools header-section">
           <Link to="/account">
             <div className="svg-icon">
-              <FontAwesomeIcon icon={icons.user} />
-            </div>
-          </Link>
+              <FontAwesomeIcon icon={icons.user} />{" "}
+            </div>{" "}
+          </Link>{" "}
           <Link to="/wishlist">
             <div className="svg-icon">
-              <FontAwesomeIcon icon={icons.heart} />
+              <FontAwesomeIcon icon={icons.heart} />{" "}
               {wishlistCount > 0 && (
-                <span>{wishlistCount > 9 ? "9+" : wishlistCount} </span>
-              )}
-            </div>
-          </Link>
+                <span> {wishlistCount > 9 ? "9+" : wishlistCount} </span>
+              )}{" "}
+            </div>{" "}
+          </Link>{" "}
           <Link to="/cart">
             <div className="svg-icon">
-              <FontAwesomeIcon icon={icons.cart} />
-              {quantity > 0 && <span>{quantity > 9 ? "9+" : quantity} </span>}
-            </div>
-          </Link>
+              <FontAwesomeIcon icon={icons.cart} />{" "}
+              {quantity > 0 && <span> {quantity > 9 ? "9+" : quantity} </span>}{" "}
+            </div>{" "}
+          </Link>{" "}
           <div className="burger">
-            <FontAwesomeIcon icon={icons.hamburger} />
-          </div>
-        </div>
-      </div>
-      <div className={`header-search ${isShop ? "active" : ""}`}>
-        <div className="input-wrapper">
-          <FontAwesomeIcon icon={icons.search}></FontAwesomeIcon>
-          <input
-            type="text"
-            id="search"
-            placeholder="Search..."
-            name="search"
-            onChange={handleSearchChange}
-          />
-        </div>
-      </div>
-      <div className={`header-line ${isHome || isShop ? "active" : ""}`}></div>
+            <FontAwesomeIcon icon={icons.hamburger} />{" "}
+          </div>{" "}
+        </div>{" "}
+      </div>{" "}
+      <div className={`header-line ${isHome || isShop ? "active" : ""}`}> </div>{" "}
     </nav>
   );
 }

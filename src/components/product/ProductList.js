@@ -2,14 +2,18 @@ import React, { useState, useEffect } from "react";
 import ProductCard from "./ProductItem";
 import { useProduct } from "../../utils/hooks/useProduct";
 import { useSelector, useDispatch } from "react-redux";
-import { icons } from "../../assets/icons/icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useToggle from "../../utils/hooks/useUtil";
 import { filterProducts } from "../../store/reducers/productSlice";
+
+// Hàm chuyển đổi tiếng Việt có dấu thành không dấu
+const removeAccents = (str) => {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+};
 
 function ProductList() {
   const dispatch = useDispatch();
-  const { toggle, isToggled } = useToggle();
   const { products, fetchProducts } = useProduct();
   const {
     minPrice: filterMinPrice,
@@ -24,6 +28,7 @@ function ProductList() {
   const [maxPrice, setMaxPrice] = useState(filterMaxPrice || "");
   const [sortOrder, setSortOrder] = useState("asc");
   const [selectedType, setSelectedType] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchProducts();
@@ -35,13 +40,34 @@ function ProductList() {
         minPrice: minPrice ? parseFloat(minPrice) : null,
         maxPrice: maxPrice ? parseFloat(maxPrice) : null,
         types: selectedType === "" ? [] : [selectedType],
+        searchQuery: searchQuery,
       })
     );
-  }, [minPrice, maxPrice, selectedType, dispatch]);
+  }, [minPrice, maxPrice, selectedType, searchQuery, dispatch]);
 
   // Filter out deleted products and then sort
   const filteredProducts = [...products]
-    .filter((product) => product.isDeleted === false) // Only show non-deleted products
+    .filter((product) => product.isDeleted === false)
+    .filter((product) => {
+      if (!searchQuery) return true;
+
+      const searchLower = removeAccents(searchQuery);
+      const name = removeAccents(product.name || "");
+      const brand = removeAccents(product.brand || "");
+
+      // Tìm kiếm chính xác
+      if (name.includes(searchLower) || brand.includes(searchLower)) {
+        return true;
+      }
+
+      // Tìm kiếm mềm - kiểm tra từng từ trong chuỗi tìm kiếm
+      const searchWords = searchLower
+        .split(/\s+/)
+        .filter((word) => word.length > 0);
+      return searchWords.every(
+        (word) => name.includes(word) || brand.includes(word)
+      );
+    })
     .sort((a, b) => {
       if (sortOrder === "lowToHigh") {
         return a.defaultPrice - b.defaultPrice;
@@ -64,65 +90,77 @@ function ProductList() {
   return (
     <div className="shop">
       <div className="filter-control">
-        <div className="filter-div toggle">
-          <a onClick={() => toggle()}>
-            <FontAwesomeIcon icon={icons.filter} />{" "}
-          </a>{" "}
-        </div>{" "}
-        {isToggled() && (
-          <div className="filter-option">
-            <div className="filter-div">
-              <label htmlFor="type"> Type: </label>{" "}
-              <select
-                id="type"
-                name="type"
-                value={selectedType}
-                onChange={(event) => setSelectedType(event.target.value)}
+        <div className="filter-option">
+          <div className="filter-row type-filter">
+            <label> Loại sản phẩm: </label>{" "}
+            <div className="type-buttons">
+              <button
+                className={`type-button ${selectedType === "" ? "active" : ""}`}
+                onClick={() => setSelectedType("")}
               >
-                <option value=""> All </option>{" "}
-                {uniqueTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {" "}
-                    {type}{" "}
-                  </option>
-                ))}{" "}
-              </select>{" "}
+                Tất cả{" "}
+              </button>{" "}
+              {uniqueTypes.map((type) => (
+                <button
+                  key={type}
+                  className={`type-button ${
+                    selectedType === type ? "active" : ""
+                  }`}
+                  onClick={() => setSelectedType(type)}
+                >
+                  {type}{" "}
+                </button>
+              ))}{" "}
             </div>{" "}
+          </div>
+          <div className="filter-row search-filter">
+            <label> Tìm kiếm: </label>{" "}
+            <input
+              type="text"
+              placeholder="Nhập tên sản phẩm..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          </div>
+          <div className="filter-row other-filters">
             <div className="filter-div filter-spec">
-              <label htmlFor="price"> Price: </label>{" "}
-              <input
-                type="number"
-                id="minPrice"
-                placeholder="min"
-                name="minPrice"
-                value={minPrice}
-                onChange={(event) => setMinPrice(event.target.value)}
-              />{" "}
-              <p> - </p>{" "}
-              <input
-                type="number"
-                id="maxPrice"
-                placeholder="max"
-                name="maxPrice"
-                value={maxPrice}
-                onChange={(event) => setMaxPrice(event.target.value)}
-              />{" "}
+              <label> Giá: </label>{" "}
+              <div className="price-inputs">
+                <input
+                  type="number"
+                  id="minPrice"
+                  placeholder="Tối thiểu"
+                  name="minPrice"
+                  value={minPrice}
+                  onChange={(event) => setMinPrice(event.target.value)}
+                />{" "}
+                <p> - </p>{" "}
+                <input
+                  type="number"
+                  id="maxPrice"
+                  placeholder="Tối đa"
+                  name="maxPrice"
+                  value={maxPrice}
+                  onChange={(event) => setMaxPrice(event.target.value)}
+                />{" "}
+              </div>{" "}
             </div>{" "}
             <div className="filter-div">
-              <label> Sort by: </label>{" "}
+              <label> Sắp xếp theo: </label>{" "}
               <select
                 id="sort"
                 name="sort"
                 value={sortOrder}
                 onChange={(event) => setSortOrder(event.target.value)}
               >
-                <option value=""> Newest </option>{" "}
-                <option value="lowToHigh"> Lowest to Highest </option>{" "}
-                <option value="highToLow"> Highest to Lowest </option>{" "}
+                <option value=""> Mới nhất </option>{" "}
+                <option value="lowToHigh"> Giá tăng dần </option>{" "}
+                <option value="highToLow"> Giá giảm dần </option>{" "}
               </select>{" "}
             </div>{" "}
-          </div>
-        )}{" "}
+          </div>{" "}
+        </div>{" "}
       </div>{" "}
       <div className="product-grid">
         {" "}
