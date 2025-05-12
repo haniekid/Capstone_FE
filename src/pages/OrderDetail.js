@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { formatPrice } from '../utils/hooks/useUtil';
+import '../styles/account.css';
+import { FaArrowLeft } from 'react-icons/fa';
 
 function OrderDetail() {
   const { orderId } = useParams();
@@ -30,15 +32,21 @@ function OrderDetail() {
   const getStatusText = (status) => {
     switch (status) {
       case 0:
-        return 'Chờ xác nhận';
-      case 1:
-        return 'Đã xác nhận';
-      case 2:
-        return 'Đang giao hàng';
-      case 3:
-        return 'Đã giao hàng';
-      case 4:
         return 'Đã hủy';
+      case 1:
+        return 'Chờ xác nhận';
+      case 2:
+        return 'Đã xác nhận';
+      case 3:
+        return 'Đã thanh toán';
+      case 4:
+        return 'Đã cọc';
+      case 5:
+        return 'Đang chuẩn bị';
+      case 6:
+        return 'Đang giao hàng';
+      case 7:
+        return 'Đã giao';
       default:
         return 'Không xác định';
     }
@@ -72,7 +80,7 @@ function OrderDetail() {
       <div className="order-detail-header">
         <div className="header-left">
           <Link to="/account" className="back-link">
-            & lt; Quay lại{' '}
+            <FaArrowLeft style={{ marginRight: 6 }} /> Quay lại
           </Link>{' '}
           <h1> Chi tiết đơn hàng# {order.order.orderID} </h1>{' '}
         </div>{' '}

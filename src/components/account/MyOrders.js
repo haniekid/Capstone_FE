@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { formatPrice } from '../../utils/hooks/useUtil';
+import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 function MyOrders({ currentUser }) {
   const [orders, setOrders] = useState([]);
@@ -9,7 +10,9 @@ function MyOrders({ currentUser }) {
   const [error, setError] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 10;
+  const ordersPerPage = 5;
+  const [sortConfig, setSortConfig] = useState({ key: 'dateTime', direction: 'desc' });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -52,15 +55,21 @@ function MyOrders({ currentUser }) {
   const getStatusText = (status) => {
     switch (status) {
       case 0:
-        return 'Chờ xác nhận';
-      case 1:
-        return 'Đã xác nhận';
-      case 2:
-        return 'Đang giao hàng';
-      case 3:
-        return 'Đã giao hàng';
-      case 4:
         return 'Đã hủy';
+      case 1:
+        return 'Chờ xác nhận';
+      case 2:
+        return 'Đã xác nhận';
+      case 3:
+        return 'Đã thanh toán';
+      case 4:
+        return 'Đã cọc';
+      case 5:
+        return 'Đang chuẩn bị';
+      case 6:
+        return 'Đang giao hàng';
+      case 7:
+        return 'Đã giao';
       default:
         return 'Không xác định';
     }
@@ -87,14 +96,39 @@ function MyOrders({ currentUser }) {
       ? orders
       : orders.filter((order) => order.status.toString() === selectedStatus);
 
+  const handleSort = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+      }
+      return { key, direction: 'asc' };
+    });
+  };
+
+  const sortedOrders = React.useMemo(() => {
+    const sorted = [...filteredOrders];
+    sorted.sort((a, b) => {
+      let aValue = a[sortConfig.key];
+      let bValue = b[sortConfig.key];
+      if (sortConfig.key === 'dateTime') {
+        aValue = new Date(aValue);
+        bValue = new Date(bValue);
+      }
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }, [filteredOrders, sortConfig]);
+
   // Calculate pagination
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(
+  const currentOrders = sortedOrders.slice(
     indexOfFirstOrder,
     indexOfLastOrder
   );
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  const totalPages = Math.ceil(sortedOrders.length / ordersPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -115,97 +149,33 @@ function MyOrders({ currentUser }) {
   return (
     <div className="my-orders-container">
       <h1> Đơn Hàng Của Tôi </h1>{' '}
-      <div className="order-filters">
-        <button
-          className={`filter-btn ${selectedStatus === 'all' ? 'active' : ''}`}
-          onClick={() => {
-            setSelectedStatus('all');
-            setCurrentPage(1);
-          }}
-        >
-          Tất cả{' '}
-        </button>{' '}
-        <button
-          className={`filter-btn ${selectedStatus === '0' ? 'active' : ''}`}
-          onClick={() => {
-            setSelectedStatus('0');
-            setCurrentPage(1);
-          }}
-        >
-          Chờ xác nhận{' '}
-        </button>{' '}
-        <button
-          className={`filter-btn ${selectedStatus === '1' ? 'active' : ''}`}
-          onClick={() => {
-            setSelectedStatus('1');
-            setCurrentPage(1);
-          }}
-        >
-          Đã xác nhận{' '}
-        </button>{' '}
-        <button
-          className={`filter-btn ${selectedStatus === '2' ? 'active' : ''}`}
-          onClick={() => {
-            setSelectedStatus('2');
-            setCurrentPage(1);
-          }}
-        >
-          Đang giao hàng{' '}
-        </button>{' '}
-        <button
-          className={`filter-btn ${selectedStatus === '3' ? 'active' : ''}`}
-          onClick={() => {
-            setSelectedStatus('3');
-            setCurrentPage(1);
-          }}
-        >
-          Đã giao hàng{' '}
-        </button>{' '}
-        <button
-          className={`filter-btn ${selectedStatus === '4' ? 'active' : ''}`}
-          onClick={() => {
-            setSelectedStatus('4');
-            setCurrentPage(1);
-          }}
-        >
-          Đã hủy{' '}
-        </button>{' '}
-      </div>{' '}
       <div className="table-responsive">
         <table className="orders-table">
           <thead>
             <tr>
-              <th> Mã đơn hàng </th> <th> Ngày đặt </th> <th> Trạng thái </th>{' '}
-              <th> Tổng tiền </th> <th> Thao tác </th>{' '}
-            </tr>{' '}
-          </thead>{' '}
+              <th>#</th>
+              <th onClick={() => handleSort('dateTime')} style={{ cursor: 'pointer' }}>
+                Ngày đặt{' '}
+              </th>
+              <th onClick={() => handleSort('status')} style={{ cursor: 'pointer' }}>
+                Trạng thái{' '}
+              </th>
+              <th>Thành Tiền </th>
+            </tr>
+          </thead>
           <tbody>
             {' '}
-            {currentOrders.map((order) => (
-              <tr key={`order-${order.orderID}`}>
-                <td className="order-id"> #{order.orderID} </td>{' '}
-                <td className="order-date">
-                  {' '}
-                  {formatDateTime(order.dateTime)}{' '}
-                </td>{' '}
-                <td>
-                  <span className={`order-status status-${order.status}`}>
-                    {' '}
-                    {getStatusText(order.status)}{' '}
-                  </span>{' '}
-                </td>{' '}
-                <td className="order-total">
-                  {' '}
-                  {formatPrice(order.finalTotal || 0)}{' '}
-                </td>{' '}
-                <td>
-                  <Link
-                    to={`/order/${order.orderID}`}
-                    className="view-detail-btn"
-                  >
-                    Xem chi tiết{' '}
-                  </Link>{' '}
-                </td>{' '}
+            {currentOrders.map((order, idx) => (
+              <tr
+                key={order.orderID}
+                className="order-row"
+                style={{ cursor: 'pointer' }}
+                onClick={() => navigate(`/order/${order.orderID}`)}
+              >
+                <td className="order-id">{idx + 1}</td>
+                <td className="order-date">{formatDateTime(order.dateTime)}</td>
+                <td><span className={`order-status status-${order.status}`}>{getStatusText(order.status)}</span></td>
+                <td style={{ textAlign: 'right', fontWeight: 700, color: '#1a73e8' }}>{formatPrice(order.finalTotal)}</td>
               </tr>
             ))}{' '}
           </tbody>{' '}
