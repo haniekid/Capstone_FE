@@ -42,23 +42,17 @@ function MyAccount() {
       {currentUser && (
         <div className="container account">
           <ul className="account-menu">
-            <li
-              className={activeTab === 0 ? 'active' : ''}
-              onClick={() => handleTabClick(0)}
-            >
-              Thông Tin Cá Nhân{' '}
-            </li>
-            {/* Show My Orders for Users, My Products for Admin */}{' '}
+            {' '}
             {currentUser.roleName === 'Admin' ? (
               <>
                 <li
-                  className={activeTab === 1 ? 'active' : ''}
+                  className={activeTab === 0 ? 'active' : ''}
                   onClick={() => navigate('/admin/products')}
                 >
                   Quản Lý Sản Phẩm{' '}
                 </li>{' '}
                 <li
-                  className={activeTab === 2 ? 'active' : ''}
+                  className={activeTab === 1 ? 'active' : ''}
                   onClick={() => navigate('/admin/discounts')}
                 >
                   Quản Lý Khuyến Mãi{' '}
@@ -67,10 +61,16 @@ function MyAccount() {
             ) : (
               <>
                 <li
+                  className={activeTab === 0 ? 'active' : ''}
+                  onClick={() => handleTabClick(0)}
+                >
+                  Đơn Hàng Của Tôi{' '}
+                </li>{' '}
+                <li
                   className={activeTab === 1 ? 'active' : ''}
                   onClick={() => handleTabClick(1)}
                 >
-                  Đơn Hàng Của Tôi{' '}
+                  Thông Tin Cá Nhân{' '}
                 </li>{' '}
                 <li
                   className={activeTab === 2 ? 'active' : ''}
@@ -79,15 +79,15 @@ function MyAccount() {
                   Thay Đổi Mật Khẩu{' '}
                 </li>{' '}
               </>
-            )}
+            )}{' '}
             <li onClick={() => handleTabClick(3)}> Đăng Xuất </li>{' '}
-          </ul>
+          </ul>{' '}
           <div className="profile-container">
             {' '}
-            {activeTab === 0 && <Profile currentUser={currentUser} />}{' '}
-            {activeTab === 1 && currentUser.roleName !== 'Admin' && (
+            {activeTab === 0 && currentUser.roleName !== 'Admin' && (
               <Orders currentUser={currentUser} />
             )}{' '}
+            {activeTab === 1 && <Profile currentUser={currentUser} />}{' '}
             {activeTab === 2 && currentUser.roleName !== 'Admin' && (
               <ChangePassword currentUser={currentUser} />
             )}{' '}
