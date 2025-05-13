@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
-import ProductCard from "./ProductItem";
-import { useProduct } from "../../utils/hooks/useProduct";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { filterProducts } from "../../store/reducers/productSlice";
+import { useProduct } from "../../utils/hooks/useProduct";
+import ProductCard from "./ProductItem";
+import axios from "axios";
 
-// Hàm chuyển đổi tiếng Việt có dấu thành không dấu
+const BASE_URL = "https://localhost:7089/api/ProductCategory";
+
+// Helper function to remove accents from Vietnamese text
 const removeAccents = (str) => {
+    if (!str) return "";
     return str
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -29,10 +33,25 @@ function ProductList() {
     const [sortOrder, setSortOrder] = useState("asc");
     const [selectedType, setSelectedType] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchProducts();
+        fetchCategories();
     }, []);
+
+    const fetchCategories = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(BASE_URL);
+            setCategories(response.data);
+        } catch (err) {
+            console.error("Error fetching categories:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         dispatch(
@@ -87,106 +106,96 @@ function ProductList() {
         ),
     ];
 
-    return ( <
-        div className = "shop" >
-        <
-        div className = "filter-control" >
-        <
-        div className = "filter-option" >
-        <
-        div className = "filter-row type-filter" >
-        <
-        label > Loại sản phẩm: < /label>{" "} <
-        div className = "type-buttons" >
-        <
-        button className = { `type-button ${selectedType === "" ? "active" : ""}` }
-        onClick = {
-            () => setSelectedType("") } >
-        Tất cả { " " } <
-        /button>{" "} {
-            uniqueTypes.map((type) => ( <
-                button key = { type }
-                className = { `type-button ${
-                    selectedType === type ? "active" : ""
-                  }` }
-                onClick = {
-                    () => setSelectedType(type) } >
-                { type } { " " } <
-                /button>
-            ))
-        } { " " } <
-        /div>{" "} <
-        /div>{" "} <
-        div className = "filter-row search-filter" >
-        <
-        label > Tìm kiếm: < /label>{" "} <
-        input type = "text"
-        placeholder = "Nhập tên sản phẩm..."
-        value = { searchQuery }
-        onChange = {
-            (e) => setSearchQuery(e.target.value) }
-        className = "search-input" /
-        >
-        <
-        /div>{" "} <
-        div className = "filter-row other-filters" >
-        <
-        div className = "filter-div filter-spec" >
-        <
-        label > Giá: < /label>{" "} <
-        div className = "price-inputs" >
-        <
-        input type = "number"
-        id = "minPrice"
-        placeholder = "Tối thiểu"
-        name = "minPrice"
-        value = { minPrice }
-        onChange = {
-            (event) => setMinPrice(event.target.value) }
-        />{" "} <
-        p > - < /p>{" "} <
-        input type = "number"
-        id = "maxPrice"
-        placeholder = "Tối đa"
-        name = "maxPrice"
-        value = { maxPrice }
-        onChange = {
-            (event) => setMaxPrice(event.target.value) }
-        />{" "} <
-        /div>{" "} <
-        /div>{" "} <
-        div className = "filter-div" >
-        <
-        label > Sắp xếp theo: < /label>{" "} <
-        select id = "sort"
-        name = "sort"
-        value = { sortOrder }
-        onChange = {
-            (event) => setSortOrder(event.target.value) } >
-        <
-        option value = "" > Mới nhất < /option>{" "} <
-        option value = "lowToHigh" > Giá tăng dần < /option>{" "} <
-        option value = "highToLow" > Giá giảm dần < /option>{" "} <
-        /select>{" "} <
-        /div>{" "} <
-        /div>{" "} <
-        /div>{" "} <
-        /div>{" "} <
-        div className = "product-grid" > { " " } {
-            filteredProducts.length > 0 ? (
-                filteredProducts.map((product, index) => ( <
-                    ProductCard product = { product }
-                    key = { index }
-                    />
-                ))
-            ) : ( <
-                div className = "no-products-message" >
-                Không tìm thấy sản phẩm nào { " " } <
-                /div>
-            )
-        } { " " } <
-        /div>{" "} <
-        /div>
+    return (
+        <div className="shop">
+            <div className="filter-control">
+                <div className="filter-option">
+                    <div className="filter-row type-filter">
+                        <label>Loại sản phẩm:</label>
+                        <div className="type-buttons">
+                            <button
+                                className={`type-button ${selectedType === "" ? "active" : ""}`}
+                                onClick={() => setSelectedType("")}
+                            >
+                                Tất cả
+                            </button>
+                            {categories.map((category) => (
+                                <button
+                                    key={category.categoryId}
+                                    className={`type-button ${
+                                        selectedType === category.categoryName ? "active" : ""
+                                    }`}
+                                    onClick={() => setSelectedType(category.categoryName)}
+                                >
+                                    {category.categoryName}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="filter-row search-filter">
+                        <label>Tìm kiếm:</label>
+                        <input
+                            type="text"
+                            placeholder="Nhập tên sản phẩm..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="search-input"
+                        />
+                    </div>
+                    <div className="filter-row other-filters">
+                        <div className="filter-div filter-spec">
+                            <label>Giá:</label>
+                            <div className="price-inputs">
+                                <input
+                                    type="number"
+                                    id="minPrice"
+                                    placeholder="Tối thiểu"
+                                    name="minPrice"
+                                    value={minPrice}
+                                    onChange={(event) => setMinPrice(event.target.value)}
+                                />
+                                <p>-</p>
+                                <input
+                                    type="number"
+                                    id="maxPrice"
+                                    placeholder="Tối đa"
+                                    name="maxPrice"
+                                    value={maxPrice}
+                                    onChange={(event) => setMaxPrice(event.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <div className="filter-div">
+                            <label>Sắp xếp theo:</label>
+                            <select
+                                value={sortOrder}
+                                onChange={(e) => setSortOrder(e.target.value)}
+                                className="sort-select"
+                            >
+                                <option value="asc">Mặc định</option>
+                                <option value="lowToHigh">Giá tăng dần</option>
+                                <option value="highToLow">Giá giảm dần</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="product-grid">
+                {filteredProducts.length === 0 ? (
+                    <div className="no-products-message">
+                        Không tìm thấy sản phẩm nào phù hợp với tiêu chí tìm kiếm.
+                    </div>
+                ) : (
+                    filteredProducts.map((product) => (
+                        <ProductCard 
+                            key={product.productID} 
+                            product={product} 
+                        />
+                    ))
+                )}
+            </div>
+        </div>
     );
 }
 

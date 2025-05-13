@@ -29,6 +29,7 @@ const ManageProductDetail = () => {
     salePrice: null,
     saleStartDate: null,
     saleEndDate: null,
+    catergoryId: 0
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editedProduct, setEditedProduct] = useState({});
@@ -126,6 +127,9 @@ const ManageProductDetail = () => {
         (url) => url.trim() !== ""
       );
 
+      // Find the selected category
+      const selectedCategory = productTypes.find(type => type.categoryName === editedProduct.type);
+
       const formattedProduct = {
         ...editedProduct,
         listImageURL: filteredImages,
@@ -140,13 +144,16 @@ const ManageProductDetail = () => {
         salePrice: editedProduct.salePrice
           ? Number(editedProduct.salePrice)
           : null,
+        catergoryId: selectedCategory ? selectedCategory.categoryId : 0
       };
 
+      console.log('Sending product data:', formattedProduct);
       await axios.put(`${EDIT_PRODUCT_URL}/${id}`, formattedProduct);
       setProduct(formattedProduct);
       setIsEditing(false);
       setError(null);
     } catch (err) {
+      console.error('Error details:', err.response?.data);
       setError(
         err.response?.data?.message || err.message || "Failed to update product"
       );
@@ -236,13 +243,20 @@ const ManageProductDetail = () => {
                 <select
                   name="type"
                   value={editedProduct.type}
-                  onChange={handleInputChange}
+                  onChange={(e) => {
+                    const selectedType = productTypes.find(type => type.categoryName === e.target.value);
+                    setEditedProduct(prev => ({
+                      ...prev,
+                      type: e.target.value,
+                      catergoryId: selectedType ? selectedType.categoryId : 0
+                    }));
+                  }}
                   className="form-select"
                 >
                   <option value="">Chọn loại sản phẩm</option>
-                  {productTypes.map((type, index) => (
-                    <option key={index} value={type.type}>
-                      {type.type}
+                  {productTypes.map((type) => (
+                    <option key={type.categoryId} value={type.categoryName}>
+                      {type.categoryName}
                     </option>
                   ))}
                 </select>

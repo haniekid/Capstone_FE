@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Profile from '../components/account/EditProfile';
 import Orders from '../components/account/MyOrders';
 import ChangePassword from '../components/account/ChangePassword';
+import ManageCategory from './ManageCategory';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentUser, setUser } from '../store/reducers/userSlice';
@@ -57,6 +58,12 @@ function MyAccount() {
                 >
                   Quản Lý Khuyến Mãi{' '}
                 </li>{' '}
+                <li
+                  className={activeTab === 2 ? 'active' : ''}
+                  onClick={() => handleTabClick(2)}
+                >
+                  Quản Lý Danh Mục{' '}
+                </li>{' '}
               </>
             ) : (
               <>
@@ -88,6 +95,9 @@ function MyAccount() {
               <Orders currentUser={currentUser} />
             )}{' '}
             {activeTab === 1 && <Profile currentUser={currentUser} />}{' '}
+            {activeTab === 2 && currentUser.roleName === 'Admin' && (
+              <ManageCategory />
+            )}{' '}
             {activeTab === 2 && currentUser.roleName !== 'Admin' && (
               <ChangePassword currentUser={currentUser} />
             )}{' '}

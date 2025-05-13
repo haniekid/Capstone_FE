@@ -24,6 +24,7 @@ const ManageProductAdd = () => {
     salePrice: 0,
     saleStartDate: "",
     saleEndDate: "",
+    catergoryId: 0
   });
 
   useEffect(() => {
@@ -82,6 +83,9 @@ const ManageProductAdd = () => {
         (url) => url.trim() !== ""
       );
 
+      // Find the selected category
+      const selectedCategory = productTypes.find(type => type.categoryName === newProduct.type);
+
       // Format dates if they exist
       const formattedProduct = {
         ...newProduct,
@@ -95,11 +99,14 @@ const ManageProductAdd = () => {
         price: Number(newProduct.price),
         quantity: Number(newProduct.quantity),
         salePrice: newProduct.salePrice ? Number(newProduct.salePrice) : null,
+        catergoryId: selectedCategory ? selectedCategory.categoryId : 0
       };
 
+      console.log('Sending product data:', formattedProduct);
       await axios.post(ADD_PRODUCT_URL, formattedProduct);
       navigate("/admin/products");
     } catch (err) {
+      console.error('Error details:', err.response?.data);
       setError(
         err.response?.data?.message || err.message || "Failed to add product"
       );
@@ -145,14 +152,21 @@ const ManageProductAdd = () => {
                 <select
                   name="type"
                   value={newProduct.type}
-                  onChange={handleInputChange}
+                  onChange={(e) => {
+                    const selectedType = productTypes.find(type => type.categoryName === e.target.value);
+                    setNewProduct(prev => ({
+                      ...prev,
+                      type: e.target.value,
+                      catergoryId: selectedType ? selectedType.categoryId : 0
+                    }));
+                  }}
                   className="form-select"
                   required
                 >
                   <option value="">Chọn loại sản phẩm</option>
-                  {productTypes.map((type, index) => (
-                    <option key={index} value={type.type}>
-                      {type.type}
+                  {productTypes.map((type) => (
+                    <option key={type.categoryId} value={type.categoryName}>
+                      {type.categoryName}
                     </option>
                   ))}
                 </select>

@@ -418,19 +418,34 @@ h3 {
   font-weight: 500;
 }
 
-.status-badge.active {
+.status-badge.visible {
   background-color: #e3f2fd;
   color: #1976d2;
 }
 
-.status-badge.deleted {
+.status-badge.hidden {
   background-color: #ffebee;
   color: #d32f2f;
 }
 
-.deleted-row {
+.hidden-row {
   background-color: #f5f5f5;
   opacity: 0.7;
+}
+
+.hide-btn {
+  background-color: #ff9800;
+  color: white;
+}
+
+.show-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.hide-btn:hover,
+.show-btn:hover {
+  opacity: 0.9;
 }
 
 .add-addon-form button {
@@ -444,7 +459,10 @@ h3 {
   margin-left: 10px;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(40, 167, 69, 0.08);
-  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
   height: 38px;
   letter-spacing: 0.01em;
 }
@@ -463,7 +481,10 @@ h3 {
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(255, 77, 77, 0.08);
-  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
   height: 38px;
   letter-spacing: 0.01em;
 }
@@ -486,4 +507,133 @@ h3 {
   display: flex;
   align-items: center;
   margin-bottom: 18px;
+}
+
+/* Category Management Styles */
+.category-form {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.category-list {
+  margin-top: 20px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.admin-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.admin-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.admin-table input[type='text'] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.edit-btn,
+.delete-btn,
+.save-btn,
+.cancel-btn,
+.add-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.edit-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.save-btn {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.add-btn {
+  background-color: #2ecc71;
+  color: white;
+  padding: 8px 16px;
+}
+
+.edit-btn:hover,
+.delete-btn:hover,
+.save-btn:hover,
+.cancel-btn:hover,
+.add-btn:hover {
+  opacity: 0.9;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  background-color: #95a5a6;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .detail-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .back-btn,
+  .add-btn {
+    width: 100%;
+  }
 }
