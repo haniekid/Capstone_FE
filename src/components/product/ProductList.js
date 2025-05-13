@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { icons } from "../../assets/icons/icons";
+import axios from "axios";
 import { filterProducts } from "../../store/reducers/productSlice";
 import { useProduct } from "../../utils/hooks/useProduct";
 import ProductCard from "./ProductItem";
-import axios from "axios";
+import "./_product.scss";
 
 const BASE_URL = "https://localhost:7089/api/ProductCategory";
 
@@ -35,6 +38,7 @@ function ProductList() {
     const [searchQuery, setSearchQuery] = useState("");
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showOnlySale, setShowOnlySale] = useState(false);
 
     useEffect(() => {
         fetchProducts();
@@ -87,6 +91,10 @@ function ProductList() {
                 (word) => name.includes(word) || brand.includes(word)
             );
         })
+        .filter((product) => {
+            if (!showOnlySale) return true;
+            return product.salePrice > 0;
+        })
         .sort((a, b) => {
             if (sortOrder === "lowToHigh") {
                 return a.defaultPrice - b.defaultPrice;
@@ -110,6 +118,15 @@ function ProductList() {
         <div className="shop">
             <div className="filter-control">
                 <div className="filter-option">
+                    <div className="filter-row">
+                        <button
+                            className={`sale-filter-button ${showOnlySale ? 'active' : ''}`}
+                            onClick={() => setShowOnlySale(!showOnlySale)}
+                        >
+                            <FontAwesomeIcon icon={icons.faTag} />
+                            Sản phẩm giảm giá
+                        </button>
+                    </div>
                     <div className="filter-row type-filter">
                         <label>Loại sản phẩm:</label>
                         <div className="type-buttons">

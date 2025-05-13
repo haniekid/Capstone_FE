@@ -125,6 +125,19 @@
   font-weight: 700;
   color: #222;
   margin-bottom: 12px;
+
+  &.sale-price {
+    color: #ff4d4d;
+    font-size: 1.8rem;
+  }
+
+  &.original-price {
+    color: #7f8c8d;
+    text-decoration: line-through;
+    font-size: 1.2rem;
+    font-weight: normal;
+    margin-top: 4px;
+  }
 }
 .product-detail-info .action-row {
   display: flex;
@@ -142,7 +155,9 @@
   font-weight: 600;
   margin-right: 6px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
   min-width: 60px;
   height: 28px;
   line-height: 1;
@@ -206,7 +221,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 18px 20px;
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 .add-on-card:hover {
   box-shadow: 0 8px 24px rgba(255, 77, 77, 0.13);
@@ -235,7 +252,9 @@
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
   margin-left: 18px;
   white-space: nowrap;
 }

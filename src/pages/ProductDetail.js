@@ -117,14 +117,21 @@ function ProductDetail() {
             <div className="product-detail-info">
               <h2>{product.name}</h2>
               <div className="brand">{product.brand}</div>
-              <div className="price">{formatPrice(product.defaultPrice)}</div>
+              {product.salePrice ? (
+                <>
+                  <div className="price sale-price">{formatPrice(product.salePrice)}</div>
+                  <div className="price original-price">{formatPrice(product.defaultPrice)}</div>
+                </>
+              ) : (
+                <div className="price">{formatPrice(product.defaultPrice)}</div>
+              )}
               <div className="action-row">
                 <button
                   className="add-to-cart-btn"
                   onClick={() =>
                     addToCart({
                       product,
-                      price: product.defaultPrice,
+                      price: product.salePrice || product.defaultPrice,
                       quantity: 1,
                     })
                   }
