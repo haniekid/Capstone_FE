@@ -44,7 +44,10 @@ function Header() {
         Link className = "header-main header-section"
         to = "/" >
         <
-        h1 > CỬA HÀNG < /h1>{" "} <
+        img src = "/logo.png"
+        alt = "Logo"
+        style = { { height: '200px', width: 'auto', display: 'block' } }
+        />{" "} <
         /Link>{" "} <
         ul className = "header-section" >
         <

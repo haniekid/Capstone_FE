@@ -116,6 +116,20 @@ function ProductList() {
 
     return (
         <div className="shop">
+            <div className="search-bar-row">
+                <div className="search-input-wrapper">
+                    <input
+                        type="text"
+                        placeholder="Nhập tên sản phẩm..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="search-input"
+                    />
+                    <span className="search-icon">
+                        <FontAwesomeIcon icon={icons.faSearch} />
+                    </span>
+                </div>
+            </div>
             <div className="filter-control">
                 <div className="filter-option">
                     <div className="filter-row">
@@ -148,16 +162,6 @@ function ProductList() {
                                 </button>
                             ))}
                         </div>
-                    </div>
-                    <div className="filter-row search-filter">
-                        <label>Tìm kiếm:</label>
-                        <input
-                            type="text"
-                            placeholder="Nhập tên sản phẩm..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="search-input"
-                        />
                     </div>
                     <div className="filter-row other-filters">
                         <div className="filter-div filter-spec">

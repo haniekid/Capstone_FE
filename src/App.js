@@ -24,6 +24,8 @@ import OrderSuccess from './pages/OrderSuccess';
 import OrderDetail from './pages/OrderDetail';
 
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const location = useLocation();
@@ -61,6 +63,7 @@ function App() {
         <Route path="/order/:orderId" element={<OrderDetail />} />{' '}
       </Routes>{' '}
       {showHeaderFooter && <Footer />}{' '}
+      <ToastContainer position="bottom-right" autoClose={1500} />
     </>
   );
 }

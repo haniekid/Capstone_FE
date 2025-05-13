@@ -8,6 +8,8 @@ import { useProduct } from "../utils/hooks/useProduct";
 import { useWishlist } from "../utils/hooks/useWishlist";
 import { formatPrice } from "../utils/hooks/useUtil";
 import "../styles/productDetail.scss";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -116,7 +118,7 @@ function ProductDetail() {
             </div>
             <div className="product-detail-info">
               <h2>{product.name}</h2>
-              <div className="brand">{product.brand}</div>
+              <div className="brand">Loại: {product.type}</div>
               {product.salePrice ? (
                 <>
                   <div className="price sale-price">{formatPrice(product.salePrice)}</div>
@@ -128,15 +130,16 @@ function ProductDetail() {
               <div className="action-row">
                 <button
                   className="add-to-cart-btn"
-                  onClick={() =>
+                  onClick={() => {
                     addToCart({
                       product,
                       price: product.salePrice || product.defaultPrice,
                       quantity: 1,
-                    })
-                  }
+                    });
+                    toast.success("Đã thêm vào giỏ hàng!", { autoClose: 1500 });
+                  }}
                 >
-                  Add to Basket
+                  Thêm vào giỏ hàng
                 </button>
                 <button
                   className={`wishlist-btn${itemExists ? " active" : ""}`}
@@ -145,14 +148,14 @@ function ProductDetail() {
                   <FontAwesomeIcon icon={icons.heart} />
                 </button>
               </div>
-              <div className="description">{product.description}</div>
+              <div className="description"><b>Mô tả:</b> {product.description}</div>
             </div>
           </div>
 
           {/* Add-ons Section */}
           {addOnProducts.length > 0 && (
             <div className="add-ons-section">
-              <h3>Add-ons</h3>
+              <h3>Sản phẩm kèm thêm</h3>
               <div className="add-ons-list">
                 {addOnProducts.map((addOn) => (
                   <div className="add-on-card" key={addOn.productID}>
@@ -166,7 +169,7 @@ function ProductDetail() {
                       className="add-on-btn"
                       onClick={() => handleAddAddOnToCart(addOn)}
                     >
-                      Add to Basket
+                      Thêm vào giỏ hàng
                     </button>
                   </div>
                 ))}

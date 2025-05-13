@@ -208,12 +208,11 @@
 }
 .add-ons-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
+  flex-direction: column;
+  gap: 16px;
 }
 .add-on-card {
-  flex: 1 1 220px;
-  min-width: 220px;
+  width: 100%;
   background: #f8f8f8;
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);

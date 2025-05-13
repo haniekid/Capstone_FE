@@ -1,21 +1,35 @@
 .header-container {
   width: 100%;
   margin: auto;
-  max-width: 1080px;
-  margin: auto;
+  max-width: 900px;
   padding: 1rem;
   flex: 1;
   @include flex(space-between, center, row);
   ul {
     @include flex(space-between, center, row);
-    gap: 1.5rem;
+    gap: 2rem;
     @media (max-width: 850px) {
       display: none;
     }
+    li a {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fb8c00;
+    }
+  }
+  .header-main img {
+    height: 120px;
+    max-height: 140px;
+    width: auto;
+    display: block;
+    margin: 0;
+    padding: 0;
+    object-fit: contain;
   }
   a h1 {
     margin-bottom: 0;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 }
 
