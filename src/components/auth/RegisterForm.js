@@ -20,18 +20,18 @@ function Register() {
       setIsSubmitting(true);
 
       const userData = {
-        userID: 0,
         firstName: registerData.firstName,
         lastName: registerData.lastName,
         email: registerData.email,
         phone: registerData.phone,
         password: registerData.password,
-        address: "string",
-        city: "string",
-        postalCode: "string",
-        roleName: "string",
+        roleName: "Customer",
         isActivated: true,
-        activationToken: "string",
+        wardCode: "0",
+        activationToken: "default",
+        addressDetail: "default",
+        resetPasswordToken: "default",
+        districtID: 0
       };
 
       console.log("Sending data to API:", userData);
