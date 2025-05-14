@@ -79,7 +79,7 @@ function Home() {
         <div className="hero-content">
           <h1>Ẩm Thực Việt Nam</h1>
           <p>Khám phá hương vị đặc trưng của Việt Nam</p>
-          <Link to="/menu" className="cta-button">
+          <Link to="/shop" className="cta-button">
             Xem Thực Đơn
           </Link>
         </div>
@@ -99,7 +99,7 @@ function Home() {
                   <span className="category">
                     {categories.find((cat) => cat.id === item.category)?.name}
                   </span>
-                  <Link to={`/menu/${item.id}`} className="view-button">
+                  <Link to={`/shop`} className="view-button">
                     Xem Chi Tiết
                   </Link>
                 </div>

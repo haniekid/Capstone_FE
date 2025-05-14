@@ -31,3 +31,7 @@ $color-blue: #0070ba;
 @import "../components/home/home";
 @import "../components/product/product";
 @import "home";
+
+// New pages
+@import "./contact";
+@import "./about";
