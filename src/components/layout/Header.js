@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
@@ -8,15 +8,48 @@ import { useLocation } from "react-router-dom";
 import { useCart } from "../../utils/hooks/useCart";
 import { useWishlist } from "../../utils/hooks/useWishlist";
 import { searchProducts } from "../../store/reducers/productSlice";
+import MiniCart from "../cart/MiniCart";
 
 function Header() {
   const location = useLocation();
-  const { quantity } = useCart();
+  const { quantity, items, updateQuantity, removeFromCart } = useCart();
   const { wishlistCount } = useWishlist();
   const dispatch = useDispatch();
+  const [openMiniCart, setOpenMiniCart] = useState(false);
 
   const isHome = location.pathname === "/";
   const isShop = location.pathname === "/shop";
+
+  // Adapter cho MiniCart
+  const handleUpdateQty = (id, qty) => {
+    const item = items.find((item) => item.product.productID === id);
+    if (item) {
+      updateQuantity(id, item.size, qty);
+    }
+  };
+  const handleRemove = (id) => {
+    const item = items.find((item) => item.product.productID === id);
+    if (item) {
+      removeFromCart(id, item.size);
+    }
+  };
+  // Chuyển đổi dữ liệu cho MiniCart
+  // Thêm log để kiểm tra dữ liệu thực tế
+  if (items.length > 0) {
+    console.log("Cart item sample:", items[0]);
+  }
+  const cartItems = items.map((item) => ({
+    id: item.product.productID,
+    name:
+      item.product.productName ||
+      item.product.name ||
+      item.product.title ||
+      "Sản phẩm",
+    image: item.product.image,
+    price: item.product.price,
+    quantity: item.quantity,
+    size: item.size,
+  }));
 
   return (
     <nav>
@@ -66,22 +99,30 @@ function Header() {
               )}{" "}
             </div>{" "}
           </Link>{" "}
-          <Link to="/cart">
-            <div className="svg-icon">
-              <FontAwesomeIcon icon={icons.cart} />{" "}
-              {quantity > 0 && (
-                <span> {quantity > 9 ? "9+" : quantity} </span>
-              )}{" "}
-            </div>{" "}
-          </Link>{" "}
+          <button
+            type="button"
+            className="svg-icon"
+            style={{ background: "none", border: "none", cursor: "pointer" }}
+            onClick={() => setOpenMiniCart(true)}
+          >
+            <FontAwesomeIcon icon={icons.cart} />{" "}
+            {quantity > 0 && (
+              <span> {quantity > 9 ? "9+" : quantity} </span>
+            )}{" "}
+          </button>{" "}
           <div className="burger">
             <FontAwesomeIcon icon={icons.hamburger} />{" "}
           </div>{" "}
         </div>{" "}
       </div>{" "}
-      <div className={`header-line ${isHome || isShop ? "active" : ""}`}>
-        {" "}
-      </div>{" "}
+      <div className={`header-line ${isHome || isShop ? "active" : ""}`}> </div>{" "}
+      <MiniCart
+        open={openMiniCart}
+        onClose={() => setOpenMiniCart(false)}
+        cartItems={cartItems || []}
+        onUpdateQty={handleUpdateQty}
+        onRemove={handleRemove}
+      />
     </nav>
   );
 }
