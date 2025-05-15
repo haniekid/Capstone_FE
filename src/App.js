@@ -18,6 +18,7 @@ import AddDiscount from "./pages/AddDiscount";
 import DiscountDetail from "./pages/DiscountDetail";
 import ManageProductDetail from "./pages/ManageProductDetail";
 import ManageProductAdd from "./pages/ManageProductAdd";
+import OrdersManagement from "./pages/OrdersManagement";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import OrderSuccess from "./pages/OrderSuccess";
@@ -59,6 +60,7 @@ function App() {
           path="/admin/discounts/detail/:id"
           element={<DiscountDetail />}
         />{" "}
+        <Route path="/admin/orders" element={<OrdersManagement />} />{" "}
         <Route path="/forgot-password" element={<ForgotPassword />} />{" "}
         <Route path="/reset-password" element={<ResetPassword />} />{" "}
         <Route path="/order-success" element={<OrderSuccess />} />{" "}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { formatPrice } from '../utils/hooks/useUtil';
 import '../styles/account.css';
@@ -7,11 +7,26 @@ import { FaArrowLeft } from 'react-icons/fa';
 
 function OrderDetail() {
   const { orderId } = useParams();
+  const navigate = useNavigate();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    const checkAdminRole = async () => {
+      try {
+        const userJson = localStorage.getItem('user');
+        if (userJson) {
+          const user = JSON.parse(userJson);
+          setIsAdmin(user.roleName === 'Admin');
+        }
+      } catch (err) {
+        console.error('Error checking admin role:', err);
+      }
+    };
+
+    checkAdminRole();
     const fetchOrderDetail = async () => {
       try {
         const response = await axios.get(
@@ -29,24 +44,28 @@ function OrderDetail() {
     fetchOrderDetail();
   }, [orderId]);
 
+  const handleBack = () => {
+    if (isAdmin) {
+      navigate('/admin/orders');
+    } else {
+      navigate('/account');
+    }
+  };
+
   const getStatusText = (status) => {
     switch (status) {
       case 0:
         return 'Đã hủy';
       case 1:
-        return 'Chờ xác nhận';
+        return 'Đang xử lý';
       case 2:
         return 'Đã xác nhận';
       case 3:
-        return 'Đã thanh toán';
-      case 4:
-        return 'Đã cọc';
-      case 5:
         return 'Đang chuẩn bị';
-      case 6:
+      case 4:
         return 'Đang giao hàng';
-      case 7:
-        return 'Đã giao';
+      case 5:
+        return 'Đã giao hàng';
       default:
         return 'Không xác định';
     }
@@ -79,9 +98,9 @@ function OrderDetail() {
     <div className="order-detail-container">
       <div className="order-detail-header">
         <div className="header-left">
-          <Link to="/account" className="back-link">
+          <button onClick={handleBack} className="back-link">
             <FaArrowLeft style={{ marginRight: 6 }} /> Quay lại
-          </Link>{' '}
+          </button>
           <h1> Chi tiết đơn hàng# {order.order.orderID} </h1>{' '}
         </div>{' '}
         <div className={`order-status status-${order.order.status}`}>

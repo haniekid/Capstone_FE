@@ -24,16 +24,14 @@ function MyAccount() {
   }, [currentUser, navigate]);
 
   useEffect(() => {
-    // Nếu có state.tab === "orders" thì chuyển sang tab Đơn Hàng Của Tôi
     if (location.state && location.state.tab === "orders") {
       setActiveTab(1);
     }
   }, [location.state]);
 
   const handleTabClick = (index) => {
-    // Xác định số tab cho từng loại user
     const isAdmin = currentUser && currentUser.roleName === "Admin";
-    const logoutTabIndex = isAdmin ? 4 : 3;
+    const logoutTabIndex = isAdmin ? 5 : 3;
     if (index === logoutTabIndex) {
       logout();
       navigate("/authentication");
@@ -71,11 +69,17 @@ function MyAccount() {
                 </li>{" "}
                 <li
                   className={activeTab === 3 ? "active" : ""}
-                  onClick={() => handleTabClick(3)}
+                  onClick={() => navigate("/admin/orders")}
+                >
+                  Quản Lý Đơn Hàng{" "}
+                </li>{" "}
+                <li
+                  className={activeTab === 4 ? "active" : ""}
+                  onClick={() => handleTabClick(4)}
                 >
                   Quản Lý Người Dùng{" "}
                 </li>{" "}
-                <li onClick={() => handleTabClick(4)}> Đăng Xuất </li>{" "}
+                <li onClick={() => handleTabClick(5)}> Đăng Xuất </li>{" "}
               </>
             ) : (
               <>
@@ -106,14 +110,16 @@ function MyAccount() {
             {activeTab === 0 && currentUser.roleName !== "Admin" && (
               <Orders currentUser={currentUser} />
             )}{" "}
-            {activeTab === 1 && <Profile currentUser={currentUser} />}{" "}
+            {activeTab === 1 && currentUser.roleName !== "Admin" && (
+              <Profile currentUser={currentUser} />
+            )}{" "}
             {activeTab === 2 && currentUser.roleName === "Admin" && (
               <ManageCategory />
             )}{" "}
             {activeTab === 2 && currentUser.roleName !== "Admin" && (
               <ChangePassword currentUser={currentUser} />
             )}{" "}
-            {activeTab === 3 && currentUser.roleName === "Admin" && (
+            {activeTab === 4 && currentUser.roleName === "Admin" && (
               <UsersTable />
             )}
           </div>{" "}
