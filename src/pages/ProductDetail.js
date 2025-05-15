@@ -82,14 +82,7 @@ function ProductDetail() {
       {product && (
         <div className="product-detail-page">
           {/* Hero Section */}
-          <section
-            className="product-hero"
-            style={{ backgroundImage: `url('${product.imageURL}')` }}
-          >
-            <div className="product-hero-overlay">
-              <h1>{product.name}</h1>
-            </div>
-          </section>
+          {/* Hero Section */}
 
           {/* Main Card Container */}
           <div className="product-detail-card">

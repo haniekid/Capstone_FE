@@ -1,10 +1,14 @@
 .header-container {
   width: 100%;
   margin: auto;
-  max-width: 900px;
+  max-width: 1200px;
   padding: 1rem;
   flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   @include flex(space-between, center, row);
+  background: #fff0f6;
   ul {
     @include flex(space-between, center, row);
     gap: 2rem;
@@ -15,7 +19,12 @@
       font-size: 1.15rem;
       font-weight: 700;
       letter-spacing: 0.5px;
-      color: #fb8c00;
+      color: #111 !important;
+      transition: color 0.18s;
+    }
+    li a:hover,
+    li a:focus {
+      color: #111 !important;
     }
   }
   .header-main img {
@@ -43,10 +52,76 @@
 }
 
 .header-tools {
-  flex: 1;
-  @include flex(flex-end, flex-end, row);
-  svg {
-    padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 2.5rem !important;
+
+  button.icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fff;
+    border: none;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    position: relative;
+    color: #232f3e;
+    outline: none;
+    transition:
+      box-shadow 0.2s,
+      background 0.2s,
+      color 0.2s;
+
+    svg {
+      width: 1.2rem;
+      height: 1.2rem;
+      fill: #232f3e !important;
+      display: block;
+      vertical-align: middle;
+      line-height: 1;
+      transition:
+        color 0.2s,
+        fill 0.2s;
+    }
+
+    &:hover,
+    &:focus {
+      background: #fb8c00;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(251, 140, 0, 0.15);
+      svg {
+        fill: #fff !important;
+        color: #fff;
+      }
+    }
+
+    .icon-badge {
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      background: #1976d2;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: bold;
+      z-index: 2;
+      line-height: 1;
+      box-sizing: border-box;
+      pointer-events: none;
+    }
   }
 }
 

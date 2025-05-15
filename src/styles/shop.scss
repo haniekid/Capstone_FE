@@ -6,7 +6,7 @@
 .shop-hero {
   position: relative;
   height: 320px;
-  background: url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200")
+  background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200')
     center/cover no-repeat;
   display: flex;
   align-items: center;
@@ -38,7 +38,7 @@
 
 .shop-content-container {
   max-width: 1200px;
-  margin: -60px auto 0 auto;
+  margin: 0px auto 0 auto;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -54,7 +54,9 @@
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   overflow: hidden;
   position: relative;
 }

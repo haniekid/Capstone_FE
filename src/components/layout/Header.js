@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icons } from "../../assets/icons/icons";
-import { useLocation } from "react-router-dom";
 import { useCart } from "../../utils/hooks/useCart";
 import { useWishlist } from "../../utils/hooks/useWishlist";
 import { searchProducts } from "../../store/reducers/productSlice";
@@ -16,6 +16,7 @@ function Header() {
   const { wishlistCount } = useWishlist();
   const dispatch = useDispatch();
   const [openMiniCart, setOpenMiniCart] = useState(false);
+  const navigate = useNavigate();
 
   const isHome = location.pathname === "/";
   const isShop = location.pathname === "/shop";
@@ -86,34 +87,37 @@ function Header() {
           </li>{" "}
         </ul>{" "}
         <div className="header-tools header-section">
-          <Link to="/account">
-            <div className="svg-icon">
-              <FontAwesomeIcon icon={icons.user} />{" "}
-            </div>{" "}
-          </Link>{" "}
-          <Link to="/wishlist">
-            <div className="svg-icon">
-              <FontAwesomeIcon icon={icons.heart} />{" "}
-              {wishlistCount > 0 && (
-                <span> {wishlistCount > 9 ? "9+" : wishlistCount} </span>
-              )}{" "}
-            </div>{" "}
-          </Link>{" "}
           <button
             type="button"
-            className="svg-icon"
-            style={{ background: "none", border: "none", cursor: "pointer" }}
+            className="icon-btn"
+            onClick={() => navigate("/account")}
+          >
+            <FontAwesomeIcon icon={icons.user} />
+          </button>
+          <button
+            type="button"
+            className="icon-btn"
+            onClick={() => navigate("/wishlist")}
+          >
+            <FontAwesomeIcon icon={icons.heart} />
+            {wishlistCount > 0 && (
+              <span className="icon-badge">{wishlistCount > 9 ? "9+" : wishlistCount}</span>
+            )}
+          </button>
+          <button
+            type="button"
+            className="icon-btn"
             onClick={() => setOpenMiniCart(true)}
           >
-            <FontAwesomeIcon icon={icons.cart} />{" "}
+            <FontAwesomeIcon icon={icons.cart} />
             {quantity > 0 && (
-              <span> {quantity > 9 ? "9+" : quantity} </span>
-            )}{" "}
-          </button>{" "}
+              <span className="icon-badge">{quantity > 9 ? "9+" : quantity}</span>
+            )}
+          </button>
           <div className="burger">
-            <FontAwesomeIcon icon={icons.hamburger} />{" "}
-          </div>{" "}
-        </div>{" "}
+            <FontAwesomeIcon icon={icons.hamburger} />
+          </div>
+        </div>
       </div>{" "}
       <div className={`header-line ${isHome || isShop ? "active" : ""}`}> </div>{" "}
       <MiniCart
