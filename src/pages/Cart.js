@@ -224,53 +224,75 @@ function CartPage() {
             });
 
             // Update address form data
-            if (
-              userData.districtID ||
-              userData.wardCode ||
-              userData.addressDetail
-            ) {
-              setSelectedDistrict(
-                userData.districtID ? userData.districtID.toString() : ''
-              );
-              setSelectedWard(userData.wardCode || '');
-              setAddress(userData.addressDetail || '');
-
-              // Update shipping address
-              const addressData = {
-                districtId: userData.districtID
-                  ? userData.districtID.toString()
-                  : '',
-                districtName: '',
-                wardCode: userData.wardCode || '',
-                wardName: '',
-                addressDetail: userData.addressDetail || '',
-              };
-
-              // Find district name
-              const districtObj = districts.find(
-                (d) => d.DistrictID.toString() === addressData.districtId
-              );
-              if (districtObj) {
-                addressData.districtName = districtObj.DistrictName;
-              }
-
-              // Find ward name
-              const wardObj = wards.find(
-                (w) => w.WardCode === addressData.wardCode
-              );
-              if (wardObj) {
-                addressData.wardName = wardObj.WardName;
-              }
-
-              console.log('Setting shipping address with:', addressData);
-              setShippingAddress(addressData);
-
-              // Calculate shipping fee if we have both district and ward
-              if (userData.districtID && userData.wardCode) {
-                calculateShippingFee(
-                  userData.districtID.toString(),
-                  userData.wardCode
+            if (userData.districtID || userData.wardCode || userData.addressDetail) {
+              // Fetch district data first
+              try {
+                const districtResponse = await axios.get(
+                  `${GHN_API_URL}/master-data/district`,
+                  {
+                    headers: {
+                      token: GHN_TOKEN,
+                    },
+                    params: {
+                      province_id: HANOI_PROVINCE_ID,
+                    },
+                  }
                 );
+
+                if (districtResponse.data.code === 200) {
+                  const districts = districtResponse.data.data;
+                  const districtObj = districts.find(
+                    (d) => d.DistrictID === userData.districtID
+                  );
+
+                  // Then fetch ward data
+                  if (districtObj && userData.districtID) {
+                    const wardResponse = await axios.get(
+                      `${GHN_API_URL}/master-data/ward`,
+                      {
+                        headers: {
+                          token: GHN_TOKEN,
+                        },
+                        params: {
+                          district_id: userData.districtID,
+                        },
+                      }
+                    );
+
+                    if (wardResponse.data.code === 200) {
+                      const wards = wardResponse.data.data;
+                      const wardObj = wards.find(
+                        (w) => w.WardCode === userData.wardCode
+                      );
+
+                      // Set all the address data at once
+                      setSelectedDistrict(userData.districtID.toString());
+                      setSelectedWard(userData.wardCode || '');
+                      setAddress(userData.addressDetail || '');
+                      setDistricts(districts);
+                      setWards(wards);
+
+                      // Update shipping address with complete data
+                      setShippingAddress({
+                        districtId: userData.districtID.toString(),
+                        districtName: districtObj ? districtObj.DistrictName : '',
+                        wardCode: userData.wardCode || '',
+                        wardName: wardObj ? wardObj.WardName : '',
+                        addressDetail: userData.addressDetail || '',
+                      });
+
+                      // Calculate shipping fee if we have both district and ward
+                      if (userData.districtID && userData.wardCode) {
+                        calculateShippingFee(
+                          userData.districtID.toString(),
+                          userData.wardCode
+                        );
+                      }
+                    }
+                  }
+                }
+              } catch (error) {
+                console.error('Error fetching address data:', error);
               }
             }
           }
@@ -281,7 +303,7 @@ function CartPage() {
     };
 
     fetchUserData();
-  }, [userId, form.email, form.name, form.phone, districts, wards]);
+  }, [userId]);
 
   // Add a new useEffect to log shipping address changes
   useEffect(() => {
@@ -391,6 +413,27 @@ function CartPage() {
 
   const handlePlaceOrder = async () => {
     try {
+      // Validate required fields
+      if (!form.email || !form.name || !form.phone) {
+        alert('Vui lòng điền đầy đủ thông tin người nhận hàng');
+        return;
+      }
+
+      if (shippingMethod === 'home') {
+        if (!shippingAddress.districtId) {
+          alert('Vui lòng chọn Quận/Huyện');
+          return;
+        }
+        if (!shippingAddress.wardCode) {
+          alert('Vui lòng chọn Phường/Xã');
+          return;
+        }
+        if (!shippingAddress.addressDetail || shippingAddress.addressDetail.trim() === '') {
+          alert('Vui lòng nhập địa chỉ chi tiết');
+          return;
+        }
+      }
+
       const orderData = {
         Order: {
           OrderID: 0,
@@ -412,7 +455,7 @@ function CartPage() {
           DistrictName: shippingAddress.districtName,
           WardCode: shippingAddress.wardCode,
           WardName: shippingAddress.wardName,
-          AddressDetail: shippingAddress.addressDetail,
+          AddressDetail: shippingAddress.addressDetail.trim(),
         },
         OrderItems: items.map((item) => {
           console.log('Full item:', item);
@@ -454,20 +497,6 @@ function CartPage() {
       console.log('Shipping Method:', shippingMethod);
       console.log('Payment Method:', paymentMethod);
       console.log('Vnpay Option:', vnpayOption);
-
-      // Validate required fields
-      if (!form.email || !form.name || !form.phone) {
-        alert('Vui lòng điền đầy đủ thông tin người nhận hàng');
-        return;
-      }
-
-      if (
-        shippingMethod === 'home' &&
-        (!shippingAddress.districtId || !shippingAddress.wardCode)
-      ) {
-        alert('Vui lòng chọn địa chỉ giao hàng');
-        return;
-      }
 
       if (items.length === 0) {
         alert('Giỏ hàng trống');

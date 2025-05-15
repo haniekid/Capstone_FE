@@ -185,6 +185,7 @@ function ShippingAddressForm({
               value={selectedDistrict}
               onChange={handleDistrictChange}
               className="styled-select"
+              required
             >
               <option value=""> Chọn Quận / Huyện </option>{' '}
               {districts.map((district) => (
@@ -206,6 +207,7 @@ function ShippingAddressForm({
               onChange={handleWardChange}
               className="styled-select"
               disabled={!selectedDistrict}
+              required
             >
               <option value=""> Chọn Phường / Xã </option>{' '}
               {wards.map((ward) => (
@@ -220,18 +222,19 @@ function ShippingAddressForm({
       </div>{' '}
       <div className="form-group">
         <label className="input-label">
-          Địa chỉ chi tiết{' '}
+          Địa chỉ chi tiết
           <div className="input-wrapper">
             <input
               type="text"
               value={address}
               onChange={handleAddressChange}
-              placeholder="Nhập địa chỉ chi tiết"
+              placeholder="Số nhà, tên đường..."
               className="styled-input"
+              required
             />
-          </div>{' '}
-        </label>{' '}
-      </div>{' '}
+          </div>
+        </label>
+      </div>
       {loading && <p className="loading"> Đang tính phí vận chuyển... </p>}{' '}
       {error && <p className="error-message"> {error} </p>}{' '}
       {shippingFee && (

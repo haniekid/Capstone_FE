@@ -7,6 +7,7 @@ function Wishlist() {
 
   return (
     <div className="wishlist container">
+      <h1>Danh sách sản phẩm yêu thích</h1>
       <div className="wishlist-control">
         <a onClick={clearWishlist}>Xóa Danh Sách Yêu Thích</a>
       </div>
