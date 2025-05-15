@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import Profile from '../components/account/EditProfile';
-import Orders from '../components/account/MyOrders';
-import ChangePassword from '../components/account/ChangePassword';
-import ManageCategory from './ManageCategory';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectCurrentUser, setUser } from '../store/reducers/userSlice';
-import { useUser } from '../utils/hooks/useUser';
+import React, { useState, useEffect } from "react";
+import Profile from "../components/account/EditProfile";
+import Orders from "../components/account/MyOrders";
+import ChangePassword from "../components/account/ChangePassword";
+import ManageCategory from "./ManageCategory";
+import UsersTable from "../components/account/UsersTable";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { selectCurrentUser, setUser } from "../store/reducers/userSlice";
+import { useUser } from "../utils/hooks/useUser";
 
 function MyAccount() {
   const dispatch = useDispatch();
@@ -18,92 +19,106 @@ function MyAccount() {
 
   useEffect(() => {
     if (!currentUser) {
-      navigate('/authentication');
+      navigate("/authentication");
     }
   }, [currentUser, navigate]);
 
   useEffect(() => {
     // Nếu có state.tab === "orders" thì chuyển sang tab Đơn Hàng Của Tôi
-    if (location.state && location.state.tab === 'orders') {
+    if (location.state && location.state.tab === "orders") {
       setActiveTab(1);
     }
   }, [location.state]);
 
   const handleTabClick = (index) => {
-    if (index === 3) {
+    // Xác định số tab cho từng loại user
+    const isAdmin = currentUser && currentUser.roleName === "Admin";
+    const logoutTabIndex = isAdmin ? 4 : 3;
+    if (index === logoutTabIndex) {
       logout();
-      navigate('/authentication');
+      navigate("/authentication");
+      return;
     }
     setActiveTab(index);
   };
 
   return (
     <>
-      {' '}
+      {" "}
       {currentUser && (
         <div className="container account">
           <ul className="account-menu">
-            {' '}
-            {currentUser.roleName === 'Admin' ? (
+            {" "}
+            {currentUser.roleName === "Admin" ? (
               <>
                 <li
-                  className={activeTab === 0 ? 'active' : ''}
-                  onClick={() => navigate('/admin/products')}
+                  className={activeTab === 0 ? "active" : ""}
+                  onClick={() => navigate("/admin/products")}
                 >
-                  Quản Lý Sản Phẩm{' '}
-                </li>{' '}
+                  Quản Lý Sản Phẩm{" "}
+                </li>{" "}
                 <li
-                  className={activeTab === 1 ? 'active' : ''}
-                  onClick={() => navigate('/admin/discounts')}
+                  className={activeTab === 1 ? "active" : ""}
+                  onClick={() => navigate("/admin/discounts")}
                 >
-                  Quản Lý Khuyến Mãi{' '}
-                </li>{' '}
+                  Quản Lý Khuyến Mãi{" "}
+                </li>{" "}
                 <li
-                  className={activeTab === 2 ? 'active' : ''}
+                  className={activeTab === 2 ? "active" : ""}
                   onClick={() => handleTabClick(2)}
                 >
-                  Quản Lý Danh Mục{' '}
-                </li>{' '}
+                  Quản Lý Danh Mục{" "}
+                </li>{" "}
+                <li
+                  className={activeTab === 3 ? "active" : ""}
+                  onClick={() => handleTabClick(3)}
+                >
+                  Quản Lý Người Dùng{" "}
+                </li>{" "}
+                <li onClick={() => handleTabClick(4)}> Đăng Xuất </li>{" "}
               </>
             ) : (
               <>
                 <li
-                  className={activeTab === 0 ? 'active' : ''}
+                  className={activeTab === 0 ? "active" : ""}
                   onClick={() => handleTabClick(0)}
                 >
-                  Đơn Hàng Của Tôi{' '}
-                </li>{' '}
+                  Đơn Hàng Của Tôi{" "}
+                </li>{" "}
                 <li
-                  className={activeTab === 1 ? 'active' : ''}
+                  className={activeTab === 1 ? "active" : ""}
                   onClick={() => handleTabClick(1)}
                 >
-                  Thông Tin Cá Nhân{' '}
-                </li>{' '}
+                  Thông Tin Cá Nhân{" "}
+                </li>{" "}
                 <li
-                  className={activeTab === 2 ? 'active' : ''}
+                  className={activeTab === 2 ? "active" : ""}
                   onClick={() => handleTabClick(2)}
                 >
-                  Thay Đổi Mật Khẩu{' '}
-                </li>{' '}
+                  Thay Đổi Mật Khẩu{" "}
+                </li>{" "}
+                <li onClick={() => handleTabClick(3)}> Đăng Xuất </li>{" "}
               </>
-            )}{' '}
-            <li onClick={() => handleTabClick(3)}> Đăng Xuất </li>{' '}
-          </ul>{' '}
+            )}{" "}
+          </ul>{" "}
           <div className="profile-container">
-            {' '}
-            {activeTab === 0 && currentUser.roleName !== 'Admin' && (
+            {" "}
+            {activeTab === 0 && currentUser.roleName !== "Admin" && (
               <Orders currentUser={currentUser} />
-            )}{' '}
-            {activeTab === 1 && <Profile currentUser={currentUser} />}{' '}
-            {activeTab === 2 && currentUser.roleName === 'Admin' && (
+            )}{" "}
+            {activeTab === 1 && <Profile currentUser={currentUser} />}{" "}
+            {activeTab === 2 && currentUser.roleName === "Admin" && (
               <ManageCategory />
-            )}{' '}
-            {activeTab === 2 && currentUser.roleName !== 'Admin' && (
+            )}{" "}
+            {activeTab === 2 && currentUser.roleName !== "Admin" && (
               <ChangePassword currentUser={currentUser} />
-            )}{' '}
-          </div>{' '}
+            )}{" "}
+            {activeTab === 3 && currentUser.roleName === "Admin" && (
+              <UsersTable />
+            )}
+          </div>{" "}
         </div>
-      )}{' '}
+      )}{" "}
     </>
   );
 }

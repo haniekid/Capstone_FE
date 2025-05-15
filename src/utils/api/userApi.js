@@ -19,8 +19,8 @@ const createUser = async (user) => {
   return response.data;
 };
 
-const updateUser = async (userId, user) => {
-  const response = await axios.put(`${API_URL}/${userId}`, user);
+const updateUser = async (user) => {
+  const response = await axios.put(`${API_URL}/update-user`, user);
   return response.data;
 };
 
@@ -44,6 +44,14 @@ const login = async (loginData) => {
   }
 };
 
+const lockUser = async (userId, isLocked) => {
+  const response = await axios.put(`${API_URL}/lock-user`, {
+    UserId: userId,
+    IsLocked: isLocked,
+  });
+  return response.data;
+};
+
 const userApi = {
   login,
   getUser,
@@ -51,6 +59,7 @@ const userApi = {
   createUser,
   updateUser,
   deleteUser,
+  lockUser,
 };
 
 export default userApi;
