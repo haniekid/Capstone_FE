@@ -244,9 +244,9 @@ const ManageProductAdd = () => {
             </div>
 
             <div className="product-images">
-              <h3>Product Images</h3>
+              <h3>Hình Ảnh Sản Phẩm</h3>
               <div className="form-group">
-                <label>Main Image URL:</label>
+                <label>Hình Ảnh Chính:</label>
                 <input
                   type="text"
                   name="imageURL"
@@ -257,7 +257,7 @@ const ManageProductAdd = () => {
               </div>
 
               <div className="form-group">
-                <label>Additional Images:</label>
+                <label>Hình Ảnh Phụ:</label>
                 <div className="additional-images-container">
                   {newProduct.listImageURL.map((url, index) => (
                     <div key={index} className="additional-image-input">
@@ -283,7 +283,7 @@ const ManageProductAdd = () => {
                     className="add-image-btn"
                     onClick={addImageField}
                   >
-                    + Add Image
+                    + Thêm Hình Ảnh
                   </button>
                 </div>
               </div>
@@ -292,7 +292,7 @@ const ManageProductAdd = () => {
 
           <div className="form-actions">
             <button type="submit" className="save-btn">
-              Add Product
+            Lưu thông tin
             </button>
           </div>
         </form>

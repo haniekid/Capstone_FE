@@ -499,7 +499,7 @@ function CartPage() {
       console.log('Vnpay Option:', vnpayOption);
 
       if (items.length === 0) {
-        alert('Giỏ hàng trống');
+        alert('Không có sản phẩm nào');
         return;
       }
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/admin.css";
+import AccountMenu from "../components/account/AccountMenu";
 
 const API_URL = "https://localhost:7089/api/Discount";
 
@@ -195,168 +196,171 @@ const ManageDiscount = () => {
   if (error) return <div> Error: {error} </div>;
 
   return (
-    <div className="admin-discounts">
-      <div className="discount-header">
-        <h1 className="discount-title"> Quản Lý Khuyến Mãi </h1>{" "}
-        <button
-          className="add-discount-btn"
-          onClick={() => navigate("/admin/discounts/add")}
-        >
-          +Thêm Mã Khuyến Mãi Mới{" "}
-        </button>{" "}
-      </div>
-      <div className="search-box">
-        <input
-          type="text"
-          placeholder="Tìm kiếm theo mã khuyến mãi..."
-          value={searchQuery}
-          onChange={handleSearch}
-          className="search-input"
-        />
-      </div>
-      <div className="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th onClick={() => handleSort("code")} className="sortable">
-                Mã{" "}
-                {sortConfig.key === "code" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-              </th>{" "}
-              <th onClick={() => handleSort("value")} className="sortable">
-                Giá Trị{" "}
-                {sortConfig.key === "value" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-              </th>{" "}
-              <th onClick={() => handleSort("period")} className="sortable">
-                Thời Gian{" "}
-                {sortConfig.key === "period" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-              </th>{" "}
-              <th onClick={() => handleSort("usage")} className="sortable">
-                Số Lần Sử Dụng{" "}
-                {sortConfig.key === "usage" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-              </th>{" "}
-              <th onClick={() => handleSort("status")} className="sortable">
-                Trạng Thái{" "}
-                {sortConfig.key === "status" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-              </th>{" "}
-              <th> Thao Tác </th>{" "}
-            </tr>{" "}
-          </thead>{" "}
-          <tbody>
-            {" "}
-            {currentDiscounts.map((discount) => (
-              <tr key={discount.discountId}>
-                <td> {discount.code} </td>{" "}
-                <td>
-                  {" "}
-                  {discount.discountType === "Percentage"
-                    ? `${discount.discountValue}%`
-                    : `$${discount.discountValue}`}{" "}
-                </td>{" "}
-                <td>
-                  {" "}
-                  {formatDate(discount.startDate)}{" "}
-                  {discount.endDate ? ` - ${formatDate(discount.endDate)}` : ""}{" "}
-                </td>{" "}
-                <td>
-                  {" "}
-                  {`${discount.usedCount || 0} / ${
-                    discount.usageLimit || "∞"
-                  }`}{" "}
-                </td>{" "}
-                <td>
-                  <span
-                    className={`status ${
-                      discount.isActive ? "active" : "inactive"
-                    }`}
-                  >
-                    {discount.isActive ? "Đang Hoạt Động" : "Không Hoạt Động"}{" "}
-                  </span>{" "}
-                </td>{" "}
-                <td>
-                  <button
-                    className="edit-btn"
-                    onClick={() =>
-                      navigate(`/admin/discounts/detail/${discount.discountId}`)
-                    }
-                  >
-                    Chi Tiết{" "}
-                  </button>{" "}
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDeleteDiscount(discount.discountId)}
-                  >
-                    Xóa{" "}
-                  </button>{" "}
-                </td>{" "}
-              </tr>
-            ))}{" "}
-          </tbody>{" "}
-        </table>{" "}
-      </div>{" "}
-      {totalPages > 1 && (
-        <div className="pagination">
+    <div className="container account">
+      <AccountMenu />
+      <div className="admin-discounts">
+        <div className="discount-header">
+          <h1 className="discount-title">Quản Lý Khuyến Mãi</h1>
           <button
-            className="pagination-btn"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
+            className="add-discount-btn"
+            onClick={() => navigate("/admin/discounts/add")}
           >
-            Trước
-          </button>
-          {currentPage > 2 && (
-            <button
-              className="pagination-btn"
-              onClick={() => handlePageChange(1)}
-            >
-              1
-            </button>
-          )}
-          {currentPage > 3 && <span className="pagination-ellipsis">...</span>}
-          {Array.from({ length: totalPages }, (_, index) => {
-            const pageNumber = index + 1;
-            if (
-              pageNumber === currentPage ||
-              pageNumber === currentPage - 1 ||
-              pageNumber === currentPage + 1
-            ) {
-              return (
-                <button
-                  key={pageNumber}
-                  className={`pagination-btn ${
-                    currentPage === pageNumber ? "active" : ""
-                  }`}
-                  onClick={() => handlePageChange(pageNumber)}
-                >
-                  {pageNumber}
-                </button>
-              );
-            }
-            return null;
-          })}
-          {currentPage < totalPages - 2 && (
-            <span className="pagination-ellipsis">...</span>
-          )}
-          {currentPage < totalPages - 1 && (
-            <button
-              className="pagination-btn"
-              onClick={() => handlePageChange(totalPages)}
-            >
-              {totalPages}
-            </button>
-          )}
-          <button
-            className="pagination-btn"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Sau
+            +Thêm Mã Khuyến Mãi Mới
           </button>
         </div>
-      )}
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Nhập mã khuyến mãi..."
+            value={searchQuery}
+            onChange={handleSearch}
+            className="search-input"
+          />
+        </div>
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th onClick={() => handleSort("code")} className="sortable">
+                  Mã{" "}
+                  {sortConfig.key === "code" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
+                <th onClick={() => handleSort("value")} className="sortable">
+                  Giá Trị{" "}
+                  {sortConfig.key === "value" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
+                <th onClick={() => handleSort("period")} className="sortable">
+                  Thời Gian{" "}
+                  {sortConfig.key === "period" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
+                <th onClick={() => handleSort("usage")} className="sortable">
+                  Số Lần Sử Dụng{" "}
+                  {sortConfig.key === "usage" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
+                <th onClick={() => handleSort("status")} className="sortable">
+                  Trạng Thái{" "}
+                  {sortConfig.key === "status" &&
+                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                </th>{" "}
+                <th> Thao Tác </th>{" "}
+              </tr>{" "}
+            </thead>{" "}
+            <tbody>
+              {" "}
+              {currentDiscounts.map((discount) => (
+                <tr key={discount.discountId}>
+                  <td> {discount.code} </td>{" "}
+                  <td>
+                    {" "}
+                    {discount.discountType === "Percentage"
+                      ? `${discount.discountValue}%`
+                      : `$${discount.discountValue}`}{" "}
+                  </td>{" "}
+                  <td>
+                    {" "}
+                    {formatDate(discount.startDate)}{" "}
+                    {discount.endDate ? ` - ${formatDate(discount.endDate)}` : ""}{" "}
+                  </td>{" "}
+                  <td>
+                    {" "}
+                    {`${discount.usedCount || 0} / ${
+                      discount.usageLimit || "∞"
+                    }`}{" "}
+                  </td>{" "}
+                  <td>
+                    <span
+                      className={`status ${
+                        discount.isActive ? "active" : "inactive"
+                      }`}
+                    >
+                      {discount.isActive ? "Đang Hoạt Động" : "Không Hoạt Động"}{" "}
+                    </span>{" "}
+                  </td>{" "}
+                  <td>
+                    <button
+                      className="edit-btn"
+                      onClick={() =>
+                        navigate(`/admin/discounts/detail/${discount.discountId}`)
+                      }
+                    >
+                      Chi Tiết{" "}
+                    </button>{" "}
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDeleteDiscount(discount.discountId)}
+                    >
+                      Xóa{" "}
+                    </button>{" "}
+                  </td>{" "}
+                </tr>
+              ))}{" "}
+            </tbody>{" "}
+          </table>{" "}
+        </div>{" "}
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button
+              className="pagination-btn"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Trước
+            </button>
+            {currentPage > 2 && (
+              <button
+                className="pagination-btn"
+                onClick={() => handlePageChange(1)}
+              >
+                1
+              </button>
+            )}
+            {currentPage > 3 && <span className="pagination-ellipsis">...</span>}
+            {Array.from({ length: totalPages }, (_, index) => {
+              const pageNumber = index + 1;
+              if (
+                pageNumber === currentPage ||
+                pageNumber === currentPage - 1 ||
+                pageNumber === currentPage + 1
+              ) {
+                return (
+                  <button
+                    key={pageNumber}
+                    className={`pagination-btn ${
+                      currentPage === pageNumber ? "active" : ""
+                    }`}
+                    onClick={() => handlePageChange(pageNumber)}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              }
+              return null;
+            })}
+            {currentPage < totalPages - 2 && (
+              <span className="pagination-ellipsis">...</span>
+            )}
+            {currentPage < totalPages - 1 && (
+              <button
+                className="pagination-btn"
+                onClick={() => handlePageChange(totalPages)}
+              >
+                {totalPages}
+              </button>
+            )}
+            <button
+              className="pagination-btn"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Sau
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

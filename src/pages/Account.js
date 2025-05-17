@@ -53,33 +53,33 @@ function MyAccount() {
                   className={activeTab === 0 ? "active" : ""}
                   onClick={() => navigate("/admin/products")}
                 >
-                  Quản Lý Sản Phẩm{" "}
+                  Quản lý sản phẩm{" "}
                 </li>{" "}
                 <li
                   className={activeTab === 1 ? "active" : ""}
                   onClick={() => navigate("/admin/discounts")}
                 >
-                  Quản Lý Khuyến Mãi{" "}
+                  Quản lý khuyến mãi{" "}
                 </li>{" "}
                 <li
                   className={activeTab === 2 ? "active" : ""}
-                  onClick={() => handleTabClick(2)}
+                  onClick={() => navigate("/admin/categories")}
                 >
-                  Quản Lý Danh Mục{" "}
+                  Quản lý danh mục{" "}
                 </li>{" "}
                 <li
                   className={activeTab === 3 ? "active" : ""}
                   onClick={() => navigate("/admin/orders")}
                 >
-                  Quản Lý Đơn Hàng{" "}
+                  Quản lý đơn hàng{" "}
                 </li>{" "}
                 <li
                   className={activeTab === 4 ? "active" : ""}
-                  onClick={() => handleTabClick(4)}
+                  onClick={() => navigate("/admin/users")}
                 >
-                  Quản Lý Người Dùng{" "}
+                  Quản lý tài khoản{" "}
                 </li>{" "}
-                <li onClick={() => handleTabClick(5)}> Đăng Xuất </li>{" "}
+                <li onClick={() => handleTabClick(5)}> Đăng xuất </li>{" "}
               </>
             ) : (
               <>
@@ -87,21 +87,21 @@ function MyAccount() {
                   className={activeTab === 0 ? "active" : ""}
                   onClick={() => handleTabClick(0)}
                 >
-                  Đơn Hàng Của Tôi{" "}
+                  Đơn hàng của tôi{" "}
                 </li>{" "}
                 <li
                   className={activeTab === 1 ? "active" : ""}
                   onClick={() => handleTabClick(1)}
                 >
-                  Thông Tin Cá Nhân{" "}
+                  Thông tin cá nhân{" "}
                 </li>{" "}
                 <li
                   className={activeTab === 2 ? "active" : ""}
                   onClick={() => handleTabClick(2)}
                 >
-                  Thay Đổi Mật Khẩu{" "}
+                  Thay đổi mật khẩu{" "}
                 </li>{" "}
-                <li onClick={() => handleTabClick(3)}> Đăng Xuất </li>{" "}
+                <li onClick={() => handleTabClick(3)}> Đăng xuất </li>{" "}
               </>
             )}{" "}
           </ul>{" "}
@@ -119,9 +119,6 @@ function MyAccount() {
             {activeTab === 2 && currentUser.roleName !== "Admin" && (
               <ChangePassword currentUser={currentUser} />
             )}{" "}
-            {activeTab === 4 && currentUser.roleName === "Admin" && (
-              <UsersTable />
-            )}
           </div>{" "}
         </div>
       )}{" "}

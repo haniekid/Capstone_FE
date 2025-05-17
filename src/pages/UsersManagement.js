@@ -5,7 +5,7 @@ const UsersManagement = () => {
   return (
     <div className="admin-container">
       <div className="users-management">
-        <h2>Quản Lý Người Dùng</h2>
+        <h2>Quản Lý Tài Khoản</h2>
         <UsersTable />
       </div>
     </div>

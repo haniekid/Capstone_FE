@@ -1,188 +1,192 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../styles/admin.css";
+import AccountMenu from "../components/account/AccountMenu";
 
-const BASE_URL = "https://localhost:7089/api/ProductCategory";
+const API_URL = "https://localhost:7089/api/ProductCategory";
+const ADD_CATEGORY_URL = `${API_URL}/AddCategory`;
+const UPDATE_CATEGORY_URL = `${API_URL}`;
+const DELETE_CATEGORY_URL = `${API_URL}/DeleteCategoryById`;
 
 const ManageCategory = () => {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [isAdding, setIsAdding] = useState(false);
-  const [editingId, setEditingId] = useState(null);
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
   const [newCategory, setNewCategory] = useState({
-    categoryId: 0,
     categoryName: "",
-    isActive: true
+    description: "",
+    isDeleted: false
   });
-  const [editedCategory, setEditedCategory] = useState({
-    categoryId: 0,
-    categoryName: "",
-    isActive: true
-  });
+
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(API_URL);
+      setCategories(response.data);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  const fetchCategories = async () => {
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
     try {
-      setLoading(true);
-      const response = await axios.get(BASE_URL);
-      setCategories(response.data);
+      await axios.post(ADD_CATEGORY_URL, newCategory);
+      setNewCategory({ categoryName: "", description: "", isDeleted: false });
+      setShowAddForm(false);
+      setError(null);
+      await fetchCategories();
+    } catch (err) {
+      setError("Failed to add category: " + err.message);
+    }
+  };
+
+  const handleUpdateCategory = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`${UPDATE_CATEGORY_URL}/${editingCategory.categoryId}`, editingCategory);
+      setEditingCategory(null);
+      setError(null);
+      await fetchCategories();
+    } catch (err) {
+      setError("Failed to update category: " + err.message);
+    }
+  };
+
+  const handleToggleCategory = async (categoryId, currentStatus) => {
+    try {
+      await axios.post(`${DELETE_CATEGORY_URL}/${categoryId}`);
+      setCategories(categories.map(cat => 
+        cat.categoryId === categoryId 
+          ? { ...cat, isDeleted: !currentStatus }
+          : cat
+      ));
       setError(null);
     } catch (err) {
-      setError("Failed to load categories");
-      console.error("Error fetching categories:", err);
-    } finally {
-      setLoading(false);
+      setError("Failed to toggle category status: " + err.message);
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (isAdding) {
-      setNewCategory(prev => ({
-        ...prev,
-        [name]: value
-      }));
+    if (editingCategory) {
+      setEditingCategory({ ...editingCategory, [name]: value });
     } else {
-      setEditedCategory(prev => ({
-        ...prev,
-        [name]: value
-      }));
+      setNewCategory({ ...newCategory, [name]: value });
     }
-  };
-
-  const handleAddCategory = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Validate required fields
-      if (!newCategory.categoryName) {
-        setError("Vui lòng nhập tên danh mục");
-        return;
-      }
-
-      const response = await axios.post(`${BASE_URL}/AddCategory`, {
-        categoryId: 0,
-        categoryName: newCategory.categoryName,
-        description: newCategory.description || "",
-        isActive: true
-      });
-
-      if (response.status === 200) {
-        setNewCategory({ categoryId: 0, categoryName: "", description: "", isActive: true });
-        setIsAdding(false);
-        await fetchCategories(); // Load lại danh sách sau khi thêm thành công
-      }
-    } catch (err) {
-      console.error("Error adding category:", err);
-      setError("Có lỗi xảy ra khi thêm danh mục");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEditCategory = async (e) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      await axios.put(`${BASE_URL}/${editingId}`, editedCategory);
-      setEditingId(null);
-      setEditedCategory({ categoryId: 0, categoryName: "", isActive: true });
-      fetchCategories();
-    } catch (err) {
-      setError("Failed to update category");
-      console.error("Error updating category:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleToggleVisibility = async (category) => {
-    if (window.confirm(`Bạn có chắc chắn muốn ${category.isActive ? 'ẩn' : 'hiện'} danh mục này?`)) {
-      try {
-        setLoading(true);
-        if (category.isActive) {
-          // Nếu đang hiển thị -> ẩn: gọi API xóa
-          await axios.post(`${BASE_URL}/DeleteCategoryById/${category.categoryId}`);
-        } else {
-          // Nếu đang ẩn -> hiện: gọi API cập nhật với model đầy đủ
-          const updatedCategory = {
-            categoryId: category.categoryId,
-            categoryName: category.categoryName,
-            description: category.description || "",
-            isActive: true
-          };
-          await axios.put(`${BASE_URL}/${category.categoryId}`, updatedCategory);
-        }
-        fetchCategories();
-      } catch (err) {
-        setError(`Failed to ${category.isActive ? 'hide' : 'show'} category`);
-        console.error("Error updating category visibility:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  const startEditing = (category) => {
-    setEditingId(category.categoryId);
-    setEditedCategory(category);
-  };
-
-  const cancelEditing = () => {
-    setEditingId(null);
-    setEditedCategory({ categoryId: 0, categoryName: "", isActive: true });
   };
 
   if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="admin-container">
-      <h1 className="admin-title">Quản Lý Danh Mục</h1>
-
-      <div className="admin-content">
-        <div className="detail-header">
-          <button
-            className="add-btn"
-            onClick={() => setIsAdding(true)}
+    <div className="container account">
+      <AccountMenu />
+      <div className="admin-categories">
+        <div className="category-header">
+          <h1 className="category-title">Quản Lý Danh Mục</h1>
+          <button 
+            className="add-category-btn"
+            onClick={() => setShowAddForm(true)}
           >
-            Thêm Danh Mục Mới
+            Thêm Danh Mục
           </button>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
+        {showAddForm && (
+          <div className="category-form">
+            <h2>Thêm Danh Mục Mới</h2>
+            <form onSubmit={handleAddCategory}>
+              <div className="form-group">
+                <label htmlFor="categoryName">Tên Danh Mục:</label>
+                <input
+                  type="text"
+                  id="categoryName"
+                  name="categoryName"
+                  value={newCategory.categoryName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="description">Mô Tả:</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={newCategory.description}
+                  onChange={handleInputChange}
+                  rows="3"
+                />
+              </div>
+              <div className="form-actions">
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => {
+                    setShowAddForm(false);
+                    setNewCategory({ categoryName: "", description: "", isDeleted: false });
+                  }}
+                >
+                  Hủy
+                </button>
+                <button type="submit" className="save-btn">
+                  Thêm Mới
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
-        {isAdding && (
-          <form onSubmit={handleAddCategory} className="category-form">
-            <div className="form-group">
-              <label>Tên Danh Mục:</label>
-              <input
-                type="text"
-                name="categoryName"
-                value={newCategory.categoryName}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="form-actions">
-              <button type="submit" className="save-btn">
-                Thêm
-              </button>
-              <button
-                type="button"
-                className="cancel-btn"
-                onClick={() => setIsAdding(false)}
-              >
-                Hủy
-              </button>
-            </div>
-          </form>
+        {editingCategory && (
+          <div className="category-form">
+            <h2>Chỉnh Sửa Danh Mục</h2>
+            <form onSubmit={handleUpdateCategory}>
+              <div className="form-group">
+                <label htmlFor="categoryName">Tên Danh Mục:</label>
+                <input
+                  type="text"
+                  id="categoryName"
+                  name="categoryName"
+                  value={editingCategory.categoryName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="description">Mô Tả:</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={editingCategory.description}
+                  onChange={handleInputChange}
+                  rows="3"
+                />
+              </div>
+              <div className="form-actions">
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => setEditingCategory(null)}
+                >
+                  Hủy
+                </button>
+                <button type="submit" className="save-btn">
+                  Cập Nhật
+                </button>
+              </div>
+            </form>
+          </div>
         )}
 
         <div className="category-list">
@@ -191,72 +195,35 @@ const ManageCategory = () => {
               <tr>
                 <th>ID</th>
                 <th>Tên Danh Mục</th>
+                <th>Mô Tả</th>
                 <th>Trạng Thái</th>
                 <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody>
-              {categories
-                .sort((a, b) => {
-                  // Sắp xếp theo isActive (active trước)
-                  if (a.isActive !== b.isActive) {
-                    return b.isActive ? 1 : -1;
-                  }
-                  // Nếu cùng trạng thái thì sắp xếp theo ID
-                  return a.categoryId - b.categoryId;
-                })
-                .map((category) => (
-                <tr key={category.categoryId} className={!category.isActive ? "hidden-row" : ""}>
+              {categories.map((category) => (
+                <tr key={category.categoryId} className={category.isDeleted ? "hidden-row" : ""}>
                   <td>{category.categoryId}</td>
+                  <td>{category.categoryName}</td>
+                  <td>{category.description}</td>
                   <td>
-                    {editingId === category.categoryId ? (
-                      <input
-                        type="text"
-                        name="categoryName"
-                        value={editedCategory.categoryName}
-                        onChange={handleInputChange}
-                      />
-                    ) : (
-                      category.categoryName
-                    )}
-                  </td>
-                  <td>
-                    <span className={`status-badge ${category.isActive ? 'visible' : 'hidden'}`}>
-                      {category.isActive ? 'Đang hiển thị' : 'Đã ẩn'}
+                    <span className={`status-badge ${category.isDeleted ? "hidden" : "visible"}`}>
+                      {category.isDeleted ? "Đã ẩn" : "Đang hiển thị"}
                     </span>
                   </td>
                   <td>
-                    {editingId === category.categoryId ? (
-                      <>
-                        <button
-                          className="save-btn"
-                          onClick={handleEditCategory}
-                        >
-                          Lưu
-                        </button>
-                        <button
-                          className="cancel-btn"
-                          onClick={cancelEditing}
-                        >
-                          Hủy
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          className="edit-btn"
-                          onClick={() => startEditing(category)}
-                        >
-                          Sửa
-                        </button>
-                        <button
-                          className={category.isActive ? "hide-btn" : "show-btn"}
-                          onClick={() => handleToggleVisibility(category)}
-                        >
-                          {category.isActive ? 'Ẩn' : 'Hiện'}
-                        </button>
-                      </>
-                    )}
+                    <button
+                      className="edit-btn"
+                      onClick={() => setEditingCategory(category)}
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      className={category.isDeleted ? "show-btn" : "hide-btn"}
+                      onClick={() => handleToggleCategory(category.categoryId, category.isDeleted)}
+                    >
+                      {category.isDeleted ? "Hiện" : "Ẩn"}
+                    </button>
                   </td>
                 </tr>
               ))}

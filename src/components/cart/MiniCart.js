@@ -31,7 +31,7 @@ const MiniCart = ({ open, onClose, cartItems = [], onUpdateQty, onRemove }) => {
               {cartItems.length === 0 ? (
                 <tr>
                   <td colSpan={5} style={{ textAlign: "center" }}>
-                    Giỏ hàng trống
+                    Không có sản phẩm nào
                   </td>
                 </tr>
               ) : (

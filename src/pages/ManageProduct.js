@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/admin.css";
 import { formatPrice } from "../utils/hooks/useUtil";
+import AccountMenu from "../components/account/AccountMenu";
 
 const API_URL =
   "https://localhost:7089/api/Product/GetProductsForAdminDashboard";
@@ -140,191 +141,196 @@ const ManageProduct = () => {
   if (error) return <div> Error: {error} </div>;
 
   return (
-    <div className="admin-container">
-      <h1 className="admin-title">Quản Lý Sản Phẩm</h1>
-      <div className="admin-content">
-        <button
-          className="add-new-btn"
-          onClick={() => navigate("/admin/products/add")}
-        >
-          +Thêm Sản Phẩm Mới{" "}
-        </button>
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Tìm kiếm theo tên sản phẩm..."
-            value={searchQuery}
-            onChange={handleSearch}
-            className="search-input"
-          />
+    <div className="container account">
+      <AccountMenu />
+      <div className="admin-products">
+        <div className="product-header">
+          <h1 className="product-title">Quản Lý Sản Phẩm</h1>
+          <button
+            className="add-product-btn"
+            onClick={() => navigate("/admin/products/add")}
+          >
+            +Thêm Sản Phẩm Mới
+          </button>
         </div>
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th onClick={() => handleSort("name")} className="sortable">
-                  Tên{" "}
-                  {sortConfig.key === "name" &&
-                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-                </th>{" "}
-                <th onClick={() => handleSort("type")} className="sortable">
-                  Loại{" "}
-                  {sortConfig.key === "type" &&
-                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-                </th>{" "}
-                <th onClick={() => handleSort("price")} className="sortable">
-                  Giá{" "}
-                  {sortConfig.key === "price" &&
-                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-                </th>{" "}
-                <th
-                  onClick={() => handleSort("salePrice")}
-                  className="sortable"
-                >
-                  Giá Khuyến Mãi{" "}
-                  {sortConfig.key === "salePrice" &&
-                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-                </th>{" "}
-                <th onClick={() => handleSort("quantity")} className="sortable">
-                  Số Lượng{" "}
-                  {sortConfig.key === "quantity" &&
-                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-                </th>{" "}
-                <th> Hình Ảnh </th>{" "}
-                <th
-                  onClick={() => handleSort("isDeleted")}
-                  className="sortable"
-                >
-                  Trạng Thái{" "}
-                  {sortConfig.key === "isDeleted" &&
-                    (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
-                </th>{" "}
-                <th> Thao Tác </th>{" "}
-              </tr>{" "}
-            </thead>{" "}
-            <tbody>
-              {" "}
-              {currentProducts.map((product) => (
-                <tr
-                  key={product.productID}
-                  className={product.isDeleted ? "deleted-row" : ""}
-                >
-                  <td> {product.name} </td> <td> {product.type} </td>{" "}
-                  <td> {formatPrice(product.price)} </td>{" "}
-                  <td>
-                    {" "}
-                    {product.salePrice
-                      ? formatPrice(product.salePrice)
-                      : "-"}{" "}
-                  </td>{" "}
-                  <td> {product.quantity} </td>{" "}
-                  <td>
-                    <img
-                      src={product.imageURL}
-                      alt={product.name}
-                      style={{ width: 50, height: 50, objectFit: "cover" }}
-                    />{" "}
-                  </td>{" "}
-                  <td>
-                    <span
-                      className={`status-badge ${
-                        product.isDeleted ? "deleted" : "active"
-                      }`}
-                    >
-                      {product.isDeleted ? "Đã Xóa" : "Đang Hoạt Động"}{" "}
-                    </span>{" "}
-                  </td>{" "}
-                  <td>
-                    <button
-                      className="action-btn edit"
-                      onClick={() =>
-                        navigate(`/admin/products/detail/${product.productID}`)
-                      }
-                    >
-                      Chi Tiết{" "}
-                    </button>{" "}
-                    <button
-                      className="action-btn delete"
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            "Bạn có chắc chắn muốn xóa sản phẩm này?"
-                          )
-                        ) {
-                          handleDelete(product.productID);
-                        }
-                      }}
-                      disabled={product.isDeleted}
-                    >
-                      Xóa{" "}
-                    </button>{" "}
-                  </td>{" "}
-                </tr>
-              ))}{" "}
-            </tbody>{" "}
-          </table>{" "}
-        </div>
-        {totalPages > 1 && (
-          <div className="pagination">
-            <button
-              className="pagination-btn"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Previous{" "}
-            </button>{" "}
-            {currentPage > 2 && (
-              <button
-                className="pagination-btn"
-                onClick={() => handlePageChange(1)}
-              >
-                1{" "}
-              </button>
-            )}{" "}
-            {currentPage > 3 && (
-              <span className="pagination-ellipsis"> ... </span>
-            )}{" "}
-            {Array.from({ length: totalPages }, (_, index) => {
-              const pageNumber = index + 1;
-              if (
-                pageNumber === currentPage ||
-                pageNumber === currentPage - 1 ||
-                pageNumber === currentPage + 1
-              ) {
-                return (
-                  <button
-                    key={pageNumber}
-                    className={`pagination-btn ${
-                      currentPage === pageNumber ? "active" : ""
-                    }`}
-                    onClick={() => handlePageChange(pageNumber)}
-                  >
-                    {pageNumber}{" "}
-                  </button>
-                );
-              }
-              return null;
-            })}{" "}
-            {currentPage < totalPages - 2 && (
-              <span className="pagination-ellipsis"> ... </span>
-            )}{" "}
-            {currentPage < totalPages - 1 && (
-              <button
-                className="pagination-btn"
-                onClick={() => handlePageChange(totalPages)}
-              >
-                {totalPages}{" "}
-              </button>
-            )}{" "}
-            <button
-              className="pagination-btn"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next{" "}
-            </button>{" "}
+        <div className="admin-content">
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Nhập tên sản phẩm..."
+              value={searchQuery}
+              onChange={handleSearch}
+              className="search-input"
+            />
           </div>
-        )}{" "}
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th onClick={() => handleSort("name")} className="sortable">
+                    Tên{" "}
+                    {sortConfig.key === "name" &&
+                      (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                  </th>{" "}
+                  <th onClick={() => handleSort("type")} className="sortable">
+                    Loại{" "}
+                    {sortConfig.key === "type" &&
+                      (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                  </th>{" "}
+                  <th onClick={() => handleSort("price")} className="sortable">
+                    Giá{" "}
+                    {sortConfig.key === "price" &&
+                      (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                  </th>{" "}
+                  <th
+                    onClick={() => handleSort("salePrice")}
+                    className="sortable"
+                  >
+                    Giá Khuyến Mãi{" "}
+                    {sortConfig.key === "salePrice" &&
+                      (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                  </th>{" "}
+                  <th onClick={() => handleSort("quantity")} className="sortable">
+                    Số Lượng{" "}
+                    {sortConfig.key === "quantity" &&
+                      (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                  </th>{" "}
+                  <th> Hình Ảnh </th>{" "}
+                  <th
+                    onClick={() => handleSort("isDeleted")}
+                    className="sortable"
+                  >
+                    Trạng Thái{" "}
+                    {sortConfig.key === "isDeleted" &&
+                      (sortConfig.direction === "asc" ? "↑" : "↓")}{" "}
+                  </th>{" "}
+                  <th> Thao Tác </th>{" "}
+                </tr>{" "}
+              </thead>{" "}
+              <tbody>
+                {" "}
+                {currentProducts.map((product) => (
+                  <tr
+                    key={product.productID}
+                    className={product.isDeleted ? "deleted-row" : ""}
+                  >
+                    <td> {product.name} </td> <td> {product.type} </td>{" "}
+                    <td> {formatPrice(product.price)} </td>{" "}
+                    <td>
+                      {" "}
+                      {product.salePrice
+                        ? formatPrice(product.salePrice)
+                        : "-"}{" "}
+                    </td>{" "}
+                    <td> {product.quantity} </td>{" "}
+                    <td>
+                      <img
+                        src={product.imageURL}
+                        alt={product.name}
+                        style={{ width: 50, height: 50, objectFit: "cover" }}
+                      />{" "}
+                    </td>{" "}
+                    <td>
+                      <span
+                        className={`status-badge ${
+                          product.isDeleted ? "deleted" : "active"
+                        }`}
+                      >
+                        {product.isDeleted ? "Đã Xóa" : "Đang Hoạt Động"}{" "}
+                      </span>{" "}
+                    </td>{" "}
+                    <td>
+                      <button
+                        className="action-btn edit"
+                        onClick={() =>
+                          navigate(`/admin/products/detail/${product.productID}`)
+                        }
+                      >
+                        Chi Tiết{" "}
+                      </button>{" "}
+                      <button
+                        className="action-btn delete"
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Bạn có chắc chắn muốn xóa sản phẩm này?"
+                            )
+                          ) {
+                            handleDelete(product.productID);
+                          }
+                        }}
+                        disabled={product.isDeleted}
+                      >
+                        Xóa{" "}
+                      </button>{" "}
+                    </td>{" "}
+                  </tr>
+                ))}{" "}
+              </tbody>{" "}
+            </table>{" "}
+          </div>
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                className="pagination-btn"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Trước{" "}
+              </button>{" "}
+              {currentPage > 2 && (
+                <button
+                  className="pagination-btn"
+                  onClick={() => handlePageChange(1)}
+                >
+                  1{" "}
+                </button>
+              )}{" "}
+              {currentPage > 3 && (
+                <span className="pagination-ellipsis"> ... </span>
+              )}{" "}
+              {Array.from({ length: totalPages }, (_, index) => {
+                const pageNumber = index + 1;
+                if (
+                  pageNumber === currentPage ||
+                  pageNumber === currentPage - 1 ||
+                  pageNumber === currentPage + 1
+                ) {
+                  return (
+                    <button
+                      key={pageNumber}
+                      className={`pagination-btn ${
+                        currentPage === pageNumber ? "active" : ""
+                      }`}
+                      onClick={() => handlePageChange(pageNumber)}
+                    >
+                      {pageNumber}{" "}
+                    </button>
+                  );
+                }
+                return null;
+              })}{" "}
+              {currentPage < totalPages - 2 && (
+                <span className="pagination-ellipsis"> ... </span>
+              )}{" "}
+              {currentPage < totalPages - 1 && (
+                <button
+                  className="pagination-btn"
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}{" "}
+                </button>
+              )}{" "}
+              <button
+                className="pagination-btn"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Sau{" "}
+              </button>{" "}
+            </div>
+          )}{" "}
+        </div>{" "}
       </div>{" "}
     </div>
   );

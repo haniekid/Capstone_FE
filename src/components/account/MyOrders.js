@@ -143,7 +143,7 @@ function MyOrders({ currentUser }) {
   }
 
   if (orders.length === 0) {
-    return <div className="no-orders"> Bạn chưa có đơn hàng nào </div>;
+    return <div className="no-orders"> Không có đơn hàng nào </div>;
   }
 
   return (

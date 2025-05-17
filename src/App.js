@@ -25,6 +25,8 @@ import OrderSuccess from "./pages/OrderSuccess";
 import OrderDetail from "./pages/OrderDetail";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import ManageCategory from "./pages/ManageCategory";
+import UsersTable from "./components/account/UsersTable";
 
 import { Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -61,6 +63,8 @@ function App() {
           element={<DiscountDetail />}
         />{" "}
         <Route path="/admin/orders" element={<OrdersManagement />} />{" "}
+        <Route path="/admin/categories" element={<ManageCategory />} />{" "}
+        <Route path="/admin/users" element={<UsersTable />} />{" "}
         <Route path="/forgot-password" element={<ForgotPassword />} />{" "}
         <Route path="/reset-password" element={<ResetPassword />} />{" "}
         <Route path="/order-success" element={<OrderSuccess />} />{" "}

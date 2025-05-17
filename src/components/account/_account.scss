@@ -12,8 +12,7 @@
 }
 
 .account-menu {
-  min-width: 140px;
-  width: 140px;
+  min-width: 180px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -38,7 +37,7 @@
 .profile-info,
 .profile-container {
   width: 100%;
-  max-width: 500px;
+  max-width: 1000px;
   h2,
   button {
     margin-top: 1rem;
@@ -52,7 +51,7 @@
 
 .profile-container {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 32px 24px;
   background: #fff;

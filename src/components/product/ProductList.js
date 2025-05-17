@@ -96,6 +96,11 @@ function ProductList() {
             return product.salePrice > 0;
         })
         .sort((a, b) => {
+            // Sắp xếp sản phẩm hết hàng xuống cuối
+            if (a.quantity === 0 && b.quantity > 0) return 1;
+            if (a.quantity > 0 && b.quantity === 0) return -1;
+            
+            // Sắp xếp theo giá
             if (sortOrder === "lowToHigh") {
                 return a.defaultPrice - b.defaultPrice;
             } else if (sortOrder === "highToLow") {
@@ -205,7 +210,7 @@ function ProductList() {
             <div className="product-grid">
                 {filteredProducts.length === 0 ? (
                     <div className="no-products-message">
-                        Không tìm thấy sản phẩm nào phù hợp với tiêu chí tìm kiếm.
+                        Không tìm thấy sản phẩm nào.
                     </div>
                 ) : (
                     filteredProducts.map((product) => (

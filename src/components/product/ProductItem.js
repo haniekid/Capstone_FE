@@ -17,11 +17,14 @@ function ProductCard({ product, index }) {
                 icon={itemExists ? icons.heartFull : icons.heart}
                 onClick={() => toggleWishlistItem(product)}
             />
-            <div className="product-img">
+            <div className={`product-img ${product.quantity === 0 ? 'out-of-stock' : ''}`}>
                 {product.salePrice && product.salePrice < product.defaultPrice && (
                     <div className="sale-percent-badge-abs">
                         -{Math.round(100 - (product.salePrice / product.defaultPrice) * 100)}%
                     </div>
+                )}
+                {product.quantity === 0 && (
+                    <div className="out-of-stock-badge">Hết hàng</div>
                 )}
                 <Link to={`/${product.productID}`}>
                     <img src={product.imageURL} alt="" />
@@ -32,10 +35,10 @@ function ProductCard({ product, index }) {
                     <p>{product.brand}</p>
                     <h3>{product.name}</h3>
                     {product.salePrice && product.salePrice < product.defaultPrice ? (
-                        <>
-                            <p className="original-price">{formatPrice(product.defaultPrice)}</p>
+                        <div className="price-container">
                             <p className="sale-price">{formatPrice(product.salePrice)}</p>
-                        </>
+                            <p className="original-price">{formatPrice(product.defaultPrice)}</p>
+                        </div>
                     ) : (
                         <p>{formatPrice(product.defaultPrice)}</p>
                     )}

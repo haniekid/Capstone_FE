@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/orders.scss";
 import { useNavigate } from "react-router-dom";
+import AccountMenu from "../components/account/AccountMenu";
 
 const OrdersManagement = () => {
   const [orders, setOrders] = useState([]);
@@ -155,146 +156,152 @@ const OrdersManagement = () => {
   };
 
   return (
-    <div className="admin-container">
-      <div className="orders-management">
-        <h2>Quản Lý Đơn Hàng</h2>
-        
-        <div className="filter-section">
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="Lọc theo mã đơn hàng..."
-              value={filterValue}
-              onChange={(e) => setFilterValue(e.target.value)}
-              className="filter-input"
-            />
-          </div>
-
-          <div className="date-filter">
-            <div className="date-input-group">
-              <label>Từ ngày:</label>
-              <input
-                type="date"
-                value={dateRange.startDate}
-                onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
-                max={dateRange.endDate}
-              />
-            </div>
-            <div className="date-input-group">
-              <label>Đến ngày:</label>
-              <input
-                type="date"
-                value={dateRange.endDate}
-                onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
-                min={dateRange.startDate}
-                max={new Date().toISOString().split('T')[0]}
-              />
-            </div>
-          </div>
+    <div className="container account">
+      <AccountMenu />
+      <div className="admin-orders">
+        <div className="order-header">
+          <h1 className="order-title">Quản Lý Đơn Hàng</h1>
+        </div>
+        <div className="orders-management">
+          <h2>Quản Lý Đơn Hàng</h2>
           
-          <div className="status-filters">
-            <button
-              className={`status-btn ${statusFilter === null ? 'active' : ''}`}
-              onClick={() => setStatusFilter(null)}
-            >
-              Tất cả ({orders.length})
-            </button>
-            {statusButtons.map((btn) => (
-              <button
-                key={btn.status}
-                className={`status-btn ${statusFilter === btn.status ? 'active' : ''}`}
-                onClick={() => setStatusFilter(btn.status)}
-                style={{
-                  backgroundColor: statusFilter === btn.status ? getStatusColor(btn.status) : 'transparent',
-                  color: statusFilter === btn.status ? 'white' : getStatusColor(btn.status),
-                  borderColor: getStatusColor(btn.status)
-                }}
-              >
-                {btn.text}: {getStatusCount(btn.status)}
-              </button>
-            ))}
-          </div>
-        </div>
+          <div className="filter-section">
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="Nhập mã đơn hàng..."
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+                className="filter-input"
+              />
+            </div>
 
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th onClick={() => handleSort('orderID')} className="sortable">
-                  Mã đơn hàng {sortConfig.key === 'orderID' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                </th>
-                <th onClick={() => handleSort('status')} className="sortable">
-                  Trạng thái {sortConfig.key === 'status' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                </th>
-                <th onClick={() => handleSort('paymentMethod')} className="sortable">
-                  Phương thức thanh toán {sortConfig.key === 'paymentMethod' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                </th>
-                <th onClick={() => handleSort('shippingMethod')} className="sortable">
-                  Phương thức vận chuyển {sortConfig.key === 'shippingMethod' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                </th>
-                <th onClick={() => handleSort('finalTotal')} className="sortable">
-                  Tổng tiền {sortConfig.key === 'finalTotal' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                </th>
-                <th onClick={() => handleSort('dateTime')} className="sortable">
-                  Ngày đặt {sortConfig.key === 'dateTime' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                </th>
-                <th>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((order) => (
-                <tr key={order.orderID}>
-                  <td>#{order.orderID}</td>
-                  <td>
-                    <span className={`status status-${order.status}`}>
-                      {getStatusText(order.status)}
-                    </span>
-                  </td>
-                  <td>{order.paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng' : 'VNPay'}</td>
-                  <td>{order.shippingMethod === 'store' ? 'Nhận tại cửa hàng' : 'Giao hàng tận nơi'}</td>
-                  <td>{formatPrice(order.finalTotal)}</td>
-                  <td>{formatDate(order.dateTime)}</td>
-                  <td>
-                    <button 
-                      className="view-details-btn"
-                      onClick={() => handleViewOrderDetails(order.orderID)}
-                    >
-                      Xem chi tiết
-                    </button>
-                  </td>
-                </tr>
+            <div className="date-filter">
+              <div className="date-input-group">
+                <label>Từ ngày:</label>
+                <input
+                  type="date"
+                  value={dateRange.startDate}
+                  onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
+                  max={dateRange.endDate}
+                />
+              </div>
+              <div className="date-input-group">
+                <label>Đến ngày:</label>
+                <input
+                  type="date"
+                  value={dateRange.endDate}
+                  onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
+                  min={dateRange.startDate}
+                  max={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+            </div>
+            
+            <div className="status-filters">
+              <button
+                className={`status-btn ${statusFilter === null ? 'active' : ''}`}
+                onClick={() => setStatusFilter(null)}
+              >
+                Tất cả ({orders.length})
+              </button>
+              {statusButtons.map((btn) => (
+                <button
+                  key={btn.status}
+                  className={`status-btn ${statusFilter === btn.status ? 'active' : ''}`}
+                  onClick={() => setStatusFilter(btn.status)}
+                  style={{
+                    backgroundColor: statusFilter === btn.status ? getStatusColor(btn.status) : 'transparent',
+                    color: statusFilter === btn.status ? 'white' : getStatusColor(btn.status),
+                    borderColor: getStatusColor(btn.status)
+                  }}
+                >
+                  {btn.text}: {getStatusCount(btn.status)}
+                </button>
               ))}
-            </tbody>
-          </table>
-        </div>
-
-        {totalPages > 1 && (
-          <div className="pagination">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="pagination-btn"
-            >
-              Trước
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
-              <button
-                key={number}
-                onClick={() => paginate(number)}
-                className={`pagination-btn ${currentPage === number ? 'active' : ''}`}
-              >
-                {number}
-              </button>
-            ))}
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="pagination-btn"
-            >
-              Sau
-            </button>
+            </div>
           </div>
-        )}
+
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th onClick={() => handleSort('orderID')} className="sortable">
+                    Mã đơn hàng {sortConfig.key === 'orderID' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th onClick={() => handleSort('status')} className="sortable">
+                    Trạng thái {sortConfig.key === 'status' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th onClick={() => handleSort('paymentMethod')} className="sortable">
+                    Phương thức thanh toán {sortConfig.key === 'paymentMethod' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th onClick={() => handleSort('shippingMethod')} className="sortable">
+                    Phương thức vận chuyển {sortConfig.key === 'shippingMethod' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th onClick={() => handleSort('finalTotal')} className="sortable">
+                    Tổng tiền {sortConfig.key === 'finalTotal' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th onClick={() => handleSort('dateTime')} className="sortable">
+                    Ngày đặt {sortConfig.key === 'dateTime' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.map((order) => (
+                  <tr key={order.orderID}>
+                    <td>#{order.orderID}</td>
+                    <td>
+                      <span className={`status status-${order.status}`}>
+                        {getStatusText(order.status)}
+                      </span>
+                    </td>
+                    <td>{order.paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng' : 'VNPay'}</td>
+                    <td>{order.shippingMethod === 'store' ? 'Nhận tại cửa hàng' : 'Giao hàng tận nơi'}</td>
+                    <td>{formatPrice(order.finalTotal)}</td>
+                    <td>{formatDate(order.dateTime)}</td>
+                    <td>
+                      <button 
+                        className="view-details-btn"
+                        onClick={() => handleViewOrderDetails(order.orderID)}
+                      >
+                        Xem chi tiết
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="pagination-btn"
+              >
+                Trước
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                <button
+                  key={number}
+                  onClick={() => paginate(number)}
+                  className={`pagination-btn ${currentPage === number ? 'active' : ''}`}
+                >
+                  {number}
+                </button>
+              ))}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="pagination-btn"
+              >
+                Sau
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

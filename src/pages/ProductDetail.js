@@ -112,6 +112,7 @@ function ProductDetail() {
             <div className="product-detail-info">
               <h2>{product.name}</h2>
               <div className="brand">Loại: {product.type}</div>
+              <div className="quantity">Số lượng: {product.quantity}</div>
               {product.salePrice ? (
                 <>
                   <div className="price sale-price">{formatPrice(product.salePrice)}</div>
