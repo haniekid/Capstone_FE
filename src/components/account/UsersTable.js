@@ -182,7 +182,7 @@ const UsersTable = () => {
                 {[...Array(totalPage)].map((_, index) => (
                   <button
                     key={index}
-                    className={`pagination-btn ${page === index + 1 ? 'active' : ''}`}
+                    className={"pagination-btn " + (page === index + 1 ? 'active' : '')}
                     onClick={() => setPage(index + 1)}
                   >
                     {index + 1}

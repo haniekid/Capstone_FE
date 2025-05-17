@@ -656,33 +656,28 @@ h3 {
   padding: 1.5rem;
 }
 
-.product-header,
-.order-header {
+.product-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 20px;
 }
 
-.product-title,
-.order-title {
-  font-size: 1.8rem;
-  color: #2c3e50;
-  font-weight: 600;
+.product-title {
   margin: 0;
+  font-size: 24px;
+  color: #333;
 }
 
 .add-product-btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.95rem;
+  padding: 8px 16px;
   background-color: #4299e1;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s;
+  font-size: 14px;
+  transition: background-color 0.2s;
 }
 
 .add-product-btn:hover {
@@ -701,27 +696,24 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 20px;
 }
 
 .discount-title {
-  font-size: 1.8rem;
-  color: #2c3e50;
-  font-weight: 600;
   margin: 0;
+  font-size: 24px;
+  color: #333;
 }
 
 .add-discount-btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.95rem;
+  padding: 8px 16px;
   background-color: #4299e1;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s;
+  font-size: 14px;
+  transition: background-color 0.2s;
 }
 
 .add-discount-btn:hover {
