@@ -19,14 +19,23 @@ const ManageCategory = () => {
   const [newCategory, setNewCategory] = useState({
     categoryName: "",
     description: "",
-    isDeleted: false
+    isActive: true
   });
 
   const fetchCategories = async () => {
     try {
       setLoading(true);
       const response = await axios.get(API_URL);
-      setCategories(response.data);
+      // Sắp xếp danh mục: isActive = true trước, sau đó sắp xếp theo categoryId
+      const sortedCategories = response.data.sort((a, b) => {
+        // Sắp xếp theo isActive (true trước, false sau)
+        if (a.isActive !== b.isActive) {
+          return b.isActive ? 1 : -1;
+        }
+        // Nếu isActive giống nhau thì sắp xếp theo categoryId
+        return a.categoryId - b.categoryId;
+      });
+      setCategories(sortedCategories);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -43,7 +52,7 @@ const ManageCategory = () => {
     e.preventDefault();
     try {
       await axios.post(ADD_CATEGORY_URL, newCategory);
-      setNewCategory({ categoryName: "", description: "", isDeleted: false });
+      setNewCategory({ categoryName: "", description: "", isActive: true });
       setShowAddForm(false);
       setError(null);
       await fetchCategories();
@@ -69,7 +78,7 @@ const ManageCategory = () => {
       await axios.post(`${DELETE_CATEGORY_URL}/${categoryId}`);
       setCategories(categories.map(cat => 
         cat.categoryId === categoryId 
-          ? { ...cat, isDeleted: !currentStatus }
+          ? { ...cat, isActive: !currentStatus }
           : cat
       ));
       setError(null);
@@ -100,7 +109,7 @@ const ManageCategory = () => {
             className="add-category-btn"
             onClick={() => setShowAddForm(true)}
           >
-            Thêm Danh Mục
+            +Thêm Danh Mục Mới
           </button>
         </div>
 
@@ -135,7 +144,7 @@ const ManageCategory = () => {
                   className="cancel-btn"
                   onClick={() => {
                     setShowAddForm(false);
-                    setNewCategory({ categoryName: "", description: "", isDeleted: false });
+                    setNewCategory({ categoryName: "", description: "", isActive: true });
                   }}
                 >
                   Hủy
@@ -202,13 +211,13 @@ const ManageCategory = () => {
             </thead>
             <tbody>
               {categories.map((category) => (
-                <tr key={category.categoryId} className={category.isDeleted ? "hidden-row" : ""}>
+                <tr key={category.categoryId} className={!category.isActive ? "hidden-row" : ""}>
                   <td>{category.categoryId}</td>
                   <td>{category.categoryName}</td>
                   <td>{category.description}</td>
                   <td>
-                    <span className={`status-badge ${category.isDeleted ? "hidden" : "visible"}`}>
-                      {category.isDeleted ? "Đã ẩn" : "Đang hiển thị"}
+                    <span className={`status-badge ${category.isActive ? "visible" : "hidden"}`}>
+                      {category.isActive ? "Đang hiển thị" : "Đã ẩn"}
                     </span>
                   </td>
                   <td>
@@ -219,10 +228,10 @@ const ManageCategory = () => {
                       Sửa
                     </button>
                     <button
-                      className={category.isDeleted ? "show-btn" : "hide-btn"}
-                      onClick={() => handleToggleCategory(category.categoryId, category.isDeleted)}
+                      className={category.isActive ? "hide-btn" : "show-btn"}
+                      onClick={() => handleToggleCategory(category.categoryId, category.isActive)}
                     >
-                      {category.isDeleted ? "Hiện" : "Ẩn"}
+                      {category.isActive ? "Ẩn" : "Hiện"}
                     </button>
                   </td>
                 </tr>

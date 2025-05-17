@@ -160,11 +160,9 @@ const OrdersManagement = () => {
       <AccountMenu />
       <div className="admin-orders">
         <div className="order-header">
-          <h1 className="order-title">Quản Lý Đơn Hàng</h1>
+          <h1 className="product-title">Quản Lý Đơn Hàng</h1>
         </div>
         <div className="orders-management">
-          <h2>Quản Lý Đơn Hàng</h2>
-          
           <div className="filter-section">
             <div className="search-box">
               <input
@@ -265,7 +263,7 @@ const OrdersManagement = () => {
                         className="view-details-btn"
                         onClick={() => handleViewOrderDetails(order.orderID)}
                       >
-                        Xem chi tiết
+                        Chi tiết
                       </button>
                     </td>
                   </tr>

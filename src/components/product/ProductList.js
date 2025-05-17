@@ -49,7 +49,9 @@ function ProductList() {
         try {
             setLoading(true);
             const response = await axios.get(BASE_URL);
-            setCategories(response.data);
+            // Lọc chỉ lấy các danh mục có isActive = true
+            const activeCategories = response.data.filter(category => category.isActive);
+            setCategories(activeCategories);
         } catch (err) {
             console.error("Error fetching categories:", err);
         } finally {

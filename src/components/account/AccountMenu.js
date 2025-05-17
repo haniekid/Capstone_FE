@@ -51,6 +51,12 @@ function AccountMenu() {
             Quản lý đơn hàng
           </li>
           <li
+            className={location.pathname === "/admin/revenue" ? "active" : ""}
+            onClick={() => navigate("/admin/revenue")}
+          >
+            Quản lý doanh thu
+          </li>
+          <li
             className={location.pathname === "/admin/users" ? "active" : ""}
             onClick={() => navigate("/admin/users")}
           >

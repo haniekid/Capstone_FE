@@ -31,7 +31,7 @@ function MyAccount() {
 
   const handleTabClick = (index) => {
     const isAdmin = currentUser && currentUser.roleName === "Admin";
-    const logoutTabIndex = isAdmin ? 5 : 3;
+    const logoutTabIndex = isAdmin ? 6 : 3;
     if (index === logoutTabIndex) {
       logout();
       navigate("/authentication");
@@ -79,7 +79,13 @@ function MyAccount() {
                 >
                   Quản lý tài khoản{" "}
                 </li>{" "}
-                <li onClick={() => handleTabClick(5)}> Đăng xuất </li>{" "}
+                <li
+                  className={activeTab === 5 ? "active" : ""}
+                  onClick={() => navigate("/admin/revenue")}
+                >
+                  Quản lý doanh thu{" "}
+                </li>{" "}
+                <li onClick={() => handleTabClick(6)}> Đăng xuất </li>{" "}
               </>
             ) : (
               <>

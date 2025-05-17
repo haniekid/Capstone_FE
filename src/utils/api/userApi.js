@@ -37,9 +37,6 @@ const login = async (loginData) => {
     }
     throw new Error("Invalid login response");
   } catch (error) {
-    if (error.response && error.response.status === 401) {
-      throw new Error("Invalid email or password");
-    }
     throw error;
   }
 };

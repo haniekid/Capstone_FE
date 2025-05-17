@@ -108,9 +108,9 @@
   font-size: 0.95rem;
 }
 
-.form-group input[type="text"],
-.form-group input[type="number"],
-.form-group input[type="date"],
+.form-group input[type='text'],
+.form-group input[type='number'],
+.form-group input[type='date'],
 .form-group select,
 .form-group textarea {
   width: 100%;
@@ -151,7 +151,7 @@
   margin-top: 0.5rem;
 }
 
-.checkbox-group input[type="checkbox"] {
+.checkbox-group input[type='checkbox'] {
   width: 1.2rem;
   height: 1.2rem;
   border-radius: 4px;
@@ -201,7 +201,7 @@
 /* Required Field Indicator */
 
 .required-field::after {
-  content: "*";
+  content: '*';
   color: #e53e3e;
   margin-left: 4px;
 }
@@ -406,7 +406,6 @@
 
 .search-box {
   margin-bottom: 1.5rem;
-  display: flex;
   justify-content: center;
 }
 
@@ -439,7 +438,7 @@
 }
 
 .discounts-table th.sortable::after {
-  content: "↕";
+  content: '↕';
   position: absolute;
   right: 0.5rem;
   opacity: 0.3;

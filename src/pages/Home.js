@@ -100,7 +100,7 @@ function Home() {
                     {categories.find((cat) => cat.id === item.category)?.name}
                   </span>
                   <Link to={`/shop`} className="view-button">
-                    Xem Chi Tiết
+                    Chi Tiết
                   </Link>
                 </div>
               </div>

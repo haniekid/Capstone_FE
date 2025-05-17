@@ -79,7 +79,7 @@ const UsersTable = () => {
       <AccountMenu />
       <div className="admin-users">
         <div className="user-header">
-          <h1 className="user-title">Quản Lý Tài Khoản</h1>
+          <h1 className="product-title">Quản Lý Tài Khoản</h1>
         </div>
         <div className="user-list">
           <div className="users-table-container">
@@ -162,7 +162,7 @@ const UsersTable = () => {
                           onClick={() => handleViewDetail(user)}
                           className="action-btn view"
                         >
-                          Xem chi tiết
+                          Chi tiết
                         </button>
                       </div>
                     </td>

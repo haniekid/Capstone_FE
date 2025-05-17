@@ -57,7 +57,8 @@ export const useUser = () => {
       return null;
     } catch (error) {
       console.error('Login error:', error);
-      return null;
+      // Ném lỗi để component có thể xử lý
+      throw error;
     }
   };
 
